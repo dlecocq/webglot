@@ -1,176 +1,166 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Teapot (per-vertex)</title>
-		<!--
-    <script src="CanvasMatrix.js"> </script>
-    <script src="utils3d.js"> </script>
-		-->
-		<script src="grapher.js"> </script>
-		<script src="screen.js"> </script>
-		<!--
-    <script id="vshader" type="x-shader/x-vertex">
-        /*
-          Copyright (c) 2008 Seneca College
-          Licenced under the MIT License (http://www.c3dl.org/index.php/mit-license/)
-        */
-        
-        // We need to create our own light structure since we can't access 
-        // the light() function in the 2.0 context.
-        struct Light 
-        { 
-            vec4 ambient;
-            vec4 diffuse;
-            vec4 specular;
-            vec4 position;
-            
-            vec3 halfVector;
-        };
-        
-        struct Material
-        {
-            vec4 emission;
-            vec4 ambient;
-            vec4 diffuse;
-            vec4 specular;
-            float shininess;
-        };
+<head>
+	<title>OpenGLot Alpha</title>
+	<script src="CanvasMatrix.js"> </script>
+	<script src="screen.js"> </script>
+	<script src="grapher.js"> </script>
+	
+	<script type="x-shader/x-vertex" id="vshader">
+	uniform mat4 u_modelViewProjMatrix;
+	uniform mat4 u_projectionMatrix;
+	
+	attribute vec4 vTexCoord;
+  attribute vec4 vPosition;
 
-        //
-        // vertex attributes
-        //
-        attribute vec3 a_normal; 
-        attribute vec4 a_texCoord; 
-        attribute vec4 a_vertex; 
+	varying vec2 v_texCoord;
+	
+	void main() {
+		gl_Position = u_projectionMatrix * vPosition;
+		v_texCoord = vTexCoord.st;
+	}
+	</script>
+	
+	<script src="scalar.frag.js" type="x-shader/x-fragment" id="fshader">
+	varying vec2 v_texCoord;
+	
+	void main () {
 
-        // for every model we multiply the projection, view and model matrices
-        // once to prevent having to do it for every vertex, however we still need
-        // the view matrix to calculate lighting.
-        uniform mat4 u_modelViewMatrix;
+		float x = v_texCoord.x;
+		float y = v_texCoord.y;
 
-        // we can calculate this once per model to speed up processing done on the js side.
-        uniform mat4 u_modelViewProjMatrix;
+		float value = sin(x * x);
+			value = (value + 1.0) / 2.0;
 
-        // matrix to transform the vertex normals
-        uniform mat4 u_normalMatrix;
+			value = 1.0 - value;
+			float red = 1.0;
+			float green = 1.0;
+			float blue = 0.0;
 
-        // custom light structures need to be used since we don't have access to 
-        // light states.
-        uniform Light u_light;
-        
-        // material
-        uniform vec4 u_globalAmbientColor;
-        uniform Material u_frontMaterial;
-        uniform Material u_backMaterial;
-        
-        // passed to fragment shader
-        varying vec4 v_diffuse, v_specular;
-        varying vec2 v_texCoord;
+			if (value > 0.8) {
+				red = (value - 0.8) * 5.0;
+				green = 0.0;
+				blue = 1.0;
+			} else if (value > 0.6) {
+				red = 0.0;
+				green = (0.8 - value) * 5.0;
+				blue = 1.0;
+			} else if (value > 0.4) {
+				red = (0.6 - value) * 5.0;
+				green = 1.0;
+				blue = (value - 0.4) * 5.0;
+			} else if (value > 0.2) {
+				red = 1.0;
+				green = 0.5 + (value - 0.2) * 2.5;
+			} else {
+				red = 1.0;
+				green = (value) * 2.5;
+			}
 
-        /*
-            Given a reference to the ambient and diffuse  lighting variables,
-            this function will calculate how much each component contributes to the scene.
+			gl_FragColor = vec4(red, green, blue, 0.5);
+		}
+	</script>
 
-            Light light - the light in view space
-            vec3 normal - 
-            vec4 ambient - 
-            vec4 diffuse - 
-        */
-        void directionalLight(in vec3 normal, inout vec4 ambient, inout vec4 diffuse, inout vec4 specular)
-        {
-            vec3 lightDir = normalize(vec3(u_light.position));
-            ambient += u_light.ambient;
-            
-            float nDotL = max(dot(normal, lightDir), 0.0);
-            if (nDotL > 0.0) {
-                diffuse += u_light.diffuse * nDotL;
-                float nDotHV = max(dot(normal, u_light.halfVector), 0.0);
-                nDotHV += 0.3;
-                vec4 specularColor = u_frontMaterial.specular * u_light.specular;
-                specular += vec4(specularColor.rgb * pow(nDotHV, u_frontMaterial.shininess), specularColor.a);
-            }
-        }
+	<script>
+	function loadShader(ctx, shaderId) {
+		var shaderScript = document.getElementById(shaderId);
+		if (!shaderScript) {
+		    return null;
+		}
 
-        void main()
-        { 
-            vec3 normal = normalize(u_normalMatrix * vec4(a_normal, 1)).xyz; 
+		if (shaderScript.type == "x-shader/x-vertex") {
+			//alert("Vertex shader");
+			var shaderType = ctx.VERTEX_SHADER;
+		} else if (shaderScript.type == "x-shader/x-fragment") {
+			//alert("Fragment shader");
+	    var shaderType = ctx.FRAGMENT_SHADER;
+		} else {
+		    return null;
+		}
 
-            vec4 ambient = vec4(0.0, 0.0, 0.0, 1.0); 
-            vec4 diffuse = vec4(0.0, 0.0, 0.0, 1.0); 
-            vec4 specular = vec4(0.0, 0.0, 0.0, 1.0); 
+		// Create the shader object
+		var shader = ctx.createShader(shaderType);
+		if (shader == null) {
+		    return null;
+		}
 
-            // place the current vertex into view space
-            // ecPos = eye coordinate position.
-            vec4 ecPos4 = u_modelViewMatrix * a_vertex;
+		// Load the shader source
+		ctx.shaderSource(shader, shaderScript.text);
 
-            // the current vertex in eye coordinate space
-            vec3 ecPos = ecPos4.xyz/ecPos4.w;
-            directionalLight(normal, ambient, diffuse, specular);
-            
-            ambient = u_frontMaterial.ambient * ambient;
-            ambient += u_globalAmbientColor * u_frontMaterial.ambient;
-            diffuse = u_frontMaterial.diffuse * diffuse;
+		// Compile the shader
+		ctx.compileShader(shader);
 
-            v_diffuse = diffuse;
-            v_specular = specular + ambient;
-            gl_Position =  u_modelViewProjMatrix * a_vertex;
-            v_texCoord = a_texCoord.st;
-        }
-    </script>
+		// Check the compile status
+		var compiled = ctx.getShaderParameter(shader, ctx.COMPILE_STATUS);
+		if (!compiled) {
+		    // Something went wrong during compilation; get the error
+		    var error = ctx.getShaderInfoLog(shader);
+				alert(error);
+		    ctx.deleteShader(shader);
+		    return null;
+		}
 
-    <script id="fshader" type="x-shader/x-fragment">
-        uniform sampler2D u_sampler2d;
+		return shader;
+	}
+	
+	function gen_shaders(gl) {
+		var vertexShader = loadShader(gl, "vshader");
+    var fragmentShader = loadShader(gl, "fshader");
 
-        varying vec4 v_diffuse, v_specular;
-        varying vec2 v_texCoord;
+    if (!vertexShader || !fragmentShader)
+        return null;
 
-        void main()
-        {
-            vec4 color = v_diffuse;
-            
-            gl_FragColor = color + v_specular;
-        }
-    </script>
-		-->
+    // Create the program object
+    gl.program = gl.createProgram();
 
-    <script>
-        function init() {
-						var glot = new grapher();
-						glot.initialize();
-						
-						/*
-            mvMatrix = new CanvasMatrix4();
-            normalMatrix = new CanvasMatrix4();
-           	*/
-            return glot;
-        }
-        
-        width = -1;
-        height = -1;
-        loaded = false;
-                
-        function start()
-        {
-            var glot = init();
-            currentAngle = 0;
-            incAngle = 0.2;
-            framerate = new Framerate("framerate");
-            var f = function() { glot.reshape(); glot.display() };
-            setInterval(f, 10);
-        }
-    </script>
-    <style type="text/css">
-        canvas {
-            border: 2px solid black;
-            width:90%;
-            height:90%;
-        }
-    </style>
-  </head>
-  <body onload="start()">
-    <canvas id="glot">
-    There is supposed to be an example drawing here, but it's not important.
-    </canvas>
-    <div id="framerate"></div>
-  </body>
+    if (!gl.program)
+        return null;
+
+    // Attach our two shaders to the program
+    gl.attachShader (gl.program, vertexShader);
+    gl.attachShader (gl.program, fragmentShader);
+
+    // Link the program
+    gl.linkProgram(gl.program);
+
+    // Check the link status
+    var linked = gl.getProgramParameter(gl.program, gl.LINK_STATUS);
+    if (!linked) {
+        // something went wrong with the link
+        var error = gl.getProgramInfoLog (gl.program);
+        gl.console.log("Error in program linking:"+error);
+
+        gl.deleteProgram(gl.program);
+        gl.deleteProgram(fragmentShader);
+        gl.deleteProgram(vertexShader);
+
+        return null;
+    }
+
+    gl.useProgram(gl.program);
+	}
+	
+	function start() {
+		var glot = new grapher();
+		glot.initialize();
+		gen_shaders(glot.getContext());
+		var f = function() { glot.reshape(); glot.display() };
+		setInterval(f, 10);
+	}
+	</script>
+	
+	<style type="text/css">
+	canvas {
+		border: 1px solid black;
+		width:90%;
+		height:90%;
+	}
+	</style>
+</head>
+<body onload="start()">
+	<canvas id="glot">
+		There is supposed to be an example drawing here, but it's not important.
+	</canvas>
+	<div id="framerate"></div>
+</body>
 </html>

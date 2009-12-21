@@ -1,4 +1,4 @@
-screen = function() {
+function screen() {
 	this.height	= this.width 	= 10;
 	this.minx		= this.miny		= -5;
 	this.maxx		= this.maxy		=  5;
