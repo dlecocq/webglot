@@ -1,0 +1,8 @@
+1. Determine option-passing (GL_DOUBLE, GL_RGBA, etc.) in WebGL context creation
+2. Determine how JavaScript does its timing, both for framerate counting and for time dependence in the rendered primitives.
+3. Determine how typecasting works in JavaScript (see grid_dl_gen)
+4. Add in support for display options
+5. Determine how callbacks will work in WebGL - do they have to be manually handled in the html? With "onclick", etc?
+6. Determine if JavaScript supports inheritance
+7. Add in support for refresh_dls
+8. Determine if JavaScript allows for JavaScript source to include other source.  Basically, the JavaScript analog of "#include <...>"
