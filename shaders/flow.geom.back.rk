@@ -1,0 +1,48 @@
+);
+}
+
+void main() {
+
+	float alpha;
+
+	int i;
+	
+	int count;
+	count = 100;
+	
+	float step;
+	float dalpha;
+	
+	dalpha = 1.0 / count;
+	step = 0.08;
+	
+	alpha = dalpha;
+	
+	vec2 p0;
+	vec2 p1;
+	vec2 p2;
+	vec2 p3;
+	
+	vec2 p;
+	
+	p = gl_PositionIn[0].xy;
+	
+	gl_FrontColor = vec4(1.0, 0.0, 0.0, alpha);
+	gl_Position = gl_ModelViewProjectionMatrix * vec4(p.x, p.y, 0.0, 1.0);
+	EmitVertex();
+	
+	for (i = 0; i < count; ++i) {
+		p0 = step * function(p.x, p.y);
+		p1 = step * function(p0.x / 2.0 + p.x, p0.y / 2.0 + p.y);
+		p2 = step * function(p1.x / 2.0 + p.x, p1.y / 2.0 + p.y);
+		p3 = step * function(p2.x / 2.0 + p.x, p2.y / 2.0 + p.y);
+		p = p + p0 / 6.0 + p1 / 3.0 + p2 / 3.0 + p3 / 6.0;
+		
+		alpha += dalpha;
+		gl_FrontColor = vec4(1.0, 0.0, 0.0, alpha);
+		gl_Position = gl_ModelViewProjectionMatrix * vec4(p.x, p.y, 0.0, 1.0);
+		EmitVertex();
+	}
+		
+	EndPrimitive();
+}

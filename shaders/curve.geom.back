@@ -1,0 +1,28 @@
+;
+}
+
+void main() {
+	
+	int i;
+	
+	i = 0;
+	float m;
+	float a;
+	float b;
+	float h;
+	
+	a = gl_PositionIn[0].x;
+	b = gl_PositionIn[1].x;
+	h = (b - a) / 10.0;
+	
+	for (i = 0; i < 10; i++) {
+		m = (i * h) + a;
+		gl_Position = gl_ModelViewProjectionMatrix * vec4(m, function(m, 0.0, gl_PositionIn[0].z), 0.0, 1.0);
+		EmitVertex();
+	}
+	
+	gl_Position = gl_ModelViewProjectionMatrix * vec4(b, function(b, 0.0, gl_PositionIn[0].z), 0.0, 1.0);
+	EmitVertex();
+	
+	EndPrimitive();
+}

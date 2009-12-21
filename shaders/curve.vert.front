@@ -1,0 +1,8 @@
+#version 120 
+
+void main () {
+	
+	vec4 result = gl_Vertex;
+	
+	float x = result.x;
+	result.y = 

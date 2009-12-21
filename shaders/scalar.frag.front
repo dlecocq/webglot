@@ -1,0 +1,10 @@
+#version 110
+
+uniform float t;
+
+void main () {
+	
+	float x = gl_TexCoord[0].x;
+	float y = gl_TexCoord[0].y;
+	
+	float value = 

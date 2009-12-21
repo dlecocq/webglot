@@ -1,0 +1,5 @@
+;
+
+	gl_Position = gl_ModelViewProjectionMatrix * result;
+
+}
