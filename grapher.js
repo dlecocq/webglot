@@ -123,6 +123,9 @@ function grapher() {
 		glutIdleFunc(idle);
 		*/
 
+		this.wall = new stopwatch();
+		this.wall.start();
+
 		// Determine the axes and grid
 		//this.axes_dl = this.axes_dl_gen();
 		this.sf = new scalar_field(gl);
@@ -243,9 +246,11 @@ function grapher() {
 		
 		var mvMat_location = gl.getUniformLocation(gl.program, "u_modelViewMatrix");
 		var prMat_location = gl.getUniformLocation(gl.program, "u_projectionMatrix");
+		var time_location = gl.getUniformLocation(gl.program, "t");
 		
     gl.uniformMatrix4fv(mvMat_location, false, gl.modelviewMatrix.getAsWebGLFloatArray());
     gl.uniformMatrix4fv(prMat_location, false, gl.projectionMatrix.getAsWebGLFloatArray());
+		gl.uniform1f(time_location, this.wall.time());
 
 		this.sf.draw(gl);
 		
