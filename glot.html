@@ -7,7 +7,7 @@
 	<script src="grapher.js"> </script>
 	
 	<script type="x-shader/x-vertex" id="vshader">
-	uniform mat4 u_modelViewProjMatrix;
+	uniform mat4 u_modelViewMatrix;
 	uniform mat4 u_projectionMatrix;
 	
 	attribute vec4 vTexCoord;
@@ -16,7 +16,7 @@
 	varying vec2 v_texCoord;
 	
 	void main() {
-		gl_Position = u_projectionMatrix * vPosition;
+		gl_Position = u_modelViewMatrix * u_projectionMatrix * vPosition;
 		v_texCoord = vTexCoord.st;
 	}
 	</script>
@@ -57,7 +57,7 @@
 				green = (value) * 2.5;
 			}
 
-			gl_FragColor = vec4(red, green, blue, 0.5);
+			gl_FragColor = vec4(red, green, blue, 1.0);
 		}
 	</script>
 

@@ -90,7 +90,7 @@ function grapher() {
 		//gl.pointSize(7);
 	
 		// Default color is white
-		gl.clearColor(0.0, 0.0, 1.0, 0.5);
+		gl.clearColor(0.0, 0.0, 0.0, 0.5);
 
 		// This was included in the webkit examples, but my JavaScript
 		// is weak, and I'm not quite sure what exactly this means.
@@ -243,28 +243,36 @@ function grapher() {
 	this.display = function() {
 		var gl = this.getContext();
 		
-		var mvMat_location = gl.getUniformLocation(gl.program, "u_modelViewMatrix");
-		var prMat_location = gl.getUniformLocation(gl.program, "u_projectionMatrix");
-		
-		gl.console.log(prMat_location);
-		
-    gl.uniformMatrix4fv(mvMat_location, false, gl.modelviewMatrix.getAsWebGLFloatArray());
-    gl.uniformMatrix4fv(prMat_location, false, gl.projectionMatrix.getAsWebGLFloatArray());
-		
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		
 		gl.enableVertexAttribArray(0);
-		gl.enableVertexAttribArray(1);
+		//gl.enableVertexAttribArray(1);
+		//gl.enableVertexAttribArray(2);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.axes_dl.vertexObject);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, gl.FALSE, 0, 0);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.axes_dl.textureObject);
-    gl.vertexAttribPointer(1, 2, gl.FLOAT, gl.FALSE, 0, 0);
+    //gl.bindBuffer(gl.ARRAY_BUFFER, this.axes_dl.textureObject);
+    //gl.vertexAttribPointer(0, 2, gl.FLOAT, gl.FALSE, 0, 0);
+
+		/*
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.axes_dl.texCoordObject);
+    gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
+		*/
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.axes_dl.indexObject);
 
-		gl.drawElements(gl.QUADS, this.axes_dl.numIndices, gl.UNSIGNED_SHORT, 0);
+		var mvMat_location = gl.getUniformLocation(gl.program, "u_modelViewMatrix");
+		var prMat_location = gl.getUniformLocation(gl.program, "u_projectionMatrix");
+		
+		//console.log(gl.projectionMatrix.getAsWebGLFloatArray());
+		
+    gl.uniformMatrix4fv(mvMat_location, false, gl.modelviewMatrix.getAsWebGLFloatArray());
+    gl.uniformMatrix4fv(prMat_location, false, gl.projectionMatrix.getAsWebGLFloatArray());
+
+		gl.drawElements(gl.TRIANGLE_STRIP, this.axes_dl.numIndices, gl.UNSIGNED_SHORT, 0);
+		
+		gl.flush();
 
 		// bind with 0, so, switch back to normal pointer operation
 		/*
@@ -364,15 +372,8 @@ function grapher() {
 			return;
 		}
 
-		/* Perhaps this extrapolation to the CanvasMatrix4 is a result
-		 * of no support for LoadIdentity().  However, I will proceed
-		 * as if there is still support for LoadIdentity - I'd rather
-		 * not fix it if it's not broken, at least in the early stages
-		 */
 		context.projectionMatrix = new CanvasMatrix4();
 		context.modelviewMatrix = new CanvasMatrix4();
-		
-		//context.perspectiveMatrix.perspective(30, width/height, 1, 10000);
 	
 		context.viewport(0, 0, w, h);
 
@@ -384,7 +385,7 @@ function grapher() {
 		this.scr.maxy = this.scr.miny + (this.scr.maxy - this.scr.miny) * h / this.scr.height;
 
 		// Set the projection
-		context.projectionMatrix.ortho(this.scr.minx, this.scr.maxx, this.scr.miny, this.scr.maxy, -10, 0);
+		context.projectionMatrix.ortho(this.scr.minx, this.scr.maxx, this.scr.miny, this.scr.maxy, -10, 10);
 
 		// Re-calculate the draw lists if we've expanded the view
 		if (w > this.scr.width || h > this.scr.height) {
@@ -395,5 +396,27 @@ function grapher() {
 		this.scr.height = h;
 
 		//glutPostRedisplay();
+	}
+	
+	this.reshape2 = function() {
+		var canvas = document.getElementById('glot');
+		var ctx = this.getContext();
+
+    width = canvas.clientWidth;
+    height = canvas.clientHeight;
+    
+    ctx.viewport(0, 0, width, height);
+
+    ctx.projectionMatrix = new CanvasMatrix4();
+    ctx.projectionMatrix.lookat(0,0,6, 0, 0, 0, 0, 1, 0);
+    ctx.projectionMatrix.perspective(30, width/height, 1, 10000);
+
+		var scale = 1.0;
+		var angle = 0.0;
+
+		ctx.modelviewMatrix = new CanvasMatrix4();
+		ctx.modelviewMatrix.scale(scale, scale, scale);
+    ctx.modelviewMatrix.rotate(angle, 0,1,0);
+    ctx.modelviewMatrix.rotate(30, 1,0,0);
 	}
 }
