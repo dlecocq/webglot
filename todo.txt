@@ -7,3 +7,4 @@
 7. Add in support for refresh_dls
 8. Determine if JavaScript allows for JavaScript source to include other source.  Basically, the JavaScript analog of "#include <...>"
 9. How does the equivalent of glutMainLoop work?
+10. In scalar_field.js - change indexVBO to STATIC_DRAW if possible

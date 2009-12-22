@@ -2,8 +2,8 @@
 function grapher() {
 
 	this.scr = new screen();
-	this.axes_dl = 0;
-	this.grid_dl = 0;
+	this.axes_dl = null;
+	this.grid_dl = null;
 	this.gl = null;
 
 	this.getContext = function() {
@@ -130,9 +130,10 @@ function grapher() {
 		glutMotionFunc(motion);
 		glutIdleFunc(idle);
 		*/
-	
+
 		// Determine the axes and grid
-		this.axes_dl = this.axes_dl_gen();
+		//this.axes_dl = this.axes_dl_gen();
+		this.sf = new scalar_field(gl);
 		//this.grid_dl = this.grid_dl_gen();
 	
 		// Shit.  Well, shit.
@@ -163,6 +164,9 @@ function grapher() {
 	}
 
 	this.axes_dl_gen = function() {
+		if (this.axes_dl != null) {
+			delete this.axes_dl;
+		}
 		var gl = this.getContext();
 	
 	  var geometryData = [ ];
@@ -198,11 +202,11 @@ function grapher() {
 
     retval.vertexObject = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, retval.vertexObject);
-    gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(geometryData), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(geometryData), gl.DYNAMIC_DRAW);
 
     retval.textureObject = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, retval.textureObject);
-    gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(textureData), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(textureData), gl.DYNAMIC_DRAW);
     
     retval.numIndices = indexData.length;
     retval.indexObject = gl.createBuffer();
@@ -245,32 +249,13 @@ function grapher() {
 		
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		
-		gl.enableVertexAttribArray(0);
-		//gl.enableVertexAttribArray(1);
-		//gl.enableVertexAttribArray(2);
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.axes_dl.vertexObject);
-    gl.vertexAttribPointer(0, 2, gl.FLOAT, gl.FALSE, 0, 0);
-
-    //gl.bindBuffer(gl.ARRAY_BUFFER, this.axes_dl.textureObject);
-    //gl.vertexAttribPointer(0, 2, gl.FLOAT, gl.FALSE, 0, 0);
-
-		/*
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.axes_dl.texCoordObject);
-    gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
-		*/
-
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.axes_dl.indexObject);
-
 		var mvMat_location = gl.getUniformLocation(gl.program, "u_modelViewMatrix");
 		var prMat_location = gl.getUniformLocation(gl.program, "u_projectionMatrix");
-		
-		//console.log(gl.projectionMatrix.getAsWebGLFloatArray());
 		
     gl.uniformMatrix4fv(mvMat_location, false, gl.modelviewMatrix.getAsWebGLFloatArray());
     gl.uniformMatrix4fv(prMat_location, false, gl.projectionMatrix.getAsWebGLFloatArray());
 
-		gl.drawElements(gl.TRIANGLE_STRIP, this.axes_dl.numIndices, gl.UNSIGNED_SHORT, 0);
+		this.sf.draw(gl);
 		
 		gl.flush();
 
@@ -279,77 +264,10 @@ function grapher() {
 		gl.bindBuffer(gl.ARRAY_BUFFER_ARB, 0);
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER_ARB, 0);
 		*/
-		
-		/* In this preliminary version, all options are temporarily defaulted
-		 * to true.  List in the future iterations.
-		 */
-		/*
-		// If Axes-drawing is enabled, draw them
-		if (AXES_ON & display_options) {
-			glCallList(axes_dl);
-		}
-	
-		// If grid-drawing is enabled, draw it
-		if (GRID_ON & display_options) {
-			glCallList(grid_dl);
-		}
-		//*/
-
-		// Determine timing stuff
-		//float t = float(wall.time());
-		//scr.time = wall.time();
-	
-		// For use in shader programs
-		// GLint location;
-	
-		/* This section will require massive structural changes.  I think
-		 * that JavaScript's dynamic typing will work to our advantage here
-		 * but that's uncertain at this point.  I'm not sure if JavaScript
-		 * supports inheritance (in which case the current model will likely
-		 * suffice) or if there will even have to be any inheritance at all.
-		 */
-		/*
-		map<primitive*, GLint>::iterator it;
-		// For every curve, ...
-		for (it = primitives.begin(); it != primitives.end(); ++it) {
-		
-			// Call it's shader program, defaulted to 0
-			glUseProgram(it->first->p);
-		
-			location = glGetUniformLocation(it->first->p, "t");
-		
-			glUniform1f(location, t);
-		
-			glColor4d(it->first->c.r, it->first->c.g, it->first->c.b, it->first->c.a);
-			// Call the actual draw list
-			glCallList(it->second);
-			//it->first->dl_gen(scr);
-		
-			// Re-set the shader program to 0
-			glUseProgram(0);
-		}
-	
-		list<point*>::iterator pit;
-		glBegin(GL_POINTS);
-			// For every point, ...
-			for (pit = points.begin(); pit != points.end(); ++pit) {
-				glColor4d((*pit)->c.r, (*pit)->c.g, (*pit)->c.b, (*pit)->c.a);
-			
-				// Draw the point
-				glVertex3d((*pit)->x, (*pit)->y, (*pit)->z);
-			}
-		glEnd();
-		*/
-	
-		/* From the initial reading of the WebGL spec, it seems like WebGL
-		 * guarantees the swapping of buffers, and flushing, etc.
-		 */
-		// Finish up
-		//glutSwapBuffers();
 	}
 
 	this.refresh_dls = function() {
-		this.axes_dl = this.axes_dl_gen();
+		//this.axes_dl = this.axes_dl_gen();
 		//this.grid_dl = grid_dl_gen(); 
 	}
 
@@ -385,7 +303,7 @@ function grapher() {
 		this.scr.maxy = this.scr.miny + (this.scr.maxy - this.scr.miny) * h / this.scr.height;
 
 		// Set the projection
-		context.projectionMatrix.ortho(this.scr.minx, this.scr.maxx, this.scr.miny, this.scr.maxy, -10, 10);
+		context.projectionMatrix.ortho(this.scr.minx, this.scr.maxx, this.scr.miny, this.scr.maxy, -10, 0);
 
 		// Re-calculate the draw lists if we've expanded the view
 		if (w > this.scr.width || h > this.scr.height) {
@@ -394,29 +312,9 @@ function grapher() {
 	
 		this.scr.width = w;
 		this.scr.height = h;
+		
+		this.sf.initialize(this.scr, context);
 
 		//glutPostRedisplay();
-	}
-	
-	this.reshape2 = function() {
-		var canvas = document.getElementById('glot');
-		var ctx = this.getContext();
-
-    width = canvas.clientWidth;
-    height = canvas.clientHeight;
-    
-    ctx.viewport(0, 0, width, height);
-
-    ctx.projectionMatrix = new CanvasMatrix4();
-    ctx.projectionMatrix.lookat(0,0,6, 0, 0, 0, 0, 1, 0);
-    ctx.projectionMatrix.perspective(30, width/height, 1, 10000);
-
-		var scale = 1.0;
-		var angle = 0.0;
-
-		ctx.modelviewMatrix = new CanvasMatrix4();
-		ctx.modelviewMatrix.scale(scale, scale, scale);
-    ctx.modelviewMatrix.rotate(angle, 0,1,0);
-    ctx.modelviewMatrix.rotate(30, 1,0,0);
 	}
 }
