@@ -5,6 +5,7 @@ function grapher() {
 	this.axes_dl = null;
 	this.grid_dl = null;
 	this.gl = null;
+	this.wall = null;
 
 	this.getContext = function() {
 		// It would seem that all this context stuff is handled in this,
@@ -21,25 +22,16 @@ function grapher() {
 		 */
 	  //this.context = canvas.getContext("moz-webgl");\
 		var gl = null;
-	  try { 
-	    if (!gl)
-	      gl = canvas.getContext("moz-webgl");
-	  } catch (e) { }
-
-	  try { 
-	    if (!gl)
-	      gl = canvas.getContext("webkit-3d");
-	  } catch (e) { }
-
-	  try { 
-	    if (!gl)
-	      gl = canvas.getContext("webgl");
-	  } catch (e) { }
-
-		try { 
-	    if (!gl)
-	      gl = canvas.getContext("experimental-webgl");
-	  } catch (e) { }
+		
+		var strings = ["moz-webgl", "webkit-3d", "webgl", "experimental-webgl"];
+		
+		for (var i = 0; i < strings.length; ++i) {
+			try {
+				if (!gl) {
+					gl = canvas.getContext(strings[i]);
+				}
+			} catch (e) { }
+		}
 	
 		return gl;
 	}
