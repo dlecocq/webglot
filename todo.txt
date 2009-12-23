@@ -11,3 +11,4 @@
 10. Add grapher.js agnosticism for adding primitives to render.
 11. Include color definitions for primitives, excepting scalar_fields, of course.
 12. Add support for framerate counting.
+13. Support moving stuff around.

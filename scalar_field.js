@@ -8,7 +8,6 @@ function scalar_field(context) {
 	this.indexVBO   = null;
 
 	this.initialize = function(scr) {
-		//this.gl = gl;
 		this.gen_vbo(scr);
 	}
 
@@ -58,9 +57,7 @@ function scalar_field(context) {
     this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indices), this.gl.STATIC_DRAW);
 	}
 	
-	this.draw = function(gl) {
-		//this.gl = gl;
-		
+	this.draw = function() {
 		this.gl.enableVertexAttribArray(0);
 		this.gl.enableVertexAttribArray(1);
 		

@@ -10,7 +10,7 @@
 	<script src="screen.js"> </script>
 	<script src="grapher.js"> </script>
 	
-	<script type="x-shader/x-vertex" id="vshader">
+	<script type="x-shader/x-vertex" id="vshader_p_curve">
 	uniform mat4 u_modelViewMatrix;
 	uniform mat4 u_projectionMatrix;
 	
@@ -38,7 +38,7 @@
 	}
 	</script>
 	
-	<script type="x-shader/x-vertex" id="vshader_scalar_field">
+	<script type="x-shader/x-vertex" id="vshader">
 	uniform mat4 u_modelViewMatrix;
 	uniform mat4 u_projectionMatrix;
 	
@@ -53,13 +53,13 @@
 	}
 	</script>
 	
-	<script type="x-shader/x-fragment" id="fshader">
+	<script type="x-shader/x-fragment" id="fshader_curve">
 	void main() {
 		gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 	}
 	</script>
 	
-	<script src="scalar.frag.js" type="x-shader/x-fragment" id="fshader2">
+	<script src="scalar.frag.js" type="x-shader/x-fragment" id="fshader">
 	varying vec2 v_texCoord;
 	uniform float t;
 	
@@ -182,6 +182,9 @@
 	function start() {
 		var glot = new grapher();
 		glot.initialize();
+		
+		glot.add(new scalar_field(glot.getContext()));
+		
 		gen_shaders(glot.getContext());
 		var f = function() { glot.reshape(); glot.display() };
 		setInterval(f, 10);

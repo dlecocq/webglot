@@ -4,8 +4,10 @@ function grapher() {
 	this.scr = new screen();
 	this.axes_dl = null;
 	this.grid_dl = null;
-	this.gl = null;
-	this.wall = null;
+	this.gl      = null;
+	this.wall    = null;
+	
+	this.primitives = [];
 
 	this.getContext = function() {
 		// It would seem that all this context stuff is handled in this,
@@ -128,9 +130,6 @@ function grapher() {
 
 		// Determine the axes and grid
 		//this.axes_dl = this.axes_dl_gen();
-		//this.sf = new scalar_field(gl);
-		//this.sf = new curve(gl);
-		this.sf = new p_curve(gl);
 		//this.grid_dl = this.grid_dl_gen();
 	
 		// Shit.  Well, shit.
@@ -248,24 +247,23 @@ function grapher() {
 		
 		var mvMat_location = gl.getUniformLocation(gl.program, "u_modelViewMatrix");
 		var prMat_location = gl.getUniformLocation(gl.program, "u_projectionMatrix");
-		var time_location = gl.getUniformLocation(gl.program, "t");
+		var time_location  = gl.getUniformLocation(gl.program, "t");
 		
     gl.uniformMatrix4fv(mvMat_location, false, gl.modelviewMatrix.getAsWebGLFloatArray());
     gl.uniformMatrix4fv(prMat_location, false, gl.projectionMatrix.getAsWebGLFloatArray());
 		gl.uniform1f(time_location, this.wall.time());
 
-		this.sf.draw();
+		for (var i = 0; i < this.primitives.length; ++i) {
+			this.primitives[i].draw();
+		}
 		
 		gl.flush();
-
-		// bind with 0, so, switch back to normal pointer operation
-		/*
-		gl.bindBuffer(gl.ARRAY_BUFFER_ARB, 0);
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER_ARB, 0);
-		*/
 	}
 
 	this.refresh_dls = function() {
+		for (var i = 0; i < this.primitives.length; ++i) {
+			this.primitives[i].initialize(this.scr);
+		}
 		//this.axes_dl = this.axes_dl_gen();
 		//this.grid_dl = grid_dl_gen(); 
 	}
@@ -314,9 +312,12 @@ function grapher() {
 	
 		this.scr.width = w;
 		this.scr.height = h;
-		
-		this.sf.initialize(this.scr, context);
 
 		//glutPostRedisplay();
+	}
+	
+	this.add = function(primitive) {
+		this.primitives.push(primitive);
+		primitive.initialize(this.scr);
 	}
 }
