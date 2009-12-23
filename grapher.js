@@ -7,6 +7,10 @@ function grapher() {
 	this.gl      = null;
 	this.wall    = null;
 	
+	// A framerate timer
+	this.framerate  = null;
+	this.framecount = 0;
+	
 	this.primitives = [];
 
 	this.getContext = function() {
@@ -124,6 +128,9 @@ function grapher() {
 		glutMotionFunc(motion);
 		glutIdleFunc(idle);
 		*/
+
+		this.framerate = new stopwatch();
+		this.framerate.start();
 
 		this.wall = new stopwatch();
 		this.wall.start();
@@ -267,6 +274,16 @@ function grapher() {
 		}
 		
 		gl.flush();
+		
+		this.framecount = this.framecount + 1;
+		if (this.framecount == 150) {
+			gl.console.log(150 / this.framerate.time());
+			this.framecount = 0;
+			this.framerate = new stopwatch();
+			this.framerate.start();
+		}
+		
+		gl.finish();
 	}
 
 	this.refresh_dls = function() {
