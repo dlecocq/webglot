@@ -1,15 +1,20 @@
 // This class will encapsulate scalar fields
-function scalar_field(context) {
+function scalar_field(context, string) {
 	
 	this.gl = context;
+	this.f  = string;
 	
 	this.vertexVBO	= null;
 	this.textureVBO = null;
 	this.indexVBO		= null;
 
 	this.initialize = function(scr) {
-		this.gen_vbo(scr);
+		this.refresh(scr);
 		this.gen_program();
+	}
+	
+	this.refresh = function(scr) {
+		this.gen_vbo(scr);
 	}
 
 	this.gen_vbo = function(scr) {
@@ -78,7 +83,7 @@ function scalar_field(context) {
 	
 	this.gen_program = function() {
 		var vertex_source = this.read("shaders/scalar.vert");
-		var frag_source		= this.read("shaders/scalar.frag");
+		var frag_source		= this.read("shaders/scalar.frag").replace("USER_FUNCTION", this.f);
 		
 		this.compile_program(vertex_source, frag_source);		
 	}

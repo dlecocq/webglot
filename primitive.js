@@ -1,6 +1,6 @@
 function primitive(context) {
 	
-	this.BASE    = "file:///Users/dlecocq/TTRG/webGLot/src/";
+	this.BASE		 = "file:///Users/dlecocq/TTRG/webGLot/src/";
 	this.program = null;
 	
 	this.read = function(filename) {

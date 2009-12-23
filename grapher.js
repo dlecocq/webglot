@@ -4,11 +4,11 @@ function grapher() {
 	this.scr = new screen();
 	this.axes_dl = null;
 	this.grid_dl = null;
-	this.gl      = null;
-	this.wall    = null;
+	this.gl			 = null;
+	this.wall		 = null;
 	
 	// A framerate timer
-	this.framerate  = null;
+	this.framerate	= null;
 	this.framecount = 0;
 	
 	this.primitives = [];
@@ -19,14 +19,14 @@ function grapher() {
 		// At least, that's my understanding at this point.
 		var canvas = document.getElementById("glot");
 	
-		/* I hope that this works.  I'd like to be able to have a short
+		/* I hope that this works.	I'd like to be able to have a short
 		 * handle for referencing the context for certain initialization
 		 * things, but after that, I'd just like to have the "this.context"
-		 * handle.  If WebGL behaves in the traditional OpenGL-manner,
+		 * handle.	If WebGL behaves in the traditional OpenGL-manner,
 		 * this SHOULD just be an integer, but I'm thinking now it might
 		 * be ported to more of an object model.
 		 */
-	  //this.context = canvas.getContext("moz-webgl");\
+		//this.context = canvas.getContext("moz-webgl");\
 		var gl = null;
 		
 		var strings = ["experimental-webgl", "moz-webgl", "webkit-3d", "webgl"];
@@ -47,8 +47,8 @@ function grapher() {
 		/* This is some initialization that the OpenGL / GLUT version of
 		 * openGLot did programatically after creating the context. But,
 		 * in WebGL, they are passed in as parameters into the initial-
-		 * ization phase, but I'm not yet sure as to the syntax.  Add this
-		 * in for later versions.  Provisionally disabled.
+		 * ization phase, but I'm not yet sure as to the syntax.	Add this
+		 * in for later versions.	 Provisionally disabled.
 		 */
 		/*
 		// Set the color mode (double with alpha)
@@ -62,13 +62,13 @@ function grapher() {
 	
 		var gl = this.getContext();
 
-	  if (!gl) {
-	    alert("Can't find a WebGL context; is it enabled?");
-	    return null;
-	  }
+		if (!gl) {
+			alert("Can't find a WebGL context; is it enabled?");
+			return null;
+		}
 
 		/* There is a slight, but unititive syntactic change between OpenGL
-		 * and WebGL.  glEnable becomes gl.enable, uncapitalizig the first
+		 * and WebGL.	 glEnable becomes gl.enable, uncapitalizig the first
 		 * character of the function call, and "gl." referes to the context
 		 * provided by getContext()
 		 */
@@ -92,12 +92,12 @@ function grapher() {
 
 		// This was included in the webkit examples, but my JavaScript
 		// is weak, and I'm not quite sure what exactly this means.
-	  // Add a console
+		// Add a console
 		var canvas = document.getElementById("glot");
-	  gl.console = ("console" in window) ? window.console : { log: function() { } };
+		gl.console = ("console" in window) ? window.console : { log: function() { } };
 	
 		/* The Provisional WebGL spec has something to say on maniuplating
-		 * the view size programatically.  It's tied to the canvas element
+		 * the view size programatically.	 It's tied to the canvas element
 		 * size, and certain conditions and post-conditions must be satis-
 		 * fied, so proceed with caution.
 		 *
@@ -116,7 +116,7 @@ function grapher() {
 		// init_open_gl();
 	
 		/* The callback registration for WebGL is either not intuitive,
-		 * undocumented, or unavailable to me.  As such, this is provision-
+		 * undocumented, or unavailable to me.	As such, this is provision-
 		 * ally removed from the WebGL implementation.
 		 */
 		// Register callback functions with GLUT
@@ -139,10 +139,10 @@ function grapher() {
 		//this.axes_dl = this.axes_dl_gen();
 		//this.grid_dl = this.grid_dl_gen();
 	
-		// Shit.  Well, shit.
+		// Shit.	Well, shit.
 		/* I've not heard of / happened upon an extension wrangler for
 		 * WebGL, and so I will have to figure out how to do this the 
-		 * old-school, hardcore C way.  Consult Marcus for more details,
+		 * old-school, hardcore C way.	Consult Marcus for more details,
 		 * though I think it is safe to assume for the time being that
 		 * the required supported functions are available.
 		 */
@@ -172,51 +172,51 @@ function grapher() {
 		}
 		var gl = this.getContext();
 	
-	  var geometryData = [ ];
+		var geometryData = [ ];
 		var textureData = [ ];
-    var indexData = [ ];
+		var indexData = [ ];
 
-    geometryData.push(this.scr.minx);
+		geometryData.push(this.scr.minx);
 		geometryData.push(this.scr.miny);
-    textureData.push(this.scr.minx);
+		textureData.push(this.scr.minx);
 		textureData.push(this.scr.miny);
 
-    geometryData.push(this.scr.minx);
-    geometryData.push(this.scr.maxy);
-    textureData.push(this.scr.minx);
+		geometryData.push(this.scr.minx);
+		geometryData.push(this.scr.maxy);
+		textureData.push(this.scr.minx);
 		textureData.push(this.scr.maxy);
 
-    geometryData.push(this.scr.maxx);
-    geometryData.push(this.scr.maxy);
-    textureData.push(this.scr.maxx);
+		geometryData.push(this.scr.maxx);
+		geometryData.push(this.scr.maxy);
+		textureData.push(this.scr.maxx);
 		textureData.push(this.scr.maxy);
 
-    geometryData.push(this.scr.maxx);
-    geometryData.push(this.scr.miny);
-    textureData.push(this.scr.maxx);
+		geometryData.push(this.scr.maxx);
+		geometryData.push(this.scr.miny);
+		textureData.push(this.scr.maxx);
 		textureData.push(this.scr.miny);
 
 		indexData.push(0);
 		indexData.push(1);
 		indexData.push(2);
 		indexData.push(3);
-		    
-    var retval = { };
+				
+		var retval = { };
 
-    retval.vertexObject = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, retval.vertexObject);
-    gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(geometryData), gl.DYNAMIC_DRAW);
+		retval.vertexObject = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, retval.vertexObject);
+		gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(geometryData), gl.DYNAMIC_DRAW);
 
-    retval.textureObject = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, retval.textureObject);
-    gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(textureData), gl.DYNAMIC_DRAW);
-    
-    retval.numIndices = indexData.length;
-    retval.indexObject = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, retval.indexObject);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indexData), gl.STREAM_DRAW);
-    
-    return retval;
+		retval.textureObject = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, retval.textureObject);
+		gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(textureData), gl.DYNAMIC_DRAW);
+		
+		retval.numIndices = indexData.length;
+		retval.indexObject = gl.createBuffer();
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, retval.indexObject);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indexData), gl.STREAM_DRAW);
+		
+		return retval;
 	}
 
 	this.grid_dl_gen = function() {
@@ -252,10 +252,10 @@ function grapher() {
 		
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		
-		var program        = null;
+		var program				 = null;
 		var mvMat_location = null;
 		var prMat_location = null;
-		var time_location  = null;
+		var time_location	 = null;
 
 		for (var i = 0; i < this.primitives.length; ++i) {
 			program = this.primitives[i].program;
@@ -264,10 +264,10 @@ function grapher() {
 			
 			mvMat_location = gl.getUniformLocation(program, "u_modelViewMatrix");
 			prMat_location = gl.getUniformLocation(program, "u_projectionMatrix");
-			time_location  = gl.getUniformLocation(program, "t");
+			time_location	 = gl.getUniformLocation(program, "t");
 		
-	    gl.uniformMatrix4fv(mvMat_location, false, gl.modelviewMatrix.getAsWebGLFloatArray());
-	    gl.uniformMatrix4fv(prMat_location, false, gl.projectionMatrix.getAsWebGLFloatArray());
+			gl.uniformMatrix4fv(mvMat_location, false, gl.modelviewMatrix.getAsWebGLFloatArray());
+			gl.uniformMatrix4fv(prMat_location, false, gl.projectionMatrix.getAsWebGLFloatArray());
 			gl.uniform1f(time_location, this.wall.time());
 			
 			this.primitives[i].draw();
@@ -288,15 +288,17 @@ function grapher() {
 
 	this.refresh_dls = function() {
 		for (var i = 0; i < this.primitives.length; ++i) {
-			this.primitives[i].initialize(this.scr);
+			this.primitives[i].refresh(this.scr);
 		}
 		//this.axes_dl = this.axes_dl_gen();
 		//this.grid_dl = grid_dl_gen(); 
 	}
 
 	this.run = function() {
+		//var f = function() { this.reshape(); this.display() };
+		setInterval(this.display(), 10);
 		/* How does MainLoop work in WebGL? */
-		return 0; 
+		return 0;
 	}
 
 	this.reshape = function() {
@@ -319,9 +321,9 @@ function grapher() {
 		context.viewport(0, 0, w, h);
 
 		/** Determine the new max x and y based on the
-		  * current scale.  This does not shrink or expand
-		  * the plot - only changes what's visible.
-		  */
+			* current scale.	This does not shrink or expand
+			* the plot - only changes what's visible.
+			*/
 		this.scr.maxx = this.scr.minx + (this.scr.maxx - this.scr.minx) * w / this.scr.width;
 		this.scr.maxy = this.scr.miny + (this.scr.maxy - this.scr.miny) * h / this.scr.height;
 

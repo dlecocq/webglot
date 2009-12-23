@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>OpenGLot Alpha</title>
+	<title>WebGLot Alpha</title>
 	<script src="primitive.js"> </script>
+	
 	<script src="stopwatch.js"> </script>
 	<script src="curve.js"> </script>
 	<script src="p_curve.js"> </script>
@@ -10,30 +11,15 @@
 	<script src="CanvasMatrix.js"> </script>
 	<script src="screen.js"> </script>
 	<script src="grapher.js"> </script>
-	
-	<script type="x-shader/x-vertex" id="vshader_curve">
-	uniform mat4 u_modelViewMatrix;
-	uniform mat4 u_projectionMatrix;
-	
-  attribute vec4 vPosition;
-
-	uniform float t;
-	
-	void main() {
-		float x = vPosition.x;
-		gl_Position = u_projectionMatrix * vec4(x, sin(x * t), 0, 1);
-	}
-	</script>
 
 	<script>
 		function start() {
 		var glot = new grapher();
 		glot.initialize();
 		
-		//glot.add(new scalar_field(glot.getContext()));
-		glot.add(new p_curve(glot.getContext()));
-		//gen_shaders(glot.getContext());
-		glot.reshape();
+		glot.add(new scalar_field(glot.getContext(), "sin(x)"));
+		//glot.add(new p_curve(glot.getContext()));
+		//glot.add(new curve(glot.getContext()));
 		var f = function() { glot.reshape(); glot.display() };
 		setInterval(f, 10);
 	}

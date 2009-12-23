@@ -3,18 +3,22 @@ function p_curve(context) {
 	
 	this.gl = context;
 	
-	this.vertexVBO  = null;
-	this.indexVBO   = null;
+	this.vertexVBO	= null;
+	this.indexVBO		= null;
 	this.count			= 1000;
 
 	this.initialize = function(scr) {
-		this.gen_vbo(scr);
+		this.refresh();
 		this.gen_program();
+	}
+	
+	this.refresh = function(scr) {
+		this.gen_vbo(scr);
 	}
 
 	this.gen_vbo = function(scr) {
-	  var vertices = [];
-		var	indices  = [];
+		var vertices = [];
+		var indices	 = [];
 		
 		var a = 0;
 		var dx = 1.0 / this.count;
@@ -31,15 +35,15 @@ function p_curve(context) {
 			//this.gl.deleteBuffer(this.vertexVBO);
 		}
 		
-    this.vertexVBO = this.gl.createBuffer();
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexVBO);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, new WebGLFloatArray(vertices), this.gl.STATIC_DRAW);
-    
-    this.indexVBO = this.gl.createBuffer();
-    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indexVBO);
+		this.vertexVBO = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexVBO);
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, new WebGLFloatArray(vertices), this.gl.STATIC_DRAW);
+		
+		this.indexVBO = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indexVBO);
 		
 		// I think this ought to be changed to STATIC_DRAW
-    this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indices), this.gl.STATIC_DRAW);
+		this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indices), this.gl.STATIC_DRAW);
 	}
 	
 	this.draw = function() {
