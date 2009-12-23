@@ -11,20 +11,6 @@
 	<script src="screen.js"> </script>
 	<script src="grapher.js"> </script>
 	
-	<script type="x-shader/x-vertex" id="vshader_p_curve">
-	uniform mat4 u_modelViewMatrix;
-	uniform mat4 u_projectionMatrix;
-	
-  attribute vec4 vPosition;
-
-	uniform float t;
-	
-	void main() {
-		float s = vPosition.x;
-		gl_Position = u_projectionMatrix * vec4(sin(s * t), cos(1.5 * s * t), 0, 1);
-	}
-	</script>
-	
 	<script type="x-shader/x-vertex" id="vshader_curve">
 	uniform mat4 u_modelViewMatrix;
 	uniform mat4 u_projectionMatrix;
@@ -38,76 +24,16 @@
 		gl_Position = u_projectionMatrix * vec4(x, sin(x * t), 0, 1);
 	}
 	</script>
-	
-	<script type="x-shader/x-vertex" id="vshader">
-	uniform mat4 u_modelViewMatrix;
-	uniform mat4 u_projectionMatrix;
-	
-	attribute vec4 vTexCoord;
-  attribute vec4 vPosition;
-
-	varying vec2 v_texCoord;
-	
-	void main() {
-		gl_Position = u_projectionMatrix * vPosition;
-		v_texCoord = vTexCoord.st;
-	}
-	</script>
-	
-	<script type="x-shader/x-fragment" id="fshader_curve">
-	void main() {
-		gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-	}
-	</script>
-	
-	<script src="scalar.frag.js" type="x-shader/x-fragment" id="fshader">
-	varying vec2 v_texCoord;
-	uniform float t;
-	
-	void main () {
-
-		float x = v_texCoord.x;
-		float y = v_texCoord.y;
-		
-		float value = sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5) * (x - 1.5) + (y - 0.75) * (y - 0.75)) - t);
-			value = (value + 1.0) / 2.0;
-
-			value = 1.0 - value;
-			float red = 1.0;
-			float green = 1.0;
-			float blue = 0.0;
-
-			if (value > 0.8) {
-				red = (value - 0.8) * 5.0;
-				green = 0.0;
-				blue = 1.0;
-			} else if (value > 0.6) {
-				red = 0.0;
-				green = (0.8 - value) * 5.0;
-				blue = 1.0;
-			} else if (value > 0.4) {
-				red = (0.6 - value) * 5.0;
-				green = 1.0;
-				blue = (value - 0.4) * 5.0;
-			} else if (value > 0.2) {
-				red = 1.0;
-				green = 0.5 + (value - 0.2) * 2.5;
-			} else {
-				red = 1.0;
-				green = (value) * 2.5;
-			}
-
-			gl_FragColor = vec4(red, green, blue, 0.5);
-		}
-	</script>
 
 	<script>
 		function start() {
 		var glot = new grapher();
 		glot.initialize();
 		
-		glot.add(new scalar_field(glot.getContext()));
+		//glot.add(new scalar_field(glot.getContext()));
+		glot.add(new p_curve(glot.getContext()));
 		//gen_shaders(glot.getContext());
+		glot.reshape();
 		var f = function() { glot.reshape(); glot.display() };
 		setInterval(f, 10);
 	}
@@ -125,6 +51,6 @@
 	<canvas id="glot">
 		There is supposed to be an example drawing here, but it's not important.
 	</canvas>
-	<div id="framerate"></div>
+	<div id="framerate">15</div>
 </body>
 </html>
