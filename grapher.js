@@ -11,7 +11,7 @@ function grapher() {
 	this.framerate	= null;
 	this.framecount = 0;
 	
-	this.primitives = [];
+	this.primitives = new Array();
 
 	this.getContext = function() {
 		// It would seem that all this context stuff is handled in this,
@@ -19,22 +19,20 @@ function grapher() {
 		// At least, that's my understanding at this point.
 		var canvas = document.getElementById("glot");
 	
-		/* I hope that this works.	I'd like to be able to have a short
-		 * handle for referencing the context for certain initialization
-		 * things, but after that, I'd just like to have the "this.context"
-		 * handle.	If WebGL behaves in the traditional OpenGL-manner,
-		 * this SHOULD just be an integer, but I'm thinking now it might
-		 * be ported to more of an object model.
-		 */
-		//this.context = canvas.getContext("moz-webgl");\
 		var gl = null;
-		
+	
+		/* It seems there's not a lot of uniformly-accepted strings for
+		 * fetching the context, and so we will try severl likely ones,
+		 * and bail out when we find one.
+		 */
 		var strings = ["experimental-webgl", "moz-webgl", "webkit-3d", "webgl"];
 		
 		for (var i = 0; i < strings.length; ++i) {
 			try {
 				if (!gl) {
 					gl = canvas.getContext(strings[i]);
+				} else {
+					break;
 				}
 			} catch (e) { }
 		}
@@ -53,11 +51,6 @@ function grapher() {
 		/*
 		// Set the color mode (double with alpha)
 		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-		// Set the window size and position
-		glutInitWindowSize(scr.width, scr.height);
-		glutInitWindowPosition(0, 0);
-		// Title the window
-		glutCreateWindow("Glot");
 		*/
 	
 		var gl = this.getContext();
@@ -72,7 +65,6 @@ function grapher() {
 		 * character of the function call, and "gl." referes to the context
 		 * provided by getContext()
 		 */
-		// Enable smoothness and blending
 		gl.enable(gl.LINE_SMOOTH);
 		gl.enable(gl.POINT_SMOOTH);
 		gl.enable(gl.BLEND);
@@ -85,10 +77,16 @@ function grapher() {
 	
 		// Set the line width and point size
 		gl.lineWidth(1.5);
-		//gl.pointSize(7);
+		
+		/* WebGL doesn't support this, it seems.  OpenGL ES 2.0 elliminated
+		 * it to obviate the need for dedicated hardware for this task,
+		 * which is a luxury in some sense.
+		 *
+		 * gl.pointSize(7);
+		 */
 	
 		// Default color is white
-		gl.clearColor(0.0, 0.0, 0.0, 0.5);
+		gl.clearColor(1.0, 1.0, 1.0, 1.0);
 
 		// This was included in the webkit examples, but my JavaScript
 		// is weak, and I'm not quite sure what exactly this means.
@@ -230,12 +228,12 @@ function grapher() {
 			glBegin(GL_LINES);
 		
 				// How does typecasting work in JavaScript?
-				for ( var i = this.scr.miny; i <= this.scr.maxy; ++i) {
+				for( var i = this.scr.miny; i <= this.scr.maxy; ++i) {
 					glVertex3d(this.scr.minx, i, 1);
 					glVertex3d(this.scr.maxx, i, 1);
 				}
 	
-				for ( var i = this.scr.minx; i <= this.scr.maxx; ++i) {
+				for( var i = this.scr.minx; i <= this.scr.maxx; ++i) {
 					glVertex3d(i, this.scr.miny, 1);
 					glVertex3d(i, this.scr.maxy, 1);
 				}
@@ -257,7 +255,7 @@ function grapher() {
 		var prMat_location = null;
 		var time_location	 = null;
 
-		for (var i = 0; i < this.primitives.length; ++i) {
+		for (var i in this.primitives) {
 			program = this.primitives[i].program;
 			
 			gl.useProgram(program);

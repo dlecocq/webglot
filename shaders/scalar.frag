@@ -1,10 +1,26 @@
 varying vec2 v_texCoord;
 uniform float t;
 
+const float PI = 3.14159265;
+
 void main () {
 
 	float x = v_texCoord.x;
 	float y = v_texCoord.y;
+	
+	/* POLAR
+	float tmp = x;
+	x = sqrt(x * x + y * y);
+	if (tmp > 0.0) {
+		if (y >= 0.0) {
+			y = atan(y / tmp);
+		} else {
+			y = atan(y / tmp) + (2.0 * PI);
+		}
+	} else {
+		y = atan(y / tmp) + PI;
+	}
+	//*/
 	
 	//sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5) * (x - 1.5) + (y - 0.75) * (y - 0.75)) - t)
 	float value = USER_FUNCTION;
@@ -35,5 +51,5 @@ void main () {
 		green = (value) * 2.5;
 	}
 
-	gl_FragColor = vec4(red, green, blue, 0.5);
+	gl_FragColor = vec4(red, green, blue, 0.7);
 }

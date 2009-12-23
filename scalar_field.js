@@ -1,8 +1,9 @@
 // This class will encapsulate scalar fields
-function scalar_field(context, string) {
+function scalar_field(context, string, options) {
 	
-	this.gl = context;
-	this.f  = string;
+	this.gl   = context;
+	this.f    = string;
+	this.opts = options || [];
 	
 	this.vertexVBO	= null;
 	this.textureVBO = null;
@@ -84,6 +85,10 @@ function scalar_field(context, string) {
 	this.gen_program = function() {
 		var vertex_source = this.read("shaders/scalar.vert");
 		var frag_source		= this.read("shaders/scalar.frag").replace("USER_FUNCTION", this.f);
+		
+		if (this.opts.indexOf("POLAR")) {
+			frag_course = frag_source.replace("/* POLAR", "//");
+		}
 		
 		this.compile_program(vertex_source, frag_source);		
 	}
