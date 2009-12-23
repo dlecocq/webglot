@@ -55,8 +55,7 @@ function scalar_field(context) {
     this.indexVBO = this.gl.createBuffer();
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indexVBO);
 		
-		// I think this ought to be changed to STATIC_DRAW
-    this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indices), this.gl.STREAM_DRAW);
+    this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indices), this.gl.STATIC_DRAW);
 	}
 	
 	this.draw = function(gl) {

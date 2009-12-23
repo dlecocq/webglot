@@ -3,12 +3,27 @@
 <head>
 	<title>OpenGLot Alpha</title>
 	<script src="stopwatch.js"> </script>
+	<script src="curve.js"> </script>
 	<script src="scalar_field.js"> </script>
 	<script src="CanvasMatrix.js"> </script>
 	<script src="screen.js"> </script>
 	<script src="grapher.js"> </script>
 	
 	<script type="x-shader/x-vertex" id="vshader">
+	uniform mat4 u_modelViewMatrix;
+	uniform mat4 u_projectionMatrix;
+	
+  attribute vec4 vPosition;
+
+	uniform float t;
+	
+	void main() {
+		float x = vPosition.x;
+		gl_Position = u_projectionMatrix * vec4(x, sin(x * t), 0, 1);
+	}
+	</script>
+	
+	<script type="x-shader/x-vertex" id="vshader2">
 	uniform mat4 u_modelViewMatrix;
 	uniform mat4 u_projectionMatrix;
 	
@@ -23,7 +38,13 @@
 	}
 	</script>
 	
-	<script src="scalar.frag.js" type="x-shader/x-fragment" id="fshader">
+	<script type="x-shader/x-fragment" id="fshader">
+	void main() {
+		gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+	}
+	</script>
+	
+	<script src="scalar.frag.js" type="x-shader/x-fragment" id="fshader2">
 	varying vec2 v_texCoord;
 	uniform float t;
 	
