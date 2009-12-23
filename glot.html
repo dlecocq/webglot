@@ -32,7 +32,7 @@
 		float x = v_texCoord.x;
 		float y = v_texCoord.y;
 		
-		float value = sin(x * x + t);
+		float value = sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5) * (x - 1.5) + (y - 0.75) * (y - 0.75)) - t);
 			value = (value + 1.0) / 2.0;
 
 			value = 1.0 - value;
@@ -60,7 +60,7 @@
 				green = (value) * 2.5;
 			}
 
-			gl_FragColor = vec4(red, green, blue, 1.0);
+			gl_FragColor = vec4(red, green, blue, 0.5);
 		}
 	</script>
 

@@ -36,12 +36,12 @@ function scalar_field(context) {
      texture.push(scr.maxx);
 		 texture.push(scr.miny);
 
-		indices = [0, 1, 2, 3];
+		indices = [0, 1, 3, 2];
 
 		/* Add this soon */
-		if (this.vertexVBO != null) {
-			//this.gl.deleteBuffers()
-			//void glDeleteBuffersARB(GLsizei n, const GLuint* ids)
+		if (this.vertexVBO) {
+			this.gl.console.log("deleting");
+			this.gl.deleteBuffer(this.vertexVBO);
 		}
 		
     this.vertexVBO = this.gl.createBuffer();

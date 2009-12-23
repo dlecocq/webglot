@@ -23,7 +23,7 @@ function grapher() {
 	  //this.context = canvas.getContext("moz-webgl");\
 		var gl = null;
 		
-		var strings = ["moz-webgl", "webkit-3d", "webgl", "experimental-webgl"];
+		var strings = ["experimental-webgl", "moz-webgl", "webkit-3d", "webgl"];
 		
 		for (var i = 0; i < strings.length; ++i) {
 			try {
@@ -299,8 +299,11 @@ function grapher() {
 		this.scr.maxx = this.scr.minx + (this.scr.maxx - this.scr.minx) * w / this.scr.width;
 		this.scr.maxy = this.scr.miny + (this.scr.maxy - this.scr.miny) * h / this.scr.height;
 
+		var avgx = (this.scr.minx + this.scr.maxx);
+		var avgy = (this.scr.miny + this.scr.maxy);
+
 		// Set the projection
-		context.projectionMatrix.ortho(this.scr.minx, this.scr.maxx, this.scr.miny, this.scr.maxy, -10, 0);
+		context.projectionMatrix.ortho(this.scr.minx - avgx, this.scr.maxx - avgx, this.scr.miny - avgy, this.scr.maxy - avgy, -10, 0);
 
 		// Re-calculate the draw lists if we've expanded the view
 		if (w > this.scr.width || h > this.scr.height) {
