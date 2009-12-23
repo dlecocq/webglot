@@ -245,15 +245,24 @@ function grapher() {
 		
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		
-		var mvMat_location = gl.getUniformLocation(gl.program, "u_modelViewMatrix");
-		var prMat_location = gl.getUniformLocation(gl.program, "u_projectionMatrix");
-		var time_location  = gl.getUniformLocation(gl.program, "t");
-		
-    gl.uniformMatrix4fv(mvMat_location, false, gl.modelviewMatrix.getAsWebGLFloatArray());
-    gl.uniformMatrix4fv(prMat_location, false, gl.projectionMatrix.getAsWebGLFloatArray());
-		gl.uniform1f(time_location, this.wall.time());
+		var program        = null;
+		var mvMat_location = null;
+		var prMat_location = null;
+		var time_location  = null;
 
 		for (var i = 0; i < this.primitives.length; ++i) {
+			program = this.primitives[i].program;
+			
+			gl.useProgram(program);
+			
+			mvMat_location = gl.getUniformLocation(program, "u_modelViewMatrix");
+			prMat_location = gl.getUniformLocation(program, "u_projectionMatrix");
+			time_location  = gl.getUniformLocation(program, "t");
+		
+	    gl.uniformMatrix4fv(mvMat_location, false, gl.modelviewMatrix.getAsWebGLFloatArray());
+	    gl.uniformMatrix4fv(prMat_location, false, gl.projectionMatrix.getAsWebGLFloatArray());
+			gl.uniform1f(time_location, this.wall.time());
+			
 			this.primitives[i].draw();
 		}
 		

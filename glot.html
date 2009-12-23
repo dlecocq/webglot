@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>OpenGLot Alpha</title>
+	<script src="primitive.js"> </script>
 	<script src="stopwatch.js"> </script>
 	<script src="curve.js"> </script>
 	<script src="p_curve.js"> </script>
@@ -101,91 +102,12 @@
 	</script>
 
 	<script>
-	function loadShader(ctx, shaderId) {
-		var shaderScript = document.getElementById(shaderId);
-		if (!shaderScript) {
-		    return null;
-		}
-
-		if (shaderScript.type == "x-shader/x-vertex") {
-			//alert("Vertex shader");
-			var shaderType = ctx.VERTEX_SHADER;
-		} else if (shaderScript.type == "x-shader/x-fragment") {
-			//alert("Fragment shader");
-	    var shaderType = ctx.FRAGMENT_SHADER;
-		} else {
-		    return null;
-		}
-
-		// Create the shader object
-		var shader = ctx.createShader(shaderType);
-		if (shader == null) {
-		    return null;
-		}
-
-		// Load the shader source
-		ctx.shaderSource(shader, shaderScript.text);
-
-		// Compile the shader
-		ctx.compileShader(shader);
-
-		// Check the compile status
-		var compiled = ctx.getShaderParameter(shader, ctx.COMPILE_STATUS);
-		if (!compiled) {
-		    // Something went wrong during compilation; get the error
-		    var error = ctx.getShaderInfoLog(shader);
-				alert(error);
-		    ctx.deleteShader(shader);
-		    return null;
-		}
-
-		return shader;
-	}
-	
-	function gen_shaders(gl) {
-		var vertexShader = loadShader(gl, "vshader");
-    var fragmentShader = loadShader(gl, "fshader");
-
-    if (!vertexShader || !fragmentShader)
-        return null;
-
-    // Create the program object
-    gl.program = gl.createProgram();
-
-    if (!gl.program)
-        return null;
-
-    // Attach our two shaders to the program
-    gl.attachShader (gl.program, vertexShader);
-    gl.attachShader (gl.program, fragmentShader);
-
-    // Link the program
-    gl.linkProgram(gl.program);
-
-    // Check the link status
-    var linked = gl.getProgramParameter(gl.program, gl.LINK_STATUS);
-    if (!linked) {
-        // something went wrong with the link
-        var error = gl.getProgramInfoLog (gl.program);
-        gl.console.log("Error in program linking:"+error);
-
-        gl.deleteProgram(gl.program);
-        gl.deleteProgram(fragmentShader);
-        gl.deleteProgram(vertexShader);
-
-        return null;
-    }
-
-    gl.useProgram(gl.program);
-	}
-	
-	function start() {
+		function start() {
 		var glot = new grapher();
 		glot.initialize();
 		
 		glot.add(new scalar_field(glot.getContext()));
-		
-		gen_shaders(glot.getContext());
+		//gen_shaders(glot.getContext());
 		var f = function() { glot.reshape(); glot.display() };
 		setInterval(f, 10);
 	}
