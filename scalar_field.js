@@ -7,8 +7,8 @@ function scalar_field(context) {
 	this.textureVBO = null;
 	this.indexVBO   = null;
 
-	this.initialize = function(scr, gl) {
-		this.gl = gl;
+	this.initialize = function(scr) {
+		//this.gl = gl;
 		this.gen_vbo(scr);
 	}
 
@@ -60,7 +60,7 @@ function scalar_field(context) {
 	}
 	
 	this.draw = function(gl) {
-		this.gl = gl;
+		//this.gl = gl;
 		
 		this.gl.enableVertexAttribArray(0);
 		this.gl.enableVertexAttribArray(1);

@@ -252,7 +252,7 @@ function grapher() {
     gl.uniformMatrix4fv(prMat_location, false, gl.projectionMatrix.getAsWebGLFloatArray());
 		gl.uniform1f(time_location, this.wall.time());
 
-		this.sf.draw(gl);
+		this.sf.draw();
 		
 		gl.flush();
 
