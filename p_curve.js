@@ -1,7 +1,8 @@
 // This class encapsulates parametric curves
-function p_curve(context) {
+function p_curve(context, string) {
 	
 	this.gl = context;
+	this.f  = string;
 	
 	this.vertexVBO	= null;
 	this.indexVBO		= null;
@@ -60,7 +61,7 @@ function p_curve(context) {
 	}
 	
 	this.gen_program = function() {
-		var vertex_source = this.read("shaders/p_curve.vert");
+		var vertex_source = this.read("shaders/p_curve.vert").replace("USER_FUNCTION", this.f);
 		var frag_source		= this.read("shaders/p_curve.frag");
 		
 		this.compile_program(vertex_source, frag_source);		
