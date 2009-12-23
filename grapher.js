@@ -129,7 +129,8 @@ function grapher() {
 		// Determine the axes and grid
 		//this.axes_dl = this.axes_dl_gen();
 		//this.sf = new scalar_field(gl);
-		this.sf = new curve(gl);
+		//this.sf = new curve(gl);
+		this.sf = new p_curve(gl);
 		//this.grid_dl = this.grid_dl_gen();
 	
 		// Shit.  Well, shit.

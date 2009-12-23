@@ -4,6 +4,7 @@
 	<title>OpenGLot Alpha</title>
 	<script src="stopwatch.js"> </script>
 	<script src="curve.js"> </script>
+	<script src="p_curve.js"> </script>
 	<script src="scalar_field.js"> </script>
 	<script src="CanvasMatrix.js"> </script>
 	<script src="screen.js"> </script>
@@ -18,12 +19,26 @@
 	uniform float t;
 	
 	void main() {
+		float s = vPosition.x;
+		gl_Position = u_projectionMatrix * vec4(sin(s * t), cos(1.5 * s * t), 0, 1);
+	}
+	</script>
+	
+	<script type="x-shader/x-vertex" id="vshader_curve">
+	uniform mat4 u_modelViewMatrix;
+	uniform mat4 u_projectionMatrix;
+	
+  attribute vec4 vPosition;
+
+	uniform float t;
+	
+	void main() {
 		float x = vPosition.x;
 		gl_Position = u_projectionMatrix * vec4(x, sin(x * t), 0, 1);
 	}
 	</script>
 	
-	<script type="x-shader/x-vertex" id="vshader2">
+	<script type="x-shader/x-vertex" id="vshader_scalar_field">
 	uniform mat4 u_modelViewMatrix;
 	uniform mat4 u_projectionMatrix;
 	
