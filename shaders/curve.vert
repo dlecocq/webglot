@@ -7,5 +7,5 @@ uniform float t;
 
 void main() {
 	float x = vPosition.x;
-	gl_Position = u_projectionMatrix * vec4(x, sin(x * t), 0, 1);
+	gl_Position = u_projectionMatrix * vec4(x, USER_FUNCTION, 0, 1);
 }

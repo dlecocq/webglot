@@ -1,7 +1,8 @@
 // This class encapsulates curves
-function curve(context) {
+function curve(context, string) {
 	
 	this.gl = context;
+	this.f  = string;
 	
 	this.vertexVBO	= null;
 	this.indexVBO		= null;
@@ -60,7 +61,7 @@ function curve(context) {
 	}
 	
 	this.gen_program = function() {
-		var vertex_source = this.read("shaders/curve.vert");
+		var vertex_source = this.read("shaders/curve.vert").replace("USER_FUNCTION", this.f);
 		var frag_source		= this.read("shaders/curve.frag");
 		
 		this.compile_program(vertex_source, frag_source);		
