@@ -9,6 +9,7 @@ function p_curve(context) {
 
 	this.initialize = function(scr) {
 		this.gen_vbo(scr);
+		this.gen_program();
 	}
 
 	this.gen_vbo = function(scr) {
@@ -53,4 +54,13 @@ function p_curve(context) {
 		
 		this.gl.disableVertexAttribArray(0);
 	}
+	
+	this.gen_program = function() {
+		var vertex_source = this.read("shaders/p_curve.vert");
+		var frag_source		= this.read("shaders/p_curve.frag");
+		
+		this.compile_program(vertex_source, frag_source);		
+	}
 }
+
+p_curve.prototype = new primitive();
