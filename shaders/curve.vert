@@ -1,14 +1,11 @@
-#version 120 
-#extension GL_EXT_geometry_shader4 : enable
+uniform mat4 u_modelViewMatrix;
+uniform mat4 u_projectionMatrix;
 
-void main () {
-	
-	//vec4 result = gl_Vertex;
-	
-	//float x = result.x;
-	//result.y = x * x;
-	
-	//gl_Position = gl_ModelViewProjectionMatrix * result;
-	gl_Position = gl_Vertex;
-	
+attribute vec4 vPosition;
+
+uniform float t;
+
+void main() {
+	float x = vPosition.x;
+	gl_Position = u_projectionMatrix * vec4(x, sin(x * t), 0, 1);
 }
