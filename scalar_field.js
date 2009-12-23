@@ -1,4 +1,4 @@
-// This class will encapsulate the grapher
+// This class will encapsulate scalar fields
 function scalar_field(context) {
 	
 	this.gl = context;
