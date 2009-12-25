@@ -7,6 +7,9 @@ function grapher() {
 	this.gl			 = null;
 	this.wall		 = null;
 	
+	this.start   = null;
+	this.moving  = false;
+	
 	// A framerate timer
 	this.framerate	= null;
 	this.framecount = 0;
@@ -39,6 +42,85 @@ function grapher() {
 	
 		return gl;
 	}
+	
+	/* sx and sy are the screen x and y coordinates.
+	 */
+	this.coordinates = function(sx, sy) {
+		var point = new Array();
+		point["x"] = this.scr.minx + (this.scr.maxx - this.scr.minx) * (sx / this.scr.width);
+		point["y"] = this.scr.maxy + (this.scr.maxy - this.scr.miny) * (sy / this.scr.height);
+		return point;
+	}
+	
+	this.mousedown = function(x, y) {
+		this.start = this.coordinates(x, y);
+		this.moving = true;
+	}
+	
+	this.mouseup = function(x, y) {
+		try {
+			var end = this.coordinates(x, y);
+		
+			var dx = this.start["x"] - end["x"];
+			var dy = this.start["y"] - end["y"];
+		
+			if (dx != 0 || dy != 0) {
+				this.scr.minx -= dx;
+				this.scr.maxx -= dx;
+				this.scr.miny -= dy;
+				this.scr.maxy -= dy;
+				this.refresh_dls();
+			}
+			this.moving = false;
+		} catch (e) {}
+	}
+	
+	this.mousemove = function(x, y) {
+		if (this.moving) {
+			var end = this.coordinates(x, y);
+		
+			var dx = this.start["x"] - end["x"];
+			var dy = this.start["y"] - end["y"];
+		
+			if (dx != 0 || dy != 0) {
+				var avgx = (this.scr.minx + this.scr.maxx);
+				var avgy = (this.scr.miny + this.scr.maxy);
+				this.gl.projectionMatrix = new CanvasMatrix4();
+				this.gl.projectionMatrix.ortho(this.scr.minx - avgx + dx, this.scr.maxx - avgx + dx, this.scr.miny - avgy + dy, this.scr.maxy - avgy + dy, -10, 0);
+			}
+		}
+	}
+	
+	this.keyboard = function(key) {
+		if (key == 189) {
+			this.zoom(1.15);
+		} else if (key == 187) {
+			this.zoom(1.0 / 1.15);
+		}
+	}
+	
+	this.zoom = function(scale) {
+		
+		var diff = (this.scr.maxx - this.scr.minx) * scale / 2.0;
+		var midx = (this.scr.maxx + this.scr.minx) / 2.0;
+		this.scr.minx = midx - diff;
+		this.scr.maxx = midx + diff;
+		
+		diff = (this.scr.maxy - this.scr.miny) * scale / 2.0;
+		midy = (this.scr.maxy + this.scr.miny) / 2.0;
+		this.scr.miny = midy - diff;
+		this.scr.maxy = midy + diff;
+		
+		midx *= 2;
+		midy *= 2;
+		
+		this.gl.projectionMatrix = new CanvasMatrix4();
+		this.gl.projectionMatrix.ortho(this.scr.minx - midx, this.scr.maxx - midx, this.scr.miny - midy, this.scr.maxy - midy, -10, 0);
+		
+		if (scale > 1) {
+			this.refresh_dls();
+		}
+	}
 
 	this.initialize = function() {
 	
@@ -52,8 +134,25 @@ function grapher() {
 		// Set the color mode (double with alpha)
 		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
 		*/
+		
+		var canvas = document.getElementById("glot");
+		canvas.glot = this;
+		document.glot = this;
+		
+		var f = function(event) { this.glot.mousedown(event.clientX, event.clientY) };
+		canvas.onmousedown = f;
+		
+		f = function(event) { this.glot.mouseup(event.clientX, event.clientY) };
+		document.onmouseup = f;
+		
+		f = function(event) { this.glot.mousemove(event.clientX, event.clientY) };
+		document.onmousemove = f;
+		
+		f = function(event) { this.getElementById("glot").glot.keyboard(Number(event.keyCode)) };
+		document.onkeydown = f;
 	
 		var gl = this.getContext();
+		this.gl = gl;
 
 		if (!gl) {
 			alert("Can't find a WebGL context; is it enabled?");
@@ -119,12 +218,7 @@ function grapher() {
 		 */
 		// Register callback functions with GLUT
 		/*
-		glutReshapeFunc(reshape);
 		glutDisplayFunc(display);
-		glutKeyboardFunc(keyboard);
-		glutMouseFunc(mouse);
-		glutMotionFunc(motion);
-		glutIdleFunc(idle);
 		*/
 
 		this.framerate = new stopwatch();
@@ -136,22 +230,6 @@ function grapher() {
 		// Determine the axes and grid
 		//this.axes_dl = this.axes_dl_gen();
 		//this.grid_dl = this.grid_dl_gen();
-	
-		// Shit.	Well, shit.
-		/* I've not heard of / happened upon an extension wrangler for
-		 * WebGL, and so I will have to figure out how to do this the 
-		 * old-school, hardcore C way.	Consult Marcus for more details,
-		 * though I think it is safe to assume for the time being that
-		 * the required supported functions are available.
-		 */
-		/*
-		glewInit();
-	
-		if (!(GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader && GLEW_EXT_geometry_shader4)) {
-			printf("Not totally ready :( \n");
-			exit(1);
-		}
-		*/
 	
 		this.framecount = 0;
 	
@@ -275,7 +353,7 @@ function grapher() {
 		
 		this.framecount = this.framecount + 1;
 		if (this.framecount == 150) {
-			gl.console.log(150 / this.framerate.time());
+			document.getElementById("framerate").innerHTML = "Framerate: " + 150 / this.framerate.time();
 			this.framecount = 0;
 			this.framerate = new stopwatch();
 			this.framerate.start();
@@ -324,12 +402,22 @@ function grapher() {
 			*/
 		this.scr.maxx = this.scr.minx + (this.scr.maxx - this.scr.minx) * w / this.scr.width;
 		this.scr.maxy = this.scr.miny + (this.scr.maxy - this.scr.miny) * h / this.scr.height;
+		
+		var xw = this.scr.maxx - this.scr.minx;
+		var yh = this.scr.maxy - this.scr.miny;
+		/*
+		context.modelviewMatrix.translate(-this.scr.minx, -this.scr.miny, 0);
+		context.modelviewMatrix.scale(1 / xw, 1 / yh, 1);
+		//*/
 
+		//*
 		var avgx = (this.scr.minx + this.scr.maxx);
 		var avgy = (this.scr.miny + this.scr.maxy);
+		//*/
 
 		// Set the projection
 		context.projectionMatrix.ortho(this.scr.minx - avgx, this.scr.maxx - avgx, this.scr.miny - avgy, this.scr.maxy - avgy, -10, 0);
+		//context.projectionMatrix.ortho(0, 1, 0, 1, -10, 0);
 
 		// Re-calculate the draw lists if we've expanded the view
 		if (w > this.scr.width || h > this.scr.height) {
