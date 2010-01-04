@@ -3,7 +3,10 @@
 <head>
 	<title>WebGLot Alpha</title>
 	<script src="primitive.js"> </script>
-	
+
+	<script src="noisetexture.js"> </script>
+	<script src="texture.js"> </script>
+	<script src="flow.js"> </script>
 	<script src="stopwatch.js"> </script>
 	<script src="curve.js"> </script>
 	<script src="p_curve.js"> </script>
@@ -17,7 +20,9 @@
 		var glot = new grapher();
 		glot.initialize();
 		
-		glot.add(new scalar_field(glot.getContext(), "sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5) * (x - 1.5) + (y - 0.75) * (y - 0.75)) - t)"));
+		//glot.add(new scalar_field(glot.getContext(), "sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5) * (x - 1.5) + (y - 0.75) * (y - 0.75)) - t)"));
+		//glot.add(new flow(glot.getContext(), "- y * 3.0 * sin(t), x * 3.0 * sin(t)"));
+		glot.add(new flow(glot.getContext(), "-y, x"));
 		//glot.add(new scalar_field(glot.getContext(), "sin(sqrt(x * x + y * y) + t)"));
 		//glot.add(new p_curve(glot.getContext(), "sin(s * t), cos(1.5 * s * t)"));
 		//glot.add(new curve(glot.getContext(), "sin(x)"));

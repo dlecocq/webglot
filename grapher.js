@@ -332,21 +332,17 @@ function grapher() {
 		var mvMat_location = null;
 		var prMat_location = null;
 		var time_location	 = null;
+		
+		this.scr.time = this.wall.time();
 
 		for (var i in this.primitives) {
-			program = this.primitives[i].program;
+			//program = this.primitives[i].composite_program;
 			
-			gl.useProgram(program);
+			//gl.useProgram(program);
 			
-			mvMat_location = gl.getUniformLocation(program, "u_modelViewMatrix");
-			prMat_location = gl.getUniformLocation(program, "u_projectionMatrix");
-			time_location	 = gl.getUniformLocation(program, "t");
-		
-			gl.uniformMatrix4fv(mvMat_location, false, gl.modelviewMatrix.getAsWebGLFloatArray());
-			gl.uniformMatrix4fv(prMat_location, false, gl.projectionMatrix.getAsWebGLFloatArray());
-			gl.uniform1f(time_location, this.wall.time());
+			//this.scr.set_uniforms(gl, program);
 			
-			this.primitives[i].draw();
+			this.primitives[i].draw(this.scr);
 		}
 		
 		gl.flush();
@@ -391,8 +387,8 @@ function grapher() {
 			return;
 		}
 
-		context.projectionMatrix = new CanvasMatrix4();
-		context.modelviewMatrix = new CanvasMatrix4();
+		this.scr.projectionMatrix = new CanvasMatrix4();
+		this.scr.modelviewMatrix = new CanvasMatrix4();
 	
 		context.viewport(0, 0, w, h);
 
@@ -416,7 +412,7 @@ function grapher() {
 		//*/
 
 		// Set the projection
-		context.projectionMatrix.ortho(this.scr.minx - avgx, this.scr.maxx - avgx, this.scr.miny - avgy, this.scr.maxy - avgy, -10, 0);
+		this.scr.projectionMatrix.ortho(this.scr.minx - avgx, this.scr.maxx - avgx, this.scr.miny - avgy, this.scr.maxy - avgy, -10, 0);
 		//context.projectionMatrix.ortho(0, 1, 0, 1, -10, 0);
 
 		// Re-calculate the draw lists if we've expanded the view
