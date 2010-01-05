@@ -336,11 +336,11 @@ function grapher() {
 		this.scr.time = this.wall.time();
 
 		for (var i in this.primitives) {
-			//program = this.primitives[i].composite_program;
-			
-			//gl.useProgram(program);
-			
-			//this.scr.set_uniforms(gl, program);
+			/*
+			program = this.primitives[i].program;
+			gl.useProgram(program);
+			this.scr.set_uniforms(gl, program);
+			*/
 			
 			this.primitives[i].draw(this.scr);
 		}
@@ -386,9 +386,6 @@ function grapher() {
 		if (w == this.scr.width && h == this.scr.height) {
 			return;
 		}
-
-		this.scr.projectionMatrix = new CanvasMatrix4();
-		this.scr.modelviewMatrix = new CanvasMatrix4();
 	
 		context.viewport(0, 0, w, h);
 
@@ -401,19 +398,8 @@ function grapher() {
 		
 		var xw = this.scr.maxx - this.scr.minx;
 		var yh = this.scr.maxy - this.scr.miny;
-		/*
-		context.modelviewMatrix.translate(-this.scr.minx, -this.scr.miny, 0);
-		context.modelviewMatrix.scale(1 / xw, 1 / yh, 1);
-		//*/
 
-		//*
-		var avgx = (this.scr.minx + this.scr.maxx);
-		var avgy = (this.scr.miny + this.scr.maxy);
-		//*/
-
-		// Set the projection
-		this.scr.projectionMatrix.ortho(this.scr.minx - avgx, this.scr.maxx - avgx, this.scr.miny - avgy, this.scr.maxy - avgy, -10, 0);
-		//context.projectionMatrix.ortho(0, 1, 0, 1, -10, 0);
+		this.scr.recalc();
 
 		// Re-calculate the draw lists if we've expanded the view
 		if (w > this.scr.width || h > this.scr.height) {
