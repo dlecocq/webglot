@@ -40,11 +40,6 @@ function flow(context, string, options) {
 		//this.texture = new texture(this.gl, "textures/noise.gif");
 	}
 	
-	this.emptyTexImage2D = function(gl, internalFormat, width, height, format, type) {
-		var pixels = new WebGLUnsignedByteArray(width * height * ( internalFormat == gl.RGBA ? 4 : 3 ) );
-		gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, pixels);
-	}
-	
 	/* Refresh is a way for the grapher instance to notify surface of
 	 * changes to the viewing environment.  All the new information is
 	 * contained in the screen object passed in, including the minimum
@@ -63,9 +58,9 @@ function flow(context, string, options) {
 		}
 		
 		this.ping = new noisetexture(this.gl, scr);
-		//this.ping = new texture(this.gl, "textures/kaust.png");
+		//this.ping = new texture(this.gl, "textures/kaust.png").texture;
 		this.pong = new noisetexture(this.gl, scr);
-		//this.pong = new texture(this.gl, "textures/kaust.png");
+		//this.pong = new texture(this.gl, "textures/kaust.png").texture;
 		
 		this.gl.bindTexture(this.gl.TEXTURE_2D, null);
 		
@@ -172,6 +167,11 @@ function flow(context, string, options) {
 	}
 	
 	this.calculate = function(scr) {
+		this.gl.useProgram(this.composite_program);
+
+		scr.set_uniforms(this.gl, this.composite_program);
+    this.gl.uniform1i(this.gl.getUniformLocation(this.composite_program, "uSampler"), 0);
+		
 		this.gl.enableVertexAttribArray(0);
 		this.gl.enableVertexAttribArray(1);
 		
@@ -190,23 +190,15 @@ function flow(context, string, options) {
 		
 		// First, set up Framebuffer we'll render into
 		this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fbo);
-		this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, this.rb);
-		this.gl.renderbufferStorage(this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT, scr.width, scr.height);
-		this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.ping.texture, 0);
-		this.gl.framebufferRenderbuffer(this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.RENERBUFFER, this.rb);
+		this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.ping, 0);
+		this.gl.enable(this.gl.TEXTURE_2D);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.pong);
+		this.checkFramebuffer();
 		
-		scr.set_uniforms(this.gl, this.composite_program);
-		// Then draw the current texture, advected
-		// This means first binding the reference texture, pong		
-		// this.gl.activeTexture(this.gl.TEXTURE0);
-		this.pong.bind();
-    this.gl.uniform1i(this.gl.getUniformLocation(this.composite_program, "uSampler"), 0);
-
 		// Then drawing the triangle strip using the calc program
-		this.gl.useProgram(this.composite_program);
 		this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.index_ct, this.gl.UNSIGNED_SHORT, 0);
 		
-		//*
+		/*
 		scr.time = 0;
 		scr.set_uniforms(this.gl, this.composite_program);
 		this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.index_ct, this.gl.UNSIGNED_SHORT, 0);
@@ -230,9 +222,11 @@ function flow(context, string, options) {
 	 */
 	this.draw = function(scr) {
 		this.calculate(scr);
+		this.calculate(scr);
 		
 		this.gl.useProgram(this.composite_program);
 		
+		scr.recalc();
 		scr.set_uniforms(this.gl, this.composite_program);
 		this.gl.uniform1i(this.gl.getUniformLocation(this.composite_program, "uSampler"), 0);
 		
@@ -252,8 +246,8 @@ function flow(context, string, options) {
 		this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
 		
 		// the recently-drawn texture
-		//this.gl.activeTexture(this.gl.TEXTURE0);
-		this.pong.bind();
+		this.gl.enable(this.gl.TEXTURE_2D);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.ping);
 		this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.index_ct, this.gl.UNSIGNED_SHORT, 0);
 		//*/
 		

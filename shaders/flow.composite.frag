@@ -11,13 +11,14 @@ vec2 function(float x, float y) {
 }
 
 void main() {
-  vec4 result = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+  vec4 result = texture2D(uSampler, vTextureCoord.st);
 	// Scaled periodicity
 	//result.r = result.g = result.b = abs(sin(t * result.r));
 	// Phase shift
-	result.r = result.g = result.b = mod(t / 5.0 + result.r, 1.0);
+	//result.r = result.g = result.b = mod(t + result.r, 1.0);
 	
 	//result.r = result.g = result.b = result.r;
-	result.a = length(function(vTextureCoord.s, vTextureCoord.t)) / 10.0;
+	//result.a = length(function(vTextureCoord.s, vTextureCoord.t)) / 10.0;
+	result.a = 1.0;
 	gl_FragColor = result;
 }
