@@ -198,7 +198,7 @@ function flow(context, string, options) {
 		// Then drawing the triangle strip using the calc program
 		this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.index_ct, this.gl.UNSIGNED_SHORT, 0);
 		
-		/*
+		//*
 		scr.time = 0;
 		scr.set_uniforms(this.gl, this.composite_program);
 		this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.index_ct, this.gl.UNSIGNED_SHORT, 0);

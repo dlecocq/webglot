@@ -47,7 +47,7 @@ function curve(context, string) {
 		this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indices), this.gl.STATIC_DRAW);
 	}
 	
-	this.draw = function() {
+	this.draw = function(scr) {
 		this.gl.enableVertexAttribArray(0);
 		
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexVBO);

@@ -3,7 +3,7 @@ varying vec2 vTextureCoord;
 uniform sampler2D uSampler;
 
 void main() {
-	float value = texture2D(uSampler, vTextureCoord.st).r / 8.0 + 0.5;
+	float value = texture2D(uSampler, vTextureCoord.st).r / 2.0 + 0.5;
 	
 	float red = 1.0;
 	float green = 1.0;

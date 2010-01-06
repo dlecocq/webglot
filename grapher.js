@@ -114,8 +114,12 @@ function grapher() {
 		midx *= 2;
 		midy *= 2;
 		
+		/*
 		this.gl.projectionMatrix = new CanvasMatrix4();
 		this.gl.projectionMatrix.ortho(this.scr.minx - midx, this.scr.maxx - midx, this.scr.miny - midy, this.scr.maxy - midy, -10, 0);
+		*/
+		
+		this.scr.recalc();
 		
 		if (scale > 1) {
 			this.refresh_dls();
@@ -336,11 +340,12 @@ function grapher() {
 		this.scr.time = this.wall.time();
 
 		for (var i in this.primitives) {
-			/*
+			//*
 			program = this.primitives[i].program;
 			gl.useProgram(program);
+			this.scr.recalc();
 			this.scr.set_uniforms(gl, program);
-			*/
+			//*/
 			
 			this.primitives[i].draw(this.scr);
 		}

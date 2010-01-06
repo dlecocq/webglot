@@ -12,7 +12,7 @@ const float dx = 2.0 / 1042.0;
 
 const float alpha = 1.0;
 
-const float omega = 25.0;
+const float omega = 30.0;
 
 float uxx(float x, float y, float t) {
 	//return -2.0 * (1.0 + y) * (1.0 - y);
@@ -39,6 +39,7 @@ float u_f(float x, float y, float t) {
 	//return sin(omega * x) + cos(omega * y);
 	//return sin(omega * x) + cos(omega * y - t);
 	//return sin(sqrt(x * x + y * y));
+	//return 20.0 * sin(t * x);
 	return 0.0;
 }
 

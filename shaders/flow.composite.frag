@@ -15,10 +15,11 @@ void main() {
 	// Scaled periodicity
 	//result.r = result.g = result.b = abs(sin(t * result.r));
 	// Phase shift
-	//result.r = result.g = result.b = mod(t + result.r, 1.0);
+	result.r = result.g = result.b = mod(t / 20.0 + result.r, 1.0);
 	
 	//result.r = result.g = result.b = result.r;
 	//result.a = length(function(vTextureCoord.s, vTextureCoord.t)) / 10.0;
-	result.a = 1.0;
+	//result.a = mod(t / 20.0 + result.a, 0.5);
+	result.a = 0.75;
 	gl_FragColor = result;
 }
