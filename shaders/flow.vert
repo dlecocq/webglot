@@ -8,7 +8,7 @@ uniform float t;
 
 varying vec2 vTextureCoord;
 
-const float h = 0.001;
+const float h = 0.0001;
 
 vec2 function(float x, float y) {
 	return vec2(USER_FUNCTION);
@@ -21,14 +21,13 @@ void main() {
 	vec2 d = function(x, y);
 
 	/*
-	vec4 result = vec4(x + h * d.x, y + h * d.y, 0.0, 1);
+	vec4 result = vec4(x + h * d.x, y + h * d.y, 0.0, 1.0);
 	gl_Position = u_projectionMatrix * result;
-	vTextureCoord = aTextureCoord;
+	vTextureCoord = aTextureCoord;// - 5.0 * h * d;
 	//*/
 	
 	//*
-	vec2 result = vec2(h * d.x, h * d.y);
 	gl_Position = u_projectionMatrix * vPosition;
-	vTextureCoord = aTextureCoord - result;
+	vTextureCoord = aTextureCoord - h * d;
 	//*/
 }
