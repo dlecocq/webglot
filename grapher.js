@@ -252,7 +252,7 @@ function grapher() {
 		// Consult JavaScript timing documentation
 		//wall.start();
 	
-		this.context = gl;
+		this.gl = gl;
 	
 		// In the future, this ought to return some encoded value of success or failure.
 		return 0;
@@ -341,6 +341,8 @@ function grapher() {
 
 	this.display = function() {
 		
+		this.reshape();
+		
 		var gl = this.getContext();
 		
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -384,13 +386,6 @@ function grapher() {
 		//this.grid_dl = grid_dl_gen(); 
 	}
 
-	this.run = function() {
-		//var f = function() { this.reshape(); this.display() };
-		setInterval(this.display(), 10);
-		/* How does MainLoop work in WebGL? */
-		return 0;
-	}
-
 	this.reshape = function() {
 		var canvas = document.getElementById("glot");
 		var context = this.getContext();
@@ -432,7 +427,12 @@ function grapher() {
 	
 	this.add = function(primitive) {
 		this.primitives.push(primitive);
-		primitive.initialize(this.scr);
+		primitive.initialize(this.gl, this.scr);
+	}
+	
+	this.run = function() {
+		window.glot = this;
+		window.setInterval(function() { this.glot.display(); }, 10);
 	}
 	
 	this.initialize();

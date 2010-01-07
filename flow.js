@@ -1,8 +1,8 @@
 /* This class encapsulates the flow primitive.
  */
-function flow(context, string, options) {
+function flow(string, options) {
 	
-	this.gl   = context;
+	this.gl   = null;
 	this.f    = string;
 	
 	/* This is one way in which the WebGL implementation of OpenGLot
@@ -19,13 +19,13 @@ function flow(context, string, options) {
 	 * of samples along each axis (x and y) samples are taken. Being
 	 * set to 100 means that it will produce 2 * 100 * 100 triangles.
 	 */
-	this.count			= 15;
+	this.count			= 50;
 	this.index_ct   = 0;
 	
-	this.ping = null;
-	this.pong = null;
-	this.fbo  = null;
-	this.rb   = null;
+	this.source = null;
+	this.ping   = null;
+	this.pong   = null;
+	this.fbo    = null;
 	
 	this.composite_program = null;
 	
@@ -34,7 +34,8 @@ function flow(context, string, options) {
 	/* This will likely be depricated, but it currently is hidden from
 	 * the end programmer.
 	 */
-	this.initialize = function(scr) {
+	this.initialize = function(gl, scr) {
+		this.gl = gl;
 		this.refresh(scr);
 		this.gen_program();
 		//this.texture = new texture(this.gl, "textures/noise.gif");
@@ -61,6 +62,8 @@ function flow(context, string, options) {
 		//this.ping = new texture(this.gl, "textures/kaust.png").texture;
 		this.pong = new noisetexture(this.gl, scr);
 		//this.pong = new texture(this.gl, "textures/kaust.png").texture;
+		//this.source = new noisetexture(this.gl, scr);
+		this.source = new texture(this.gl, "textures/kaust.png").texture;
 		
 		this.gl.bindTexture(this.gl.TEXTURE_2D, null);
 		
@@ -79,8 +82,8 @@ function flow(context, string, options) {
 		
 		var x = scr.minx;
 		var y = scr.miny;
-		var tx = 1.0;
-		var ty = 1.0;
+		var tx = 0.0;
+		var ty = 0.0;
 		
 		var dx = (scr.maxx - scr.minx) / this.count;
 		var dy = (scr.maxy - scr.miny) / this.count;
@@ -95,7 +98,7 @@ function flow(context, string, options) {
 		 */
 		for (i = 0; i <= this.count; ++i) {
 			y = scr.miny;
-			ty = 1.0;
+			ty = 0.0;
 			for (j = 0; j <= this.count; ++j) {
 				vertices.push(x);
 				vertices.push(y);
@@ -103,10 +106,10 @@ function flow(context, string, options) {
 				texture.push(ty);
 				
 				y += dy;
-				ty -= dt;
+				ty += dt;
 			}
 			x += dx;
-			tx -= dt;
+			tx += dt;
 		}
 		
 		var c = 0;
@@ -170,7 +173,8 @@ function flow(context, string, options) {
 		this.gl.useProgram(this.composite_program);
 
 		scr.set_uniforms(this.gl, this.composite_program);
-    this.gl.uniform1i(this.gl.getUniformLocation(this.composite_program, "uSampler"), 0);
+    this.gl.uniform1i(this.gl.getUniformLocation(this.composite_program, "accumulation"), 0);
+		this.gl.uniform1i(this.gl.getUniformLocation(this.composite_program, "source"), 1);
 		
 		this.gl.enableVertexAttribArray(0);
 		this.gl.enableVertexAttribArray(1);
@@ -191,14 +195,18 @@ function flow(context, string, options) {
 		// First, set up Framebuffer we'll render into
 		this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fbo);
 		this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.ping, 0);
+		
 		this.gl.enable(this.gl.TEXTURE_2D);
+		this.gl.activeTexture(this.gl.TEXTURE0);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.pong);
+		this.gl.activeTexture(this.gl.TEXTURE1);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.source);
 		this.checkFramebuffer();
 		
 		// Then drawing the triangle strip using the calc program
 		this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.index_ct, this.gl.UNSIGNED_SHORT, 0);
 		
-		//*
+		/*
 		scr.time = 0;
 		scr.set_uniforms(this.gl, this.composite_program);
 		this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.index_ct, this.gl.UNSIGNED_SHORT, 0);
@@ -228,7 +236,7 @@ function flow(context, string, options) {
 		
 		scr.recalc();
 		scr.set_uniforms(this.gl, this.composite_program);
-		this.gl.uniform1i(this.gl.getUniformLocation(this.composite_program, "uSampler"), 0);
+		this.gl.uniform1i(this.gl.getUniformLocation(this.composite_program, "accumulation"), 0);
 		
 		this.gl.enableVertexAttribArray(0);
 		this.gl.enableVertexAttribArray(1);
@@ -247,6 +255,7 @@ function flow(context, string, options) {
 		
 		// the recently-drawn texture
 		this.gl.enable(this.gl.TEXTURE_2D);
+		this.gl.activeTexture(this.gl.TEXTURE0);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.ping);
 		this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.index_ct, this.gl.UNSIGNED_SHORT, 0);
 		//*/
