@@ -14,6 +14,9 @@ function grapher() {
 	this.framerate	= null;
 	this.framecount = 0;
 	
+	this.userClickFunction    = null;
+	this.userKeyboardFunction = null;
+	
 	this.primitives = new Array();
 
 	this.getContext = function() {
@@ -72,6 +75,11 @@ function grapher() {
 				this.refresh_dls();
 			}
 			this.moving = false;
+			
+			if (this.userClickFunction) {
+				this.userClickFunction(end.x, end.y);
+			}
+			
 		} catch (e) {}
 	}
 	
@@ -124,6 +132,10 @@ function grapher() {
 		if (scale > 1) {
 			this.refresh_dls();
 		}
+	}
+	
+	this.setClickFunction = function(myfunction) {
+		this.userClickFunction = myfunction;
 	}
 
 	this.initialize = function() {
@@ -328,6 +340,7 @@ function grapher() {
 	}
 
 	this.display = function() {
+		
 		var gl = this.getContext();
 		
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -340,7 +353,7 @@ function grapher() {
 		this.scr.time = this.wall.time();
 
 		for (var i in this.primitives) {
-			//*
+			/*
 			program = this.primitives[i].program;
 			gl.useProgram(program);
 			this.scr.recalc();
