@@ -17,17 +17,24 @@
 	<script src="grapher.js"> </script>
 
 	<script>
-		function start() {
+	function click(x, y) {
+		console.log("Clicked " + x + ", " + y);
+	}
+	
+	function start() {
 		var glot = new grapher();
-		glot.initialize();
 		
 		///glot.add(new scalar_field(glot.getContext(), "sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5) * (x - 1.5) + (y - 0.75) * (y - 0.75)) - t)"));
 		//glot.add(new flow(glot.getContext(), "-y * sin(t) * 2.0, 2.0 * x * sin(t) - 4.0 * cos(1.5 * t)"));
 		glot.add(new flow(glot.getContext(), "-y, x"));
+		//glot.add(new flow(glot.getContext(), "5.0 * sin(t) - x, 5.0 * cos(t) - y"));
 		//glot.add(new pde(glot.getContext()));
 		//glot.add(new scalar_field(glot.getContext(), "sin(sqrt(x * x + y * y) + t)"));
 		//glot.add(new p_curve(glot.getContext(), "sin(s * t), cos(1.5 * s * t)"));
 		//glot.add(new curve(glot.getContext(), "sin(x)"));
+		
+		glot.setClickFunction(click);
+		
 		var f = function() { glot.reshape(); glot.display() };
 		setInterval(f, 10);
 	}
