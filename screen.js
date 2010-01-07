@@ -13,6 +13,7 @@ function screen() {
 	this.recalc = function() {
 		this.projectionMatrix = new CanvasMatrix4();
 		this.modelviewMatrix = new CanvasMatrix4();
+		
 		// Set the projection
 		this.projectionMatrix.ortho(this.minx, this.maxx, this.miny, this.maxy, 0, 10);
 	}
