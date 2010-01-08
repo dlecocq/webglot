@@ -3,6 +3,8 @@ uniform float t;
 
 const float PI = 3.14159265;
 
+// USER_PARAMETERS
+
 void main () {
 
 	float x = v_texCoord.x;
