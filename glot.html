@@ -2,36 +2,39 @@
 <html>
 <head>
 	<title>WebGLot Alpha</title>
-	<script src="primitive.js"> </script>
+	<script src="primitive.js">    </script>
 
-	<script src="pde.js"> </script>
+	<script src="emptytexture.js"> </script>
 	<script src="noisetexture.js"> </script>
-	<script src="texture.js"> </script>
-	<script src="flow.js"> </script>
-	<script src="stopwatch.js"> </script>
-	<script src="curve.js"> </script>
-	<script src="p_curve.js"> </script>
+	<script src="texture.js">      </script>
+	
+	<script src="pde.js">          </script>
+	<script src="flow.js">         </script>
+	<script src="stopwatch.js">    </script>
+	<script src="curve.js">        </script>
+	<script src="p_curve.js">      </script>
 	<script src="scalar_field.js"> </script>
 	<script src="CanvasMatrix.js"> </script>
-	<script src="screen.js"> </script>
-	<script src="grapher.js"> </script>
+	<script src="screen.js">       </script>
+	<script src="grapher.js">      </script>
 
 	<script>
 	function click(x, y) {
-		console.log("Clicked " + x + ", " + y);
+		this.set("a", this.parameters["a"] * 2);
 	}
 	
 	function start() {
 		var glot = new grapher();
+		glot.set("a", 0.5);
 		
-		///glot.add(new scalar_field(glot.getContext(), "sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5) * (x - 1.5) + (y - 0.75) * (y - 0.75)) - t)"));
-		//glot.add(new flow(glot.getContext(), "-y * sin(t) * 2.0, 2.0 * x * sin(t) - 4.0 * cos(1.5 * t)"));
-		glot.add(new flow("-y, x"));
-		//glot.add(new flow(glot.getContext(), "5.0 * sin(t) - x, 5.0 * cos(t) - y"));
+		//glot.add(new scalar_field("sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5) * (x - 1.5) + (y - 0.75) * (y - 0.75)) - t)"));
+		//glot.add(new flow("-y * sin(t) * 2.0, 2.0 * x * sin(t * y) - 4.0 * cos(1.5 * t)"));
+		//glot.add(new flow("-y, x"));
+		//glot.add(new flow("5.0 * sin(t) + x, 5.0 * cos(t) + y"));
 		//glot.add(new pde(glot.getContext()));
 		//glot.add(new scalar_field(glot.getContext(), "sin(sqrt(x * x + y * y) + t)"));
-		//glot.add(new p_curve(glot.getContext(), "sin(s * t), cos(1.5 * s * t)"));
-		//glot.add(new curve(glot.getContext(), "sin(x)"));
+		//glot.add(new p_curve("sin(s * t), cos(1.5 * s * t)"));
+		glot.add(new curve("sin(a * (x - t))"));
 		
 		glot.setClickFunction(click);
 		

@@ -18,6 +18,7 @@ function grapher() {
 	this.userKeyboardFunction = null;
 	
 	this.primitives = new Array();
+	this.parameters = new Array();
 
 	this.getContext = function() {
 		// It would seem that all this context stuff is handled in this,
@@ -351,15 +352,23 @@ function grapher() {
 		var mvMat_location = null;
 		var prMat_location = null;
 		var time_location	 = null;
+		var param_loc      = null;
 		
 		this.scr.time = this.wall.time();
 
 		for (var i in this.primitives) {
-			/*
+			//*
 			program = this.primitives[i].program;
 			gl.useProgram(program);
 			this.scr.recalc();
 			this.scr.set_uniforms(gl, program);
+			//*/
+			
+			//*
+			for (var j in this.parameters) {
+				param_loc = gl.getUniformLocation(program, j);
+				gl.uniform1f(param_loc, this.parameters[j]);
+			}
 			//*/
 			
 			this.primitives[i].draw(this.scr);
@@ -427,7 +436,11 @@ function grapher() {
 	
 	this.add = function(primitive) {
 		this.primitives.push(primitive);
-		primitive.initialize(this.gl, this.scr);
+		primitive.initialize(this.gl, this.scr, this.parameters);
+	}
+	
+	this.set = function(parameter, value) {
+		this.parameters[parameter] = value;
 	}
 	
 	this.run = function() {
