@@ -58,9 +58,9 @@ function pde(context, string, options) {
 			// Delete texture
 		}
 		
-		this.ping = new noisetexture(this.gl, scr);
+		this.ping = new emptytexture(this.gl, scr);
 		//this.ping = new texture(this.gl, "textures/kaust.png");
-		this.pong = new noisetexture(this.gl, scr);
+		this.pong = new emptytexture(this.gl, scr);
 		//this.pong = new texture(this.gl, "textures/kaust.png");
 		
 		this.fbo = this.gl.createFramebuffer();
@@ -133,6 +133,8 @@ function pde(context, string, options) {
 	 * was before it's called.
 	 */
 	this.draw = function(scr) {
+		this.calculate(scr);
+		this.calculate(scr);
 		this.calculate(scr);
 		this.calculate(scr);
 		

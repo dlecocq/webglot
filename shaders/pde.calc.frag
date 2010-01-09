@@ -4,15 +4,18 @@ uniform sampler2D uSampler;
 
 uniform float t;
 
-const float texdy = 1.0 / 400.0;
-const float texdx = 1.0 / 1042.0;
+const float width = 1264.0;
+const float height = 652.0;
 
-const float dy = 2.0 / 400.0;
-const float dx = 2.0 / 1042.0;
+const float texdy = 1.0 / (height - 1.0);
+const float texdx = 1.0 / (width  - 1.0);
+
+const float dy = 2.0 * texdx;
+const float dx = 2.0 * texdy;
 
 const float alpha = 1.0;
 
-const float omega = 30.0;
+const float omega = 60.0;
 
 float uxx(float x, float y, float t) {
 	//return -2.0 * (1.0 + y) * (1.0 - y);
@@ -46,8 +49,6 @@ float u_f(float x, float y, float t) {
 void main () {
 	vec2 coord = vTextureCoord.xy;
 	
-	//gl_FragColor = texture2D(uSampler, coord) + vec4(0.0, 0.0, 0.1, 1.0);
-	//*
 	float texx = coord.x;
 	float texy = coord.y;
 	
@@ -55,29 +56,44 @@ void main () {
 	float y = coord.y * 2.0 - 1.0;
 	
 	if (texx <= texdx) {
-		gl_FragColor = vec4(u_f(x, y, t), 0.0, 0.0, 1.0);	
+		x = u_f(x, y, t);
+		gl_FragColor = vec4(x, x, x, x);	
 	} else if (texx >= (1.0 - texdx)) {
 		// If a pixel is on the x boundary
-		gl_FragColor = vec4(u_f(x, y, t), 0.0, 0.0, 1.0);
+		x = u_f(x, y, t);
+		gl_FragColor = vec4(x, x, x, x);
 	} else if (texy <= texdy) {
-		gl_FragColor = vec4(u_f(x, y, t), 0.0, 0.0, 1.0);
+		x = u_f(x, y, t);
+		gl_FragColor = vec4(x, x, x, x);
 	} else if (texy >= (1.0 - texdy)) {
 		// If a pixel is on the y boundary
-		gl_FragColor = vec4(u_f(x, y, t), 0.0, 0.0, 1.0);
+		x = u_f(x, y, t);
+		gl_FragColor = vec4(x, x, x, x);
 	} else {
-		float u_xlo = texture2D(uSampler, vec2(texx - texdx, texy				 )).r;
-		float u_xhi = texture2D(uSampler, vec2(texx + texdx, texy				 )).r;
-		float u_ylo = texture2D(uSampler, vec2(texx		 		 , texy - texdy)).r;
-		float u_yhi = texture2D(uSampler, vec2(texx		 		 , texy + texdy)).r;
+		vec4 left  = texture2D(uSampler, vec2(texx - texdx, texy        ));
+		vec4 right = texture2D(uSampler, vec2(texx + texdx, texy        ));
+		vec4 down  = texture2D(uSampler, vec2(texx        , texy - texdy));
+		vec4 up    = texture2D(uSampler, vec2(texx        , texy + texdy));
+		vec4 self  = texture2D(uSampler, vec2(texx        , texy        ));
 		
 		float dx2 = dx * dx;
 		float dy2 = dy * dy;
 		
-		float value = (2.0 * dx2 * dy2 * f(x, y, t) - dy2 * (u_xlo + u_xhi) - dx2 * (u_ylo + u_yhi)) / (-2.0 * (dx2 + dy2));
+		gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 		
-		//float value = (u_xlo + u_xhi + u_ylo + u_yhi - f(x, y, t) * 2.0 * dx * dx) * 0.25;
+		// This kernel is going to need to be checked
+		//*
+		gl_FragColor.r = (2.0 * dx2 * dy2 * f(x - 0.5 * dx, y + 0.5 * dy, t) - dy2 * (self.g +  left.g) - dx2 * (self.b +   up.b)) / (-2.0 * (dx2 * dy2));
+		gl_FragColor.g = (2.0 * dx2 * dy2 * f(x + 0.5 * dx, y + 0.5 * dy, t) - dy2 * (self.r + right.r) - dx2 * (self.a +   up.a)) / (-2.0 * (dx2 * dy2));
+		gl_FragColor.b = (2.0 * dx2 * dy2 * f(x - 0.5 * dx, y - 0.5 * dy, t) - dy2 * (self.a +  left.a) - dx2 * (self.r + down.r)) / (-2.0 * (dx2 * dy2));
+		gl_FragColor.a = (2.0 * dx2 * dy2 * f(x + 0.5 * dx, y - 0.5 * dy, t) - dy2 * (self.b + right.b) - dx2 * (self.g + down.g)) / (-2.0 * (dx2 * dy2));
+		//*/
+		//gl_FragColor = vec4((2.0 * dx2 * dy2 * f(x, y, t) - dy2 * (left.r + right.r) - dx2 * (down.r + up.r)) / (-2.0 * (dx2 * dy2)), 0.0, 0.0, 1.0);
 		
-		gl_FragColor = vec4(value, 0.0, 0.0, 1.0);
+		//gl_FragColor.r = (2.0 * dx2 * dy2 * f(x, y, t) - dy2 * (left.r + right.r) - dx2 * (down.r + up.r)) / (-2.0 * (dx2 * dy2));
+		//gl_FragColor = vec4(f(x, y, t) * 0.5 + 0.5, 0.0, 0.0, 1.0);
+		
+		//gl_FragColor = vec4(value, 0.0, 0.0, 1.0);
 	}
 	//*/
 }
