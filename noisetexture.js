@@ -16,7 +16,7 @@ function noisetexture(context, scr) {
 		var count = scr.width * scr.height * 4;
 		//*
 		for (var i = 0; i < count; i += 1) {
-			pixels[i] = 1.0;//Math.random() * 2.0;
+			pixels[i] = Math.random() * 3.0;
 		}
 		//*/
 		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, scr.width, scr.height, 0, this.gl.RGBA, this.gl.FLOAT, pixels);
