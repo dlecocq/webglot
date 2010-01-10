@@ -147,6 +147,11 @@ function grapher() {
 		this.gl = this.getContext();
 		
 		var canvas = document.getElementById("glot");
+		
+		/* Initialize the screen's stored width and height */
+		this.scr.width  = canvas.clientWidth;
+		this.scr.height = canvas.clientHeight;
+		
 		// This was included in the webkit examples, but my JavaScript
 		// is weak, and I'm not quite sure what exactly this means.
 		// Add a console
@@ -201,14 +206,6 @@ function grapher() {
 	
 		// Default color is white
 		this.gl.clearColor(1.0, 1.0, 1.0, 1.0);
-	
-		/* 
-		 * WARNING! Some primitives depend on screen having the properly-
-		 * filled values in screen for determination of vertex positions.
-		 * Thus, it is CRITICAL that this be dynamically queried at run-
-		 * time so that this data can be accurate.
-		 */
-		this.scr.width = this.scr.height = 500;
 
 		this.framerate = new stopwatch();
 		this.framerate.start();
