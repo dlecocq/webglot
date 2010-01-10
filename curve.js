@@ -77,8 +77,6 @@ function curve(string) {
 			vertex_source = vertex_source.replace("// USER_PARAMETERS", params);
 		}
 		
-		this.gl.console.log(vertex_source);
-		
 		var frag_source		= this.read("shaders/curve.frag");
 		
 		this.program = this.compile_program(vertex_source, frag_source);		
