@@ -27,4 +27,16 @@ function screen() {
 		gl.uniformMatrix4fv(prMat_location, false, this.projectionMatrix.getAsWebGLFloatArray());
 		gl.uniform1f(time_location, this.time);
 	}
+	
+	this.normalize = function() {
+		if (this.width > this.height) {
+			var ratio = (this.maxy - this.miny) / this.height;
+			ratio = (ratio * this.width) / 2.0;
+			this.maxx += ratio;
+		} else if (this.height > this.width) {
+			var ratio = (this.maxx - this.minx) / this.width;
+			ratio = (ratio * this.height) / 2.0;
+			this.maxy += ratio;
+		}
+	}
 }
