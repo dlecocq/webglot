@@ -33,10 +33,13 @@ function curve(string) {
 			a += dx;
 		}
 
-		/* Add this soon */
+		/* Delete vertex buffers if they exist already */
 		if (this.vertexVBO) {
-			//this.gl.console.log("deleting");
-			//this.gl.deleteBuffer(this.vertexVBO);
+			this.gl.deleteBuffer(this.vertexVBO);
+		}
+		
+		if (this.indexVBO) {
+			this.gl.deleteBuffer(this.indexVBO);
 		}
 		
 		this.vertexVBO = this.gl.createBuffer();
@@ -45,8 +48,6 @@ function curve(string) {
 		
 		this.indexVBO = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indexVBO);
-		
-		// I think this ought to be changed to STATIC_DRAW
 		this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indices), this.gl.STATIC_DRAW);
 	}
 	
