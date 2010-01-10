@@ -216,38 +216,10 @@ function grapher() {
 
 		// Determine the axes and grid
 		this.axes = new axes(this.gl, this.scr);
-		//this.grid_dl = this.grid_dl_gen();
+		//this.grid = new grid(this.gl, this.scr);
 	
 		// In the future, this ought to return some encoded value of success or failure.
 		return 0;
-	}
-
-	this.grid_dl_gen = function() {
-		var gl = this.getContext();
-		var dl = gl.genLists(1);
-	
-		glNewList(dl, GL_COMPILE);
-	
-			glColor4d(0.0, 0.0, 0.0, 0.14);
-	
-			glBegin(GL_LINES);
-		
-				// How does typecasting work in JavaScript?
-				for( var i = this.scr.miny; i <= this.scr.maxy; ++i) {
-					glVertex3d(this.scr.minx, i, 1);
-					glVertex3d(this.scr.maxx, i, 1);
-				}
-	
-				for( var i = this.scr.minx; i <= this.scr.maxx; ++i) {
-					glVertex3d(i, this.scr.miny, 1);
-					glVertex3d(i, this.scr.maxy, 1);
-				}
-		
-			glEnd();
-		
-		glEndList();
-	
-		return dl;
 	}
 
 	this.display = function() {
@@ -255,9 +227,7 @@ function grapher() {
 		this.reshape();
 		this.scr.recalc();
 		
-		var gl = this.gl;
-		
-		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 		
 		var program				 = null;
 		var mvMat_location = null;
@@ -270,14 +240,14 @@ function grapher() {
 		for (var i in this.primitives) {
 			//*
 			program = this.primitives[i].program;
-			gl.useProgram(program);
-			this.scr.set_uniforms(gl, program);
+			this.gl.useProgram(program);
+			this.scr.set_uniforms(this.gl, program);
 			//*/
 			
 			//*
 			for (var j in this.parameters) {
-				param_loc = gl.getUniformLocation(program, j);
-				gl.uniform1f(param_loc, this.parameters[j]);
+				param_loc = this.gl.getUniformLocation(program, j);
+				this.gl.uniform1f(param_loc, this.parameters[j]);
 			}
 			//*/
 			
@@ -287,12 +257,12 @@ function grapher() {
 		// Draw axes and grid
 		/*
 		program = this.axes.program;
-		gl.useProgram(program);
-		this.scr.set_uniforms(gl, program);
+		this.gl.useProgram(program);
+		this.scr.set_uniforms(this.gl, program);
 		this.axes.draw(this.scr);
 		//*/
 		
-		gl.flush();
+		this.gl.flush();
 		
 		this.framecount = this.framecount + 1;
 		if (this.framecount == 150) {
@@ -302,7 +272,7 @@ function grapher() {
 			this.framerate.start();
 		}
 		
-		gl.finish();
+		this.gl.finish();
 	}
 
 	this.refresh_dls = function() {
@@ -310,7 +280,7 @@ function grapher() {
 			this.primitives[i].refresh(this.scr);
 		}
 		this.axes.refresh(this.scr);
-		//this.grid_dl = grid_dl_gen(); 
+		//this.grid.refresh(this.scr);
 	}
 
 	this.reshape = function() {
