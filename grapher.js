@@ -1,11 +1,17 @@
+AXES_OFF = 0;
+GRID_OFF = 0;
+AXES_ON  = 1;
+GRID_ON  = 2;
+
 // This class will encapsulate the grapher
-function grapher() {
+function grapher(options) {
 
 	this.scr = new screen();
 	this.axes    = null;
-	this.grid_dl = null;
+	this.grid    = null;
 	this.gl			 = null;
 	this.wall		 = null;
+	this.options = (options == null) ? AXES_ON | GRID_ON : options;
 	
 	this.start   = null;
 	this.moving  = false;
@@ -151,6 +157,7 @@ function grapher() {
 		/* Initialize the screen's stored width and height */
 		this.scr.width  = canvas.clientWidth;
 		this.scr.height = canvas.clientHeight;
+		this.scr.normalize();
 		
 		// This was included in the webkit examples, but my JavaScript
 		// is weak, and I'm not quite sure what exactly this means.
@@ -216,7 +223,7 @@ function grapher() {
 
 		// Determine the axes and grid
 		this.axes = new axes(this.gl, this.scr);
-		//this.grid = new grid(this.gl, this.scr);
+		this.grid = new grid(this.gl, this.scr);
 	
 		// In the future, this ought to return some encoded value of success or failure.
 		return 0;
@@ -255,12 +262,19 @@ function grapher() {
 		}
 		
 		// Draw axes and grid
-		/*
-		program = this.axes.program;
-		this.gl.useProgram(program);
-		this.scr.set_uniforms(this.gl, program);
-		this.axes.draw(this.scr);
-		//*/
+		if (this.options & AXES_ON) {
+			program = this.axes.program;
+			this.gl.useProgram(program);
+			this.scr.set_uniforms(this.gl, program);
+			this.axes.draw(this.scr);
+		}
+		
+		if (this.options & GRID_ON) {
+			program = this.grid.program;
+			this.gl.useProgram(program);
+			this.scr.set_uniforms(this.gl, program);
+			this.grid.draw(this.scr);
+		}
 		
 		this.gl.flush();
 		
