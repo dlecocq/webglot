@@ -3,6 +3,7 @@ uniform mat4 u_projectionMatrix;
 
 uniform float dx;
 uniform float dy;
+uniform float scale;
 
 attribute vec4 vPosition;
 attribute vec2 aTextureCoord;
@@ -21,9 +22,9 @@ vec2 function(float x, float y) {
 
 void main() {
 	float x = vPosition.x + dx;
-	float y = vPosition.y + dy; 
+	float y = vPosition.y + dy;
 	
-	vec2 d = function(x, y);
+	vec2 d = function(scale * x, scale * y);
 	
 	magnitude = length(d);
 

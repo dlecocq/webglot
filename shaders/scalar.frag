@@ -1,14 +1,17 @@
 varying vec2 v_texCoord;
 uniform float t;
 
+uniform float dx;
+uniform float dy;
+
 const float PI = 3.14159265;
 
 // USER_PARAMETERS
 
 void main () {
 
-	float x = v_texCoord.x;
-	float y = v_texCoord.y;
+	float x = v_texCoord.x + dx;
+	float y = v_texCoord.y + dy;
 	
 	/* POLAR
 	float tmp = x;
