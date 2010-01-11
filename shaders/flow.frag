@@ -46,7 +46,7 @@ void main() {
 	
 	result.a = 1.0;
 	
-	vec4 s = texture2D(source, vec2(vTextureCoord.s, 1.0 - vTextureCoord.t));
+	vec4 s = texture2D(source, vTextureCoord.st);
 	s = color(magnitude / 20.0) * s.r;
 	//s.r = s.g = s.b = mod(t / 20.0 + s.r, 1.0);
 	//s.a = mod(t / 20.0 + s.a, 1.0);
