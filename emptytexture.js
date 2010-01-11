@@ -1,19 +1,18 @@
 /* http://learningwebgl.com/blog/?p=507
  */
-function emptytexture(context, scr) {
+function emptytexture(context, width, height) {
 	
 	this.texture = null;
 	this.image	 = null;
 	
 	this.gl			 = context;
-	this.scr     = scr;
 
-	this.initialize = function() {		
+	this.initialize = function(width, height) {		
 		this.texture = this.gl.createTexture();
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
 
-		var pixels = new WebGLFloatArray(scr.width * scr.height * 4);
-		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, scr.width, scr.height, 0, this.gl.RGBA, this.gl.FLOAT, pixels);
+		var pixels = new WebGLFloatArray(width * height * 4);
+		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, width, height, 0, this.gl.RGBA, this.gl.FLOAT, pixels);
 		
 		this.gl.enable(this.gl.TEXTURE_2D);
 		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
@@ -28,7 +27,7 @@ function emptytexture(context, scr) {
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
 	}
 	
-	this.initialize();
+	this.initialize(width, height);
 	
 	return this.texture;
 }
