@@ -38,7 +38,6 @@ function flow(string, options) {
 		this.gl = gl;
 		this.refresh(scr);
 		this.gen_program();
-		//this.texture = new texture(this.gl, "textures/noise.gif");
 	}
 	
 	/* Refresh is a way for the grapher instance to notify surface of
@@ -58,12 +57,12 @@ function flow(string, options) {
 			// Delete texture
 		}
 		
-		this.ping = new noisetexture(this.gl, scr);
+		this.ping = new emptytexture(this.gl, scr.width, scr.height);
 		//this.ping = new texture(this.gl, "textures/kaust.png").texture;
-		this.pong = new noisetexture(this.gl, scr);
+		this.pong = new emptytexture(this.gl, scr.width, scr.height);
 		//this.pong = new texture(this.gl, "textures/kaust.png").texture;
-		//this.source = new noisetexture(this.gl, scr);
-		this.source = new texture(this.gl, "textures/kaust.png").texture;
+		this.source = new noisetexture(this.gl, scr);
+		//this.source = new texture(this.gl, "textures/kaust.png").texture;
 		
 		this.gl.bindTexture(this.gl.TEXTURE_2D, null);
 		

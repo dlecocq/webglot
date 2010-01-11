@@ -1,8 +1,8 @@
 /* This class encapsulates the flow primitive.
  */
-function pde(context, string, options) {
+function pde(string, options) {
 	
-	this.gl   = context;
+	this.gl   = null;
 	this.f    = string;
 	
 	/* This is one way in which the WebGL implementation of OpenGLot
@@ -22,11 +22,14 @@ function pde(context, string, options) {
 	this.count			= 15;
 	this.index_ct   = 0;
 	
-	this.tmp  = null;
-	this.ping = null;
-	this.pong = null;
-	this.fbo  = null;
-	this.rb   = null;
+	this.tmp    = null;
+	this.ping   = null;
+	this.pong   = null;
+	this.fbo    = null;
+	this.rb     = null;
+	
+	this.width  = 0;
+	this.height = 0;
 	
 	this.calc_program = null;
 	
@@ -35,7 +38,10 @@ function pde(context, string, options) {
 	/* This will likely be depricated, but it currently is hidden from
 	 * the end programmer.
 	 */
-	this.initialize = function(scr) {
+	this.initialize = function(gl, scr) {
+		this.width  = scr.width  * 1.0;
+		this.height = scr.height * 1.0;
+		this.gl = gl;
 		this.refresh(scr);
 		this.gen_program();
 		//this.texture = new texture(this.gl, "textures/noise.gif");
@@ -57,10 +63,18 @@ function pde(context, string, options) {
 		if (this.pong) {
 			// Delete texture
 		}
+
+		//*
+		this.ping = new emptytexture(this.gl, this.width, this.height);
+		this.pong = new emptytexture(this.gl, this.width, this.height);
+		//*/
 		
-		this.ping = new emptytexture(this.gl, scr);
+		/*
+		this.ping = new noisetexture(this.gl, scr);
+		this.pong = new noisetexture(this.gl, scr);
+		//*/
+		
 		//this.ping = new texture(this.gl, "textures/kaust.png");
-		this.pong = new emptytexture(this.gl, scr);
 		//this.pong = new texture(this.gl, "textures/kaust.png");
 		
 		this.fbo = this.gl.createFramebuffer();
@@ -96,6 +110,8 @@ function pde(context, string, options) {
 		
 		scr.set_uniforms(this.gl, this.calc_program);
     this.gl.uniform1i(this.gl.getUniformLocation(this.calc_program, "uSampler"), 0);
+		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "width") , this.width);
+		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "height"), this.height);
 		
 		this.gl.enableVertexAttribArray(0);
 		this.gl.enableVertexAttribArray(1);
