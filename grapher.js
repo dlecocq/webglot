@@ -54,7 +54,7 @@ function grapher(options) {
 	this.coordinates = function(sx, sy) {
 		var point = new Array();
 		point["x"] = this.scr.minx + (this.scr.maxx - this.scr.minx) * (sx / this.scr.width);
-		point["y"] = this.scr.maxy + (this.scr.maxy + this.scr.miny) * (sy / this.scr.height);
+		point["y"] = this.scr.maxy + (this.scr.miny - this.scr.maxy) * (sy / this.scr.height);
 		return point;
 	}
 	
@@ -75,10 +75,10 @@ function grapher(options) {
 			var dy = this.start["y"] - end["y"];
 		
 			if (dx != 0 || dy != 0) {
-				this.scr.minx -= dx;
-				this.scr.maxx -= dx;
-				this.scr.miny -= dy;
-				this.scr.maxy -= dy;
+				this.scr.minx += dx;
+				this.scr.maxx += dx;
+				this.scr.miny += dy;
+				this.scr.maxy += dy;
 				this.refresh_dls();
 			}
 			this.moving = false;
@@ -86,6 +86,8 @@ function grapher(options) {
 			if (this.userClickFunction) {
 				this.userClickFunction(end.x, end.y);
 			}
+			
+			this.scr.translate(0, 0);
 			
 		} catch (e) {}
 	}
@@ -98,10 +100,9 @@ function grapher(options) {
 		
 			var dx = this.start["x"] - end["x"];
 			var dy = this.start["y"] - end["y"];
-		
+			
 			if (dx != 0 || dy != 0) {
-				this.gl.projectionMatrix = new CanvasMatrix4();
-				this.gl.projectionMatrix.ortho(this.scr.minx + dx, this.scr.maxx + dx, this.scr.miny + dy, this.scr.maxy + dy, -10, 0);
+				this.scr.translate(dx, dy);
 			}
 		}
 	}
@@ -111,9 +112,15 @@ function grapher(options) {
 	this.keyboard = function(key) {
 		this.gl.console.log("Key (" + key + ") pressed.");
 		if (key == 189) {
+			/*
 			this.zoom(1.15);
+			*/
+			this.scr.scale(1.15);
 		} else if (key == 187) {
+			/*
 			this.zoom(1.0 / 1.15);
+			//*/
+			this.scr.scale(1.0 / 1.15);
 		}
 	}
 	
@@ -294,7 +301,7 @@ function grapher(options) {
 			this.primitives[i].refresh(this.scr);
 		}
 		this.axes.refresh(this.scr);
-		//this.grid.refresh(this.scr);
+		this.grid.refresh(this.scr);
 	}
 
 	this.reshape = function() {
