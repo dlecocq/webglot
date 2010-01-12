@@ -28,6 +28,8 @@ function pde(string, options) {
 	this.fbo    = null;
 	this.rb     = null;
 	
+	this.parameters = null;
+	
 	this.width  = 0;
 	this.height = 0;
 	
@@ -38,13 +40,13 @@ function pde(string, options) {
 	/* This will likely be depricated, but it currently is hidden from
 	 * the end programmer.
 	 */
-	this.initialize = function(gl, scr) {
+	this.initialize = function(gl, scr, parameters) {
 		this.width  = scr.width  * 1.0;
 		this.height = scr.height * 1.0;
+		this.parameters = parameters;
 		this.gl = gl;
 		this.refresh(scr);
 		this.gen_program();
-		//this.texture = new texture(this.gl, "textures/noise.gif");
 	}
 	
 	/* Refresh is a way for the grapher instance to notify surface of
@@ -101,9 +103,12 @@ function pde(string, options) {
 	}
 	
 	this.calculate = function(scr) {
+		this.setUniforms(scr, this.calc_program);
+		/*
 		this.gl.useProgram(this.calc_program);
-		
 		scr.set_uniforms(this.gl, this.calc_program);
+		*/
+		
     this.gl.uniform1i(this.gl.getUniformLocation(this.calc_program, "uSampler"), 0);
 		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "width") , this.width);
 		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "height"), this.height);
@@ -149,10 +154,14 @@ function pde(string, options) {
 		this.calculate(scr);
 		this.calculate(scr);
 		
+		/*
 		this.gl.useProgram(this.program);
 		
 		scr.recalc();
 		scr.set_uniforms(this.gl, this.program);
+		*/
+		
+		this.setUniforms(scr);
 		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "uSampler"), 0);
 		
 		this.gl.enableVertexAttribArray(0);
