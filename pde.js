@@ -66,13 +66,8 @@ function pde(string, options) {
 			// Delete texture
 		}
 
-		//*
 		this.ping = new emptytexture(this.gl, this.width, this.height);
 		this.pong = new emptytexture(this.gl, this.width, this.height);
-		//*/
-		
-		//this.ping = new texture(this.gl, "textures/kaust.png");
-		//this.pong = new texture(this.gl, "textures/kaust.png");
 		
 		this.fbo = this.gl.createFramebuffer();
 	}
@@ -83,7 +78,6 @@ function pde(string, options) {
 	 */
 	this.gen_vbo = function(scr) {
 		var vertices = [scr.minx, scr.miny, scr.minx, scr.maxy, scr.maxx, scr.miny, scr.maxx, scr.maxy];
-		//var texture  = [1, 1, 1, 0, 0, 1, 0, 0];
 		var texture = [0, 0, 0, 1, 1, 0, 1, 1];
 		var indices  = [0, 1, 2, 3];
 		
@@ -104,10 +98,6 @@ function pde(string, options) {
 	
 	this.calculate = function(scr) {
 		this.setUniforms(scr, this.calc_program);
-		/*
-		this.gl.useProgram(this.calc_program);
-		scr.set_uniforms(this.gl, this.calc_program);
-		*/
 		
     this.gl.uniform1i(this.gl.getUniformLocation(this.calc_program, "uSampler"), 0);
 		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "width") , this.width);
@@ -153,13 +143,6 @@ function pde(string, options) {
 		this.calculate(scr);
 		this.calculate(scr);
 		this.calculate(scr);
-		
-		/*
-		this.gl.useProgram(this.program);
-		
-		scr.recalc();
-		scr.set_uniforms(this.gl, this.program);
-		*/
 		
 		this.setUniforms(scr);
 		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "uSampler"), 0);
