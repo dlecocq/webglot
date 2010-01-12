@@ -27,7 +27,6 @@ void main () {
 	}
 	//*/
 	
-	//sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5) * (x - 1.5) + (y - 0.75) * (y - 0.75)) - t)
 	float value = USER_FUNCTION;
 	value = (value + 1.0) / 2.0;
 
