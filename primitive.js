@@ -1,6 +1,7 @@
 function primitive(context) {
-	
+
 	this.program = null;
+	this.color   = null;
 	
 	this.read = function(filename) {
 		var request = new XMLHttpRequest();
@@ -12,6 +13,18 @@ function primitive(context) {
 	}
 	
 	this.compile_program = function(vertex_source, frag_source) {
+		// Add user parameters
+		if (this.parameters) {
+			console.log("Adding parameters to shader source");
+			var params = "// User parameters\n";
+			for (i in this.parameters) {
+				params += "uniform float " + i + ";\n";
+			}
+			
+			vertex_source = vertex_source.replace("// USER_PARAMETERS", params);
+			frag_source   = frag_source.replace(  "// USER_PARAMETERS", params);
+		}
+		
 		var vertex_shader = this.gl.createShader(this.gl.VERTEX_SHADER);
 		var frag_shader		= this.gl.createShader(this.gl.FRAGMENT_SHADER);
 		
@@ -98,6 +111,35 @@ function primitive(context) {
 		}
 		
 		return status;
+	}
+	
+	this.setUniforms = function(scr, program) {
+		program = program || this.program;
+		
+		this.gl.useProgram(program);
+		
+		modelview_location  = this.gl.getUniformLocation(program, "modelviewMatrix");
+		projection_location = this.gl.getUniformLocation(program, "projectionMatrix");
+		time_location	      = this.gl.getUniformLocation(program, "t");
+		dx_location         = this.gl.getUniformLocation(program, "dx");
+		dy_location         = this.gl.getUniformLocation(program, "dy");
+		scale_location      = this.gl.getUniformLocation(program, "scale");
+		color_location      = this.gl.getUniformLocation(program, "u_color");
+
+		this.gl.uniformMatrix4fv(modelview_location , false, scr.modelviewMatrix.getAsWebGLFloatArray());
+		this.gl.uniformMatrix4fv(projection_location, false, scr.projectionMatrix.getAsWebGLFloatArray());
+
+		this.gl.uniform4f(color_location, this.color[0], this.color[1], this.color[2], this.color[3]);
+
+		this.gl.uniform1f(time_location , scr.time);
+		this.gl.uniform1f(dx_location   , scr.dx);
+		this.gl.uniform1f(dy_location   , scr.dy);
+		this.gl.uniform1f(scale_location, scr.s);
+		
+		for (var j in this.parameters) {
+			param_loc = this.gl.getUniformLocation(program, j);
+			this.gl.uniform1f(param_loc, this.parameters[j]);
+		}
 	}
 	
 	/*
