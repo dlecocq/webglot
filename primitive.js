@@ -1,11 +1,10 @@
 function primitive(context) {
 	
-	this.BASE		 = "file:///Users/dlecocq/TTRG/webGLot/src/";
 	this.program = null;
 	
 	this.read = function(filename) {
 		var request = new XMLHttpRequest();
-		var url = this.BASE + filename;
+		var url = filename;
 		
 		request.open("GET", url, false);
 		request.send();
