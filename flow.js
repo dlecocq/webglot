@@ -27,8 +27,6 @@ function flow(string, options) {
 	this.pong   = null;
 	this.fbo    = null;
 	
-	this.composite_program = null;
-	
 	this.texture = null;
 
 	/* This will likely be depricated, but it currently is hidden from
@@ -57,17 +55,22 @@ function flow(string, options) {
 			// Delete texture
 		}
 		
-		this.ping = new emptytexture(this.gl, scr.width, scr.height);
-		//this.ping = new texture(this.gl, "textures/kaust.png").texture;
-		this.pong = new emptytexture(this.gl, scr.width, scr.height);
-		//this.pong = new texture(this.gl, "textures/kaust.png").texture;
-		this.source = new noisetexture(this.gl, scr);
-		//this.source = new texture(this.gl, "textures/kaust.png").texture;
+		if ((!this.source) || scr.width > (this.source.width * 2 + 100) || scr.height > (this.source.height * 2 + 100)) {
+			console.log("Creating texture of size " + scr.width + " x " + scr.height);
+			
+			this.ping = new emptytexture(this.gl, scr.width, scr.height);
+			//this.ping = new texture(this.gl, "textures/kaust.png").texture;
+			this.pong = new emptytexture(this.gl, scr.width, scr.height);
+			//this.pong = new texture(this.gl, "textures/kaust.png").texture;
+			this.source = new noisetexture(this.gl, scr.width / 2, scr.height / 2);
+			//this.source = new texture(this.gl, "textures/kaust.png").texture;
+			
+			this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+		}
 		
-		this.gl.bindTexture(this.gl.TEXTURE_2D, null);
-		
-		this.fbo = this.gl.createFramebuffer();
-		this.rb  = this.gl.createRenderbuffer();
+		if (!this.fbo) {
+			this.fbo = this.gl.createFramebuffer();
+		}
 	}
 
 	/* All primitives are responsible for knowing how to construct them-
@@ -169,11 +172,11 @@ function flow(string, options) {
 	}
 	
 	this.calculate = function(scr) {
-		this.gl.useProgram(this.composite_program);
+		this.gl.useProgram(this.program);
 
-		scr.set_uniforms(this.gl, this.composite_program);
-    this.gl.uniform1i(this.gl.getUniformLocation(this.composite_program, "accumulation"), 0);
-		this.gl.uniform1i(this.gl.getUniformLocation(this.composite_program, "source"), 1);
+		scr.set_uniforms(this.gl, this.program);
+    this.gl.uniform1i(this.gl.getUniformLocation(this.program, "accumulation"), 0);
+		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "source"), 1);
 		
 		this.gl.enableVertexAttribArray(0);
 		this.gl.enableVertexAttribArray(1);
@@ -199,7 +202,7 @@ function flow(string, options) {
 		this.gl.activeTexture(this.gl.TEXTURE0);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.pong);
 		this.gl.activeTexture(this.gl.TEXTURE1);
-		this.gl.bindTexture(this.gl.TEXTURE_2D, this.source);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.source.texture);
 		this.checkFramebuffer();
 		
 		// Then drawing the triangle strip using the calc program
@@ -207,7 +210,7 @@ function flow(string, options) {
 		
 		/*
 		scr.time = 0;
-		scr.set_uniforms(this.gl, this.composite_program);
+		scr.set_uniforms(this.gl, this.program);
 		this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.index_ct, this.gl.UNSIGNED_SHORT, 0);
 		//*/
 		
@@ -231,11 +234,11 @@ function flow(string, options) {
 		this.calculate(scr);
 		this.calculate(scr);
 		
-		this.gl.useProgram(this.composite_program);
+		this.gl.useProgram(this.program);
 		
 		scr.recalc();
-		scr.set_uniforms(this.gl, this.composite_program);
-		this.gl.uniform1i(this.gl.getUniformLocation(this.composite_program, "accumulation"), 0);
+		scr.set_uniforms(this.gl, this.program);
+		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "accumulation"), 0);
 		
 		this.gl.enableVertexAttribArray(0);
 		this.gl.enableVertexAttribArray(1);
@@ -272,13 +275,8 @@ function flow(string, options) {
 	this.gen_program = function() {
 		//*
 		var vertex_source = this.read("shaders/flow.vert").replace("USER_FUNCTION", this.f);
-		var frag_source   = this.read("shaders/flow.composite.frag").replace("USER_FUNCTION", this.f);
-		//*/
-		
-		this.composite_program = this.compile_program(vertex_source, frag_source);
-		
-		var frag_source	= this.read("shaders/flow.frag");
-		
+		var frag_source   = this.read("shaders/flow.frag").replace("USER_FUNCTION", this.f);
+		//*/		
 		this.program = this.compile_program(vertex_source, frag_source);
 	}
 }

@@ -18,24 +18,25 @@ vec4 color(float value) {
 	float green = 1.0;
 	float blue = 0.0;
 
+/*
 	if (value > 0.8) {
-		red = (value - 0.8) * 5.0;
+		//red = (value - 0.8) * 5.0;
 		green = 0.0;
 		blue = 1.0;
-	} else if (value > 0.6) {
+	} else //*/ if (value > 0.75) {
 		red = 0.0;
-		green = (0.8 - value) * 5.0;
+		green = (1.0 - value) * 4.0;
 		blue = 1.0;
-	} else if (value > 0.4) {
-		red = (0.6 - value) * 5.0;
+	} else if (value > 0.5) {
+		red = (0.75 - value) * 4.0;
 		green = 1.0;
-		blue = (value - 0.4) * 5.0;
-	} else if (value > 0.2) {
+		blue = (value - 0.5) * 4.0;
+	} else if (value > 0.25) {
 		red = 1.0;
-		green = 0.5 + (value - 0.2) * 2.5;
+		green = 0.5 + (value - 0.25) * 2.0;
 	} else {
 		red = 1.0;
-		green = (value) * 2.5;
+		green = (value) * 2.0;
 	}
 
 	return vec4(red, green, blue, 1.0);
@@ -47,7 +48,7 @@ void main() {
 	result.a = 1.0;
 	
 	vec4 s = texture2D(source, vTextureCoord.st);
-	s = color(magnitude / 20.0) * s.r;
+	s = color(magnitude / 10.0) * s.r;
 	//s.r = s.g = s.b = mod(t / 20.0 + s.r, 1.0);
 	//s.a = mod(t / 20.0 + s.a, 1.0);
 
