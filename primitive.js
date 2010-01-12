@@ -101,4 +101,29 @@ function primitive(context) {
 		return status;
 	}
 	
+	/*
+	this.draw = function(scr, type, vertcount, count) {
+		this.gl.enableVertexAttribArray(0);
+		
+		if (this.textureVBO) {
+			this.gl.enableVertexAttribArray(1);
+			this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureVBO);
+			this.gl.vertexAttribPointer(0, 2, this.gl.FLOAT, this.gl.FALSE, 0, 0);
+		}
+		
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexVBO);
+		this.gl.vertexAttribPointer(0, vertcount, this.gl.FLOAT, this.gl.FALSE, 0, 0);
+		
+		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indexVBO);
+		
+		this.gl.drawElements(type, count, this.gl.UNSIGNED_SHORT, 0);
+		
+		this.gl.disableVertexAttribArray(0);
+		
+		if (this.textureVBO) {
+			this.disableVertexAttribArray(1);
+		}
+	}
+	//*/
+	
 }
