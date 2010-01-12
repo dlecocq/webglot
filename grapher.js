@@ -252,34 +252,15 @@ function grapher(options) {
 		this.scr.time = this.wall.time();
 
 		for (var i in this.primitives) {
-			//*
-			program = this.primitives[i].program;
-			this.gl.useProgram(program);
-			this.scr.set_uniforms(this.gl, program);
-			//*/
-			
-			//*
-			for (var j in this.parameters) {
-				param_loc = this.gl.getUniformLocation(program, j);
-				this.gl.uniform1f(param_loc, this.parameters[j]);
-			}
-			//*/
-			
 			this.primitives[i].draw(this.scr);
 		}
 		
 		// Draw axes and grid
 		if (this.options & AXES_ON) {
-			program = this.axes.program;
-			this.gl.useProgram(program);
-			this.scr.set_uniforms(this.gl, program);
 			this.axes.draw(this.scr);
 		}
 		
 		if (this.options & GRID_ON) {
-			program = this.grid.program;
-			this.gl.useProgram(program);
-			this.scr.set_uniforms(this.gl, program);
 			this.grid.draw(this.scr);
 		}
 		

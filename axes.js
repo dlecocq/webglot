@@ -32,6 +32,8 @@ function axes(gl, scr) {
 	}
 	
 	this.draw = function(scr) {
+		this.setUniforms(scr);
+		
 		this.gl.enableVertexAttribArray(0);
 		
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexVBO);

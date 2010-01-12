@@ -5,7 +5,7 @@ function grid(gl, scr) {
 	
 	this.vertexVBO	= null;
 	this.indexVBO		= null;
-	this.count			= null;
+	this.count			= 0;
 
 	this.initialize = function(scr) {
 		this.refresh(scr);
@@ -17,30 +17,30 @@ function grid(gl, scr) {
 	}
 
 	this.gen_vbo = function(scr) {
-		var vertices = [ scr.minx, scr.maxx, scr.miny, scr.maxy, -1 ];
+		var vertices = [ ];
 		var indices  = [ ];
 		
-		this.count = 5;
+		this.count = 0;
 		
 		for (var i = Math.ceil(scr.minx); i < Math.ceil(scr.maxx); ++i) {
 			vertices.push(i);
+			vertices.push(scr.miny);
+			vertices.push(-1);
+			vertices.push(i);
+			vertices.push(scr.maxy);
+			vertices.push(-1);
 			indices.push(this.count);
-			indices.push(2);
-			indices.push(4);
-			indices.push(this.count);
-			indices.push(3);
-			indices.push(4);
 			++this.count;
 		}
 		
 		for (var i = Math.ceil(scr.miny); i < Math.ceil(scr.maxy); ++i) {
+			vertices.push(scr.minx);
 			vertices.push(i);
-			indices.push(0);
+			vertices.push(-1);
+			vertices.push(scr.maxx);
+			vertices.push(i);
+			vertices.push(-1);
 			indices.push(this.count);
-			indices.push(4);
-			indices.push(1);
-			indices.push(this.count);
-			indices.push(4);
 			++this.count;
 		}
 
@@ -53,12 +53,16 @@ function grid(gl, scr) {
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexVBO);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indices), gl.STATIC_DRAW);
 		
-		for (var i = 0; i < this.count; i += 3) {
-			console.log("(" + vertices[indices[i]] + ", " + vertices[indices[i + 1]] + ", " + vertices[indices[i + 2]] + ")");
+		/*
+		for (var i = 0; i < this.count; ++i) {
+			console.log("(" + vertices[indices[i] * 3] + ", " + vertices[indices[i] * 3 + 1] + ", " + vertices[indices[i] * 3 + 2] + ")");
 		}
+		//*/
 	}
 	
 	this.draw = function(scr) {
+		this.setUniforms(scr);
+		
 		this.gl.enableVertexAttribArray(0);
 		
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexVBO);
