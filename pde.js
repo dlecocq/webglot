@@ -69,11 +69,6 @@ function pde(string, options) {
 		this.pong = new emptytexture(this.gl, this.width, this.height);
 		//*/
 		
-		/*
-		this.ping = new noisetexture(this.gl, scr);
-		this.pong = new noisetexture(this.gl, scr);
-		//*/
-		
 		//this.ping = new texture(this.gl, "textures/kaust.png");
 		//this.pong = new texture(this.gl, "textures/kaust.png");
 		

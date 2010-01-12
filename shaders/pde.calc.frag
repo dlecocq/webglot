@@ -4,18 +4,18 @@ uniform sampler2D uSampler;
 
 uniform float t;
 
-const float width = 1264.0;
-const float height = 652.0;
+uniform float width;
+uniform float height;
 
-const float texdy = 1.0 / (height - 1.0);
-const float texdx = 1.0 / (width  - 1.0);
+float texdy = 1.0 / (height - 1.0);
+float texdx = 1.0 / (width  - 1.0);
 
-const float dy = 2.0 * texdx;
-const float dx = 2.0 * texdy;
+float dy = 2.0 / (height - 1.0);
+float dx = 2.0 / (width  - 1.0);
 
 const float alpha = 1.0;
 
-const float omega = 60.0;
+const float omega = 120.0;
 
 float uxx(float x, float y, float t) {
 	//return -2.0 * (1.0 + y) * (1.0 - y);
@@ -76,24 +76,31 @@ void main () {
 		vec4 up    = texture2D(uSampler, vec2(texx        , texy + texdy));
 		vec4 self  = texture2D(uSampler, vec2(texx        , texy        ));
 		
+		//* Blur kernel
+		//gl_FragColor = 0.2 * (left + right + down + up + self);
+		//*/
+		
 		float dx2 = dx * dx;
 		float dy2 = dy * dy;
 		
-		gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+		//gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 		
-		// This kernel is going to need to be checked
 		//*
-		gl_FragColor.r = (2.0 * dx2 * dy2 * f(x - 0.5 * dx, y + 0.5 * dy, t) - dy2 * (self.g +  left.g) - dx2 * (self.b +   up.b)) / (-2.0 * (dx2 * dy2));
-		gl_FragColor.g = (2.0 * dx2 * dy2 * f(x + 0.5 * dx, y + 0.5 * dy, t) - dy2 * (self.r + right.r) - dx2 * (self.a +   up.a)) / (-2.0 * (dx2 * dy2));
-		gl_FragColor.b = (2.0 * dx2 * dy2 * f(x - 0.5 * dx, y - 0.5 * dy, t) - dy2 * (self.a +  left.a) - dx2 * (self.r + down.r)) / (-2.0 * (dx2 * dy2));
-		gl_FragColor.a = (2.0 * dx2 * dy2 * f(x + 0.5 * dx, y - 0.5 * dy, t) - dy2 * (self.b + right.b) - dx2 * (self.g + down.g)) / (-2.0 * (dx2 * dy2));
+		// This kernel is going to need to be checked
+		float r = (dy2 * (self.g +  left.g) + dx2 * (self.b +   up.b) - 2.0 * dx2 * dy2 * f(x - 0.5 * dx, y + 0.5 * dy, t)) / (2.0 * (dx2 + dy2));
+		float g = (dy2 * (self.r + right.r) + dx2 * (self.a +   up.a) - 2.0 * dx2 * dy2 * f(x + 0.5 * dx, y + 0.5 * dy, t)) / (2.0 * (dx2 + dy2));
+		float b = (dy2 * (self.a +  left.a) + dx2 * (self.r + down.r) - 2.0 * dx2 * dy2 * f(x - 0.5 * dx, y - 0.5 * dy, t)) / (2.0 * (dx2 + dy2));
+		float a = (dy2 * (self.b + right.b) + dx2 * (self.g + down.g) - 2.0 * dx2 * dy2 * f(x + 0.5 * dx, y - 0.5 * dy, t)) / (2.0 * (dx2 + dy2));
 		//*/
-		//gl_FragColor = vec4((2.0 * dx2 * dy2 * f(x, y, t) - dy2 * (left.r + right.r) - dx2 * (down.r + up.r)) / (-2.0 * (dx2 * dy2)), 0.0, 0.0, 1.0);
 		
-		//gl_FragColor.r = (2.0 * dx2 * dy2 * f(x, y, t) - dy2 * (left.r + right.r) - dx2 * (down.r + up.r)) / (-2.0 * (dx2 * dy2));
-		//gl_FragColor = vec4(f(x, y, t) * 0.5 + 0.5, 0.0, 0.0, 1.0);
+		/*
+		float r = (dy2 * (right.r + left.r) + dx2 * (down.r + up.r) - 2.0 * dx2 * dy2 * f(x, y, t)) / (2.0 * (dx2 + dy2));
+		//float r = (left.r + right.r + down.r + up.r - f(x, y, t) * 2.0 * dx * dx) * 0.25;
+		float g = r;
+		float b = r;
+		float a = r;
+		*/
 		
-		//gl_FragColor = vec4(value, 0.0, 0.0, 1.0);
+		gl_FragColor = vec4(r, g, b, a);
 	}
-	//*/
 }
