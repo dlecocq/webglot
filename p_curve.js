@@ -1,5 +1,5 @@
 // This class encapsulates parametric curves
-function p_curve(string, color) {
+function p_curve(string, color, options) {
 	
 	this.gl = null;
 	this.f  = string;
@@ -9,6 +9,7 @@ function p_curve(string, color) {
 	this.count			= 1000;
 	this.parameters = null;
 	this.color      = color || [0, 0, 0, 1];
+	this.options    = options || (CARTESIAN | X_LIN | Y_LIN);
 
 	this.initialize = function(gl, scr, parameters) {
 		this.gl = gl;

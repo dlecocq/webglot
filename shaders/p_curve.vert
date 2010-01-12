@@ -7,7 +7,14 @@ uniform float t;
 
 // USER_PARAMETERS
 
+vec4 function(float s) {
+	return vec4(USER_FUNCTION, 0, 1);
+}
+
 void main() {
-	float s = position.x;
-	gl_Position = projectionMatrix * modelviewMatrix * vec4(USER_FUNCTION, 0, 1);
+	vec4 result = function(position.x);
+	
+	// COORDINATE_TRANSFORMATION
+	
+	gl_Position = projectionMatrix * modelviewMatrix * result;
 }
