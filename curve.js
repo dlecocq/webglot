@@ -1,5 +1,5 @@
 // This class encapsulates curves
-function curve(string, color) {
+function curve(string, color, options) {
 	
 	this.gl = null;
 	this.f  = string;
@@ -8,6 +8,7 @@ function curve(string, color) {
 	this.indexVBO		= null;
 	this.count			= 1000;
 	this.parameters = null;
+	this.options    = options || (CARTESIAN | X_LIN | Y_LIN);
 	
 	this.color = color || [0, 0, 0, 1];
 

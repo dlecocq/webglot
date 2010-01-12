@@ -16,7 +16,9 @@ float function(float x) {
 
 void main() {
 	
-	float x = position.x + dx;
+	vec4 result = vec4(position.x + dx, function(position.x + dx), 0.0, 1.0);
+
+	// COORDINATE_TRANSFORMATION
 	
-	gl_Position = projectionMatrix * modelviewMatrix * vec4(position.x + dx, function(x), 0.0, 1.0);
+	gl_Position = projectionMatrix * modelviewMatrix * result;
 }

@@ -1,7 +1,16 @@
+CARTESIAN = 0;
+POLAR     = 1;
+X_LIN     = 0;
+X_LOG     = 2;
+Y_LIN     = 0;
+Y_LOG     = 4;
+
 function primitive(context) {
 
 	this.program = null;
 	this.color   = null;
+	
+	this.options = CARTESIAN | X_LIN | Y_LIN;
 	
 	this.read = function(filename) {
 		var request = new XMLHttpRequest();
@@ -24,6 +33,16 @@ function primitive(context) {
 			vertex_source = vertex_source.replace("// USER_PARAMETERS", params);
 			frag_source   = frag_source.replace(  "// USER_PARAMETERS", params);
 		}
+		
+		// Coordinate transforms
+		if (this.options & POLAR) {
+			var polar = "// Coordinate transformation\n";
+			polar += "result = vec4(result.y * cos(result.x), result.y * sin(result.x), 0.0, 1.0);\n"	
+			vertex_source = vertex_source.replace("// COORDINATE_TRANSFORMATION", polar)
+		}
+		
+		console.log(vertex_source);
+		//console.log(frag_source);
 		
 		var vertex_shader = this.gl.createShader(this.gl.VERTEX_SHADER);
 		var frag_shader		= this.gl.createShader(this.gl.FRAGMENT_SHADER);
@@ -124,12 +143,14 @@ function primitive(context) {
 		dx_location         = this.gl.getUniformLocation(program, "dx");
 		dy_location         = this.gl.getUniformLocation(program, "dy");
 		scale_location      = this.gl.getUniformLocation(program, "scale");
-		color_location      = this.gl.getUniformLocation(program, "u_color");
+		color_location      = this.gl.getUniformLocation(program, "color");
 
 		this.gl.uniformMatrix4fv(modelview_location , false, scr.modelviewMatrix.getAsWebGLFloatArray());
 		this.gl.uniformMatrix4fv(projection_location, false, scr.projectionMatrix.getAsWebGLFloatArray());
 
-		this.gl.uniform4f(color_location, this.color[0], this.color[1], this.color[2], this.color[3]);
+		if (this.color) {
+			this.gl.uniform4f(color_location, this.color[0], this.color[1], this.color[2], this.color[3]);
+		}
 
 		this.gl.uniform1f(time_location , scr.time);
 		this.gl.uniform1f(dx_location   , scr.dx);
