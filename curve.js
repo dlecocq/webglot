@@ -9,9 +9,10 @@ function curve(string) {
 	this.count			= 1000;
 	this.parameters = null;
 
-	this.initialize = function(gl, scr, parameters) {
+	this.initialize = function(gl, scr, parameters, color) {
 		this.gl = gl;
 		this.parameters = parameters;
+		this.color = color || [0, 0, 0, 1];
 		this.refresh(scr);
 		this.gen_program();
 	}
@@ -52,6 +53,8 @@ function curve(string) {
 	}
 	
 	this.draw = function(scr) {
+		this.setUniforms(scr);
+		
 		this.gl.enableVertexAttribArray(0);
 		
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexVBO);
@@ -65,22 +68,10 @@ function curve(string) {
 	}
 	
 	this.gen_program = function() {
-		var vertex_source = this.read("shaders/curve.vert");
-		// Replace user function
-		vertex_source = vertex_source.replace("USER_FUNCTION", this.f);
-		
-		// Add user parameters
-		if (this.parameters) {
-			var params = "// User parameters\n";
-			for (i in this.parameters) {
-				params += "uniform float " + i + ";\n";
-			}
-			vertex_source = vertex_source.replace("// USER_PARAMETERS", params);
-		}
-		
+		var vertex_source = this.read("shaders/curve.vert").replace("USER_FUNCTION", this.f);
 		var frag_source		= this.read("shaders/curve.frag");
 		
-		this.program = this.compile_program(vertex_source, frag_source);		
+		this.program = this.compile_program(vertex_source, frag_source, this.parameters);
 	}
 }
 

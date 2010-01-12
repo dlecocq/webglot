@@ -1,10 +1,10 @@
-uniform mat4 u_modelViewMatrix;
-uniform mat4 u_projectionMatrix;
+uniform mat4 modelviewMatrix;
+uniform mat4 projectionMatrix;
 
 uniform float dx;
 uniform float dy;
 
-attribute vec4 vPosition;
+attribute vec4 position;
 
 uniform float t;
 
@@ -16,7 +16,7 @@ float function(float x) {
 
 void main() {
 	
-	float x = vPosition.x + dx;
+	float x = position.x + dx;
 	
-	gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(vPosition.x + dx, function(x), 0.0, 1.0);
+	gl_Position = projectionMatrix * modelviewMatrix * vec4(position.x + dx, function(x), 0.0, 1.0);
 }
