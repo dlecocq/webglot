@@ -1,13 +1,13 @@
-uniform mat4 u_modelViewMatrix;
-uniform mat4 u_projectionMatrix;
+uniform mat4 modelviewMatrix;
+uniform mat4 projectionMatrix;
 
-attribute vec4 vPosition;
+attribute vec4 position;
 
 uniform float t;
 
 // USER_PARAMETERS
 
 void main() {
-	float s = vPosition.x;
-	gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(USER_FUNCTION, 0, 1);
+	float s = position.x;
+	gl_Position = projectionMatrix * modelviewMatrix * vec4(USER_FUNCTION, 0, 1);
 }

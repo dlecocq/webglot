@@ -21,10 +21,17 @@
 	<script src="../grapher.js">      </script>
 
 	<script>
+	function click() {
+		glot.set("a", glot.get("a") * 1.1);
+	}
+	
 	function start() {
 		var glot = new grapher(AXES_ON | GRID_OFF);
+		glot.set("a", 0.5);
 		
-		glot.add(new p_curve("sin(s * 6.3 * 2.0), cos(1.5 * s * 6.3 * 2.0)"));
+		glot.add(new p_curve("sin(s * 6.3 * a), cos(1.5 * s * 6.3 * 2.0)"));
+		
+		glot.setClickFunction(click);
 		
 		glot.run();
 	}
