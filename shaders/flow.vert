@@ -5,6 +5,8 @@ uniform float dx;
 uniform float dy;
 uniform float scale;
 
+// USER_PARAMETERS
+
 attribute vec4 vPosition;
 attribute vec2 aTextureCoord;
 

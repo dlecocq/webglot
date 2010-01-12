@@ -32,8 +32,9 @@ function flow(string, options) {
 	/* This will likely be depricated, but it currently is hidden from
 	 * the end programmer.
 	 */
-	this.initialize = function(gl, scr) {
+	this.initialize = function(gl, scr, parameters) {
 		this.gl = gl;
+		this.parameters = parameters;
 		this.refresh(scr);
 		this.gen_program();
 	}
@@ -273,10 +274,9 @@ function flow(string, options) {
 	 * provides free access to functionality for reading files.
 	 */
 	this.gen_program = function() {
-		//*
 		var vertex_source = this.read("shaders/flow.vert").replace("USER_FUNCTION", this.f);
 		var frag_source   = this.read("shaders/flow.frag").replace("USER_FUNCTION", this.f);
-		//*/		
+
 		this.program = this.compile_program(vertex_source, frag_source);
 	}
 }

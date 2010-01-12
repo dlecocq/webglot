@@ -9,10 +9,6 @@ uniform float t;
 
 const float alpha = 0.05;
 
-vec2 function(float x, float y) {
-	return vec2(USER_FUNCTION);
-}
-
 vec4 color(float value) {
 	float red = 1.0;
 	float green = 1.0;
