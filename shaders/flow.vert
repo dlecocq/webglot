@@ -1,5 +1,5 @@
-uniform mat4 u_modelViewMatrix;
-uniform mat4 u_projectionMatrix;
+uniform mat4 modelviewMatrix;
+uniform mat4 projectionMatrix;
 
 uniform float dx;
 uniform float dy;
@@ -7,7 +7,7 @@ uniform float scale;
 
 // USER_PARAMETERS
 
-attribute vec4 vPosition;
+attribute vec4 position;
 attribute vec2 aTextureCoord;
 
 varying float magnitude;
@@ -23,8 +23,8 @@ vec2 function(float x, float y) {
 }
 
 void main() {
-	float x = vPosition.x + dx;
-	float y = vPosition.y + dy;
+	float x = position.x + dx;
+	float y = position.y + dy;
 	
 	vec2 d = function(scale * x, scale * y);
 	
@@ -37,7 +37,7 @@ void main() {
 	//*/
 	
 	//*
-	gl_Position = u_projectionMatrix * vPosition;
+	gl_Position = projectionMatrix * position;
 	vTextureCoord = aTextureCoord - h * normalize(d);
 	//*/
 }

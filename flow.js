@@ -173,9 +173,6 @@ function flow(string, options) {
 	}
 	
 	this.calculate = function(scr) {
-		this.gl.useProgram(this.program);
-
-		scr.set_uniforms(this.gl, this.program);
     this.gl.uniform1i(this.gl.getUniformLocation(this.program, "accumulation"), 0);
 		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "source"), 1);
 		
@@ -210,12 +207,6 @@ function flow(string, options) {
 		this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.index_ct, this.gl.UNSIGNED_SHORT, 0);
 		
 		/*
-		scr.time = 0;
-		scr.set_uniforms(this.gl, this.program);
-		this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.index_ct, this.gl.UNSIGNED_SHORT, 0);
-		//*/
-		
-		/*
 		scr.set_uniforms(this.gl, this.program);
 		// Then, on top of that, draw the current line set
 		this.gl.useProgram(this.program);
@@ -232,13 +223,11 @@ function flow(string, options) {
 	 * was before it's called.
 	 */
 	this.draw = function(scr) {
-		this.calculate(scr);
-		this.calculate(scr);
+		this.setUniforms(scr);
 		
-		this.gl.useProgram(this.program);
-		
-		scr.recalc();
-		scr.set_uniforms(this.gl, this.program);
+		this.calculate(scr);
+		this.calculate(scr);		
+
 		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "accumulation"), 0);
 		
 		this.gl.enableVertexAttribArray(0);
