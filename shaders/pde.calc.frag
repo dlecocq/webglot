@@ -34,6 +34,7 @@ float f(float x, float y, float t) {
 }
 
 float u_f(float x, float y, float t) {
+	//return sin(omega * x) + cos(omega * y);
 	return 0.0;
 }
 
@@ -74,10 +75,21 @@ void main () {
 		float dx2 = dx * dx;
 		float dy2 = dy * dy;
 		
+		/*
+		// Forget this tiny, pathetic kernel.
 		float r = (dy2 * (self.g +  left.g) + dx2 * (self.b +   up.b) - 2.0 * dx2 * dy2 * f(x - 0.5 * dx, y + 0.5 * dy, t)) / (2.0 * (dx2 + dy2));
 		float g = (dy2 * (self.r + right.r) + dx2 * (self.a +   up.a) - 2.0 * dx2 * dy2 * f(x + 0.5 * dx, y + 0.5 * dy, t)) / (2.0 * (dx2 + dy2));
 		float b = (dy2 * (self.a +  left.a) + dx2 * (self.r + down.r) - 2.0 * dx2 * dy2 * f(x - 0.5 * dx, y - 0.5 * dy, t)) / (2.0 * (dx2 + dy2));
 		float a = (dy2 * (self.b + right.b) + dx2 * (self.g + down.g) - 2.0 * dx2 * dy2 * f(x + 0.5 * dx, y - 0.5 * dy, t)) / (2.0 * (dx2 + dy2));
+		//*/
+		
+		//*
+		// Feast your eyes upon a 9-point stencil!
+		float r = (dy2 * (left.r - 16.0 * left.g - 16.0 * self.g  + right.r) + dx2 * (up.r - 16.0 * up.b   - 16.0 * self.b + down.r) + 12.0 * dx2 * dy2 * f(x - 0.5 * dx, y + 0.5 * dy, t)) / (-30.0 * (dx2 + dy2));
+		float g = (dy2 * (left.g - 16.0 * self.r - 16.0 * right.r + right.g) + dx2 * (up.g - 16.0 * up.a   - 16.0 * self.a + down.g) + 12.0 * dx2 * dy2 * f(x + 0.5 * dx, y + 0.5 * dy, t)) / (-30.0 * (dx2 + dy2));
+		float b = (dy2 * (left.b - 16.0 * left.a - 16.0 * self.a  + right.b) + dx2 * (up.b - 16.0 * self.r - 16.0 * down.r + down.b) + 12.0 * dx2 * dy2 * f(x - 0.5 * dx, y - 0.5 * dy, t)) / (-30.0 * (dx2 + dy2));
+		float a = (dy2 * (left.a - 16.0 * self.b - 16.0 * right.b + right.a) + dx2 * (up.a - 16.0 * self.g - 16.0 * down.g + down.a) + 12.0 * dx2 * dy2 * f(x + 0.5 * dx, y - 0.5 * dy, t)) / (-30.0 * (dx2 + dy2));
+		//*/
 		
 		gl_FragColor = vec4(r, g, b, a);
 	}
