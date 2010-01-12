@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>WebGLot Alpha</title>
+	<script src="../primitive.js">    </script>
+
+	<script src="../emptytexture.js"> </script>
+	<script src="../noisetexture.js"> </script>
+	<script src="../texture.js">      </script>
+
+	<script src="../grid.js">         </script>
+	<script src="../axes.js">         </script>
+	<script src="../pde.js">          </script>
+	<script src="../flow.js">         </script>
+	<script src="../stopwatch.js">    </script>
+	<script src="../curve.js">        </script>
+	<script src="../p_curve.js">      </script>
+	<script src="../scalar_field.js"> </script>
+	<script src="../CanvasMatrix.js"> </script>
+	<script src="../screen.js">       </script>
+	<script src="../grapher.js">      </script>
+
+	<script>
+	function click(x, y) {
+		this.set("a", this.get("a") * 1.1);
+	}
+	
+	function start() {
+		var glot = new grapher(AXES_ON | GRID_OFF);
+		glot.set("a", 0.5);
+		
+		//glot.add(new flow("-y * sin(t) * 2.0, 2.0 * x * sin(t * y) - 4.0 * cos(1.5 * t)"));
+		//glot.add(new flow())
+		//glot.add(new flow("-y, x"));
+		glot.add(new flow("a * sin(t) + x, a * cos(t) + y"));
+		//glot.add(new flow("(7.0 / ((x - 3.0 * (mod(t, 7.0) - 3.0)) * (x - 3.0 * (mod(t, 7.0) - 3.0)) + y * y + 1.0)) * -y, (7.0 / ((x - 3.0 * (mod(t, 7.0) - 3.0)) * (x - 3.0 * (mod(t, 7.0) - 3.0)) + y * y + 1.0)) * (x - 3.0 * (mod(t, 7.0) - 3.0))"))
+		
+		glot.setClickFunction(click);
+		
+		glot.run();
+	}
+	</script>
+	
+	<style type="text/css">
+	canvas {
+		border: 1px solid black;
+		width:  100%;
+		height: 94%;
+	}
+	</style>
+</head>
+<body onload="start()">
+	<canvas id="glot">
+		There is supposed to be an example drawing here, but it's not important.
+	</canvas>
+	<div id="framerate">15</div>
+</body>
+</html>
