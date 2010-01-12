@@ -5,6 +5,8 @@ attribute vec4 vPosition;
 
 uniform float t;
 
+// USER_PARAMETERS
+
 void main() {
 	float s = vPosition.x;
 	gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(USER_FUNCTION, 0, 1);

@@ -7,9 +7,11 @@ function p_curve(string) {
 	this.vertexVBO	= null;
 	this.indexVBO		= null;
 	this.count			= 1000;
+	this.parameters = null;
 
-	this.initialize = function(gl, scr) {
+	this.initialize = function(gl, scr, parameters) {
 		this.gl = gl;
+		this.parameters = parameters;
 		this.refresh();
 		this.gen_program();
 	}
