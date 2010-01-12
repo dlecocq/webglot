@@ -29,7 +29,7 @@
 		var glot = new grapher(AXES_ON | GRID_OFF);
 		glot.set("a", 1.0);
 		
-		glot.add(new curve("a * sin(x)"));
+		glot.add(new curve("a * sin(x)", [1, 0, 0, 1]));
 		
 		glot.setClickFunction(click);
 		

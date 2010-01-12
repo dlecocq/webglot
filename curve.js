@@ -1,5 +1,5 @@
 // This class encapsulates curves
-function curve(string) {
+function curve(string, color) {
 	
 	this.gl = null;
 	this.f  = string;
@@ -8,11 +8,12 @@ function curve(string) {
 	this.indexVBO		= null;
 	this.count			= 1000;
 	this.parameters = null;
+	
+	this.color = color || [0, 0, 0, 1];
 
-	this.initialize = function(gl, scr, parameters, color) {
+	this.initialize = function(gl, scr, parameters) {
 		this.gl = gl;
 		this.parameters = parameters;
-		this.color = color || [0, 0, 0, 1];
 		this.refresh(scr);
 		this.gen_program();
 	}
