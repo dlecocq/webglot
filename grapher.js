@@ -19,6 +19,7 @@ function grapher(options) {
 	// A framerate timer
 	this.framerate	= null;
 	this.framecount = 0;
+	this.frametotal = 0;
 	
 	this.userClickFunction    = null;
 	this.userKeyboardFunction = null;
@@ -68,28 +69,30 @@ function grapher(options) {
 	/* And the mouse-up handler
 	 */
 	this.mouseup = function(x, y) {
-		try {
-			var end = this.coordinates(x, y);
-		
-			var dx = this.start["x"] - end["x"];
-			var dy = this.start["y"] - end["y"];
-		
-			if (dx != 0 || dy != 0) {
-				this.scr.minx += dx;
-				this.scr.maxx += dx;
-				this.scr.miny += dy;
-				this.scr.maxy += dy;
-				this.refresh_dls();
-			}
-			this.moving = false;
-			
+		var end = this.coordinates(x, y);
+	
+		var dx = this.start["x"] - end["x"];
+		var dy = this.start["y"] - end["y"];
+	
+		if (dx != 0 || dy != 0) {
+			this.scr.minx += dx;
+			this.scr.maxx += dx;
+			this.scr.miny += dy;
+			this.scr.maxy += dy;
+			this.refresh_dls();
+		} else {
 			if (this.userClickFunction) {
-				this.userClickFunction(end.x, end.y);
+				try {
+					this.userClickFunction(end.x, end.y);
+				} catch(e) {
+					console.log("User click function failed.")
+				}
 			}
-			
-			this.scr.translate(0, 0);
-			
-		} catch (e) {}
+		}
+		
+		this.moving = false;
+		
+		this.scr.translate(0, 0);
 	}
 	
 	/* The mouse-movement handler
@@ -217,6 +220,7 @@ function grapher(options) {
 		 *
 		 * gl.pointSize(7);
 		 */
+		this.reshape();
 	
 		// Default color is white
 		this.gl.clearColor(1.0, 1.0, 1.0, 1.0);
@@ -267,6 +271,8 @@ function grapher(options) {
 		this.gl.flush();
 		
 		this.framecount = this.framecount + 1;
+		this.frametotal = this.frametotal + 1;
+		//document.getElementById("frametotal").innerHTML = "Frames: " + this.frametotal;
 		if (this.framecount == 150) {
 			document.getElementById("framerate").innerHTML = "Framerate: " + 150 / this.framerate.time();
 			this.framecount = 0;
