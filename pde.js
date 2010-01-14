@@ -32,6 +32,8 @@ function pde(string, options) {
 	
 	this.width  = 0;
 	this.height = 0;
+	this.level  = 0;
+	this.factor = Math.pow(0.5, this.level);
 	
 	this.calc_program = null;
 	
@@ -41,8 +43,8 @@ function pde(string, options) {
 	 * the end programmer.
 	 */
 	this.initialize = function(gl, scr, parameters) {
-		this.width  = scr.width  * 1.0;
-		this.height = scr.height * 1.0;
+		this.width  = scr.width ;
+		this.height = scr.height;
 		this.parameters = parameters;
 		this.gl = gl;
 		this.refresh(scr);
@@ -66,8 +68,8 @@ function pde(string, options) {
 			// Delete texture
 		}
 
-		this.ping = new emptytexture(this.gl, this.width, this.height);
-		this.pong = new emptytexture(this.gl, this.width, this.height);
+		this.ping = new emptytexture(this.gl, this.width * this.factor, this.height * this.factor);
+		this.pong = new emptytexture(this.gl, this.width * this.factor, this.height * this.factor);
 		
 		this.fbo = this.gl.createFramebuffer();
 	}
@@ -98,10 +100,11 @@ function pde(string, options) {
 	
 	this.calculate = function(scr) {
 		this.setUniforms(scr, this.calc_program);
+		this.gl.viewport(0, 0, this.width * this.factor, this.height * this.factor);
 		
     this.gl.uniform1i(this.gl.getUniformLocation(this.calc_program, "uSampler"), 0);
-		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "width") , this.width);
-		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "height"), this.height);
+		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "width") , this.width * this.factor);
+		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "height"), this.height * this.factor);
 		
 		this.gl.enableVertexAttribArray(0);
 		this.gl.enableVertexAttribArray(1);
@@ -146,6 +149,7 @@ function pde(string, options) {
 		
 		this.setUniforms(scr);
 		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "uSampler"), 0);
+		this.gl.viewport(0, 0, scr.width, scr.height);
 		
 		this.gl.enableVertexAttribArray(0);
 		this.gl.enableVertexAttribArray(1);
@@ -188,6 +192,17 @@ function pde(string, options) {
 		var frag_source	= this.read("shaders/pde.frag");
 		
 		this.program = this.compile_program(vertex_source, frag_source);
+	}
+	
+	this.setLevel = function(level, scr) {
+		this.level = level;
+		this.factor = Math.pow(0.5, this.level);
+		// Resize this.pong and this.ping
+		this.pong = new emptytexture(this.gl, this.width * this.factor, this.height * this.factor);
+		// Calculate
+		this.calculate(scr);
+		this.pong = new emptytexture(this.gl, this.width * this.factor, this.height * this.factor);
+		this.calculate(scr);
 	}
 }
 
