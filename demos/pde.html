@@ -22,17 +22,17 @@
 
 	<script>
 	var p = new pde();
-	var level = 0;
+	var level = 1;
 	
 	function click() {
 		console.log("Setting level to " + level);
-		level += 1;
+		level -= 1;
 		p.setLevel(level, glot.scr);
 	}
 	
 	function start() {
 		var glot = new grapher(AXES_ON | GRID_OFF);
-		glot.set("omega", 24);
+		glot.set("omega", 80);
 
 		glot.add(p);
 		
@@ -40,7 +40,7 @@
 		
 		glot.run();
 		
-		p.setLevel(3, glot.scr);
+		p.setLevel(level, glot.scr);
 	}
 	</script>
 	
