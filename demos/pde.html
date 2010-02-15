@@ -22,25 +22,14 @@
 
 	<script>
 	var p = new pde();
-	var level = 1;
-	
-	function click() {
-		console.log("Setting level to " + level);
-		level -= 1;
-		p.setLevel(level, glot.scr);
-	}
 	
 	function start() {
 		var glot = new grapher(AXES_ON | GRID_OFF);
-		glot.set("omega", 80);
+		glot.set("omega", 300);
 
 		glot.add(p);
 		
-		glot.setClickFunction(click);
-		
 		glot.run();
-		
-		p.setLevel(level, glot.scr);
 	}
 	</script>
 	

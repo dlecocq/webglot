@@ -33,7 +33,6 @@ function pde(string, options) {
 	this.width  = 0;
 	this.height = 0;
 	this.level  = 0;
-	this.factor = Math.pow(0.5, this.level);
 	
 	this.calc_program = null;
 	
@@ -68,8 +67,8 @@ function pde(string, options) {
 			// Delete texture
 		}
 
-		this.ping = new emptytexture(this.gl, this.width * this.factor, this.height * this.factor);
-		this.pong = new emptytexture(this.gl, this.width * this.factor, this.height * this.factor);
+		this.ping = new emptytexture(this.gl, this.width, this.height);
+		this.pong = new emptytexture(this.gl, this.width, this.height);
 		
 		this.fbo = this.gl.createFramebuffer();
 	}
@@ -101,12 +100,10 @@ function pde(string, options) {
 	this.calculate = function(scr) {
 		this.setUniforms(scr, this.calc_program);
 		this.gl.viewport(0, 0, this.ping.width, this.ping.height);
-		//this.gl.viewport(0, 0, this.width * this.factor, this.height * this.factor);
 		
     this.gl.uniform1i(this.gl.getUniformLocation(this.calc_program, "uSampler"), 0);
-		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "width") , this.pong.width  * this.factor);
-		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "height"), this.pong.height * this.factor);
-		//this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "factor"), this.factor);
+		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "width") , this.pong.width );
+		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "height"), this.pong.height);
 		
 		this.gl.enableVertexAttribArray(0);
 		this.gl.enableVertexAttribArray(1);
@@ -147,7 +144,7 @@ function pde(string, options) {
 		this.calculate(scr);
 		this.calculate(scr);
 		this.calculate(scr);
-		this.calculate(scr);
+		//this.calculate(scr);
 		
 		this.setUniforms(scr);
 		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "uSampler"), 0);
@@ -194,17 +191,6 @@ function pde(string, options) {
 		var frag_source	= this.read("shaders/pde.frag");
 		
 		this.program = this.compile_program(vertex_source, frag_source);
-	}
-	
-	this.setLevel = function(level, scr) {
-		this.level = level;
-		this.factor = Math.pow(0.5, this.level);
-		// Resize this.pong and this.ping
-		//this.ping = new emptytexture(this.gl, this.width * this.factor, this.height * this.factor);
-		// Calculate
-		this.calculate(scr);
-		//this.ping = new emptytexture(this.gl, this.width * this.factor, this.height * this.factor);
-		this.calculate(scr);
 	}
 }
 
