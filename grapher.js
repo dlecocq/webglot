@@ -274,7 +274,8 @@ function grapher(options) {
 		this.frametotal = this.frametotal + 1;
 		//document.getElementById("frametotal").innerHTML = "Frames: " + this.frametotal;
 		if (this.framecount == 150) {
-			document.getElementById("framerate").innerHTML = "Framerate: " + 150 / this.framerate.time();
+			var rate = 150 / this.framerate.time();
+			document.getElementById("framerate").innerHTML = "Framerate: " + Math.round(rate * 1e4) * 1e-4 + " (" + Math.floor(this.scr.width * 2 * this.scr.height * 2 * 4 * 138 * rate / 1e6) * 1e-3 + " Gflops)";
 			this.framecount = 0;
 			this.framerate = new stopwatch();
 			this.framerate.start();

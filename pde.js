@@ -144,7 +144,7 @@ function pde(string, options) {
 		this.calculate(scr);
 		this.calculate(scr);
 		this.calculate(scr);
-		//this.calculate(scr);
+		this.calculate(scr);
 		
 		this.setUniforms(scr);
 		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "uSampler"), 0);

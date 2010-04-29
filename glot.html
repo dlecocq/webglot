@@ -3,6 +3,8 @@
 <head>
 	<title>WebGLot Alpha</title>
 	<script src="primitive.js">    </script>
+	<script src="axes.js">         </script>
+	<script src="grid.js">         </script>
 
 	<script src="emptytexture.js"> </script>
 	<script src="noisetexture.js"> </script>
@@ -34,7 +36,22 @@
 		//glot.add(new pde(glot.getContext()));
 		//glot.add(new scalar_field(glot.getContext(), "sin(sqrt(x * x + y * y) + t)"));
 		//glot.add(new p_curve("sin(s * t), cos(1.5 * s * t)"));
-		glot.add(new curve("sin(a * (x - t))"));
+		//glot.add(new curve("sin(a * (x - t))"));
+		glot.set("u1", 0.0);
+		glot.set("u2", 0.0);
+		glot.set("u3", 0.5);
+		glot.set("u4", 1.0);
+		glot.set("u5", 1.0);
+		glot.set("d0x", 0.0);
+		glot.set("d1x", 3.3);
+		glot.set("d2x", 6.7);
+		glot.set("d3x", 10);
+		glot.set("d0y", 1.0);
+		glot.set("d1y", 2.0);
+		glot.set("d2y", 0.0);
+		glot.set("d3y", 3.0);
+		
+		glot.add(new p_curve("(1.0 - (t - u2) / (u3 - u2)) * ((1.0 - (t - u1) / (u3 - u1)) * d0x + (t - u1) / (u3 - u1) * d1x) + ((t - u2) / (u3 - u2)) * ((1.0 - (t - u2) / (u4 - u2)) * d1x + (t - u2) * d2x / (u4 - u2)), (1.0 - (t - u2) / (u3 - u2)) * ((1.0 - (t - u1) / (u3 - u1)) * d0y + (t - u1) / (u3 - u1) * d1y) + ((t - u2) / (u3 - u2)) * ((1.0 - (t - u2) / (u4 - u2)) * d1y + (t - u2) * d2y / (u4 - u2))"));
 		
 		glot.setClickFunction(click);
 		
