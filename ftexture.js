@@ -22,7 +22,7 @@ function ftexture(context, width, height, f) {
 			pixels[i] = Math.random() * 3.0;
 		}
 		//*/
-		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.width, this.height, 0, this.gl.RGBA, this.gl.FLOAT, pixels);
+		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, 0x8814, this.width, this.height, 0, this.gl.RGBA, this.gl.FLOAT, pixels);
 		
 		this.gl.enable(this.gl.TEXTURE_2D);
 		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
