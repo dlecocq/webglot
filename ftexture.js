@@ -15,13 +15,8 @@ function ftexture(context, width, height, f) {
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
 
 		var pixels = new WebGLFloatArray(this.width * this.height * 4);
+		// Pass pixels into the user-provided function
 		pixels = f(pixels);
-		/*
-		var count = this.width * this.height * 4;
-		for (var i = 0; i < count; i += 4) {
-			pixels[i] = Math.random() * 3.0;
-		}
-		//*/
 		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, 0x8814, this.width, this.height, 0, this.gl.RGBA, this.gl.FLOAT, pixels);
 		
 		this.gl.enable(this.gl.TEXTURE_2D);
