@@ -5,6 +5,7 @@ function nurbs(knots, cps, degree, color, options) {
 	this.knots        = knots;
 	this.knotsTexture = null;
 	this.cps          = cps;
+	this.cpsTexture   = null;
 	this.degree       = degree;
 	
 	this.vertexVBO	= null;
@@ -25,14 +26,26 @@ function nurbs(knots, cps, degree, color, options) {
 		this.gen_vbo(scr);
 		
 		knots = this.knots;
-		
 		f = function(pixels) {
 			for (var i = 0; i < knots.length; i += 1) {
+				
 				pixels[i * 4] = knots[i];
 			}
 			return pixels;
 		}
 		this.knotsTexture = ftexture(this.gl, this.knots.length, 1, f);
+		
+		cps = this.cps;
+		f = function(pixels) {
+			for (var i = 0; i < cps.length; i += 1) {
+				tmp = cps[i];
+				for (var j = 0; j < tmp.length; j += 1) {
+					pixels[i * 4 + j] = tmp[j];
+				}
+			}
+			return pixels;
+		}
+		this.cpsTexture = ftexture(this.gl, this.cps.length, 1, f);
 	}
 
 	this.gen_vbo = function(scr) {
@@ -78,6 +91,7 @@ function nurbs(knots, cps, degree, color, options) {
 
 		// Set a few uniforms
 		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "knotsTexture"), 0);
+		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "cpsTexture"  ), 1);
 		
 		// Enable attribute array buffers,
 		this.gl.enableVertexAttribArray(0);
@@ -92,13 +106,15 @@ function nurbs(knots, cps, degree, color, options) {
 		this.gl.enable(this.gl.TEXTURE_2D);
 		this.gl.activeTexture(this.gl.TEXTURE0);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.knotsTexture);
+		this.gl.activeTexture(this.gl.TEXTURE1);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.cpsTexture);
 		this.gl.drawElements(this.gl.LINE_STRIP, this.count, this.gl.UNSIGNED_SHORT, 0);
 		
 		this.gl.disableVertexAttribArray(0);
 	}
 	
 	this.gen_program = function() {
-		var vertex_source = this.read("shaders/nurbs.vert").replace("USER_FUNCTION", "s");
+		var vertex_source = this.read("shaders/nurbs.vert").replace("USER_FUNCTION", "4.0 * s");
 		var frag_source	  = this.read("shaders/nurbs.frag");
 		
 		this.program = this.compile_program(vertex_source, frag_source);		
