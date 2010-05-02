@@ -8,7 +8,7 @@ uniform float t;
 // USER_PARAMETERS
 
 vec4 function(float s) {
-	return vec4(USER_FUNCTION, 0.0, 0.0, 1.0);
+	return vec4(USER_FUNCTION, s, 0.0, 1.0);
 }
 
 void main() {
