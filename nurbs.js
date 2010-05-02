@@ -10,6 +10,7 @@ function nurbs(knots, cps, degree, color, options) {
 	
 	this.vertexVBO	= null;
 	this.indexVBO	= null;
+	this.lVBO       = null;
 	this.count	 	= 100;
 	this.parameters = null;
 	this.color      = color || [0, 0, 0, 1];
@@ -51,14 +52,11 @@ function nurbs(knots, cps, degree, color, options) {
 	this.gen_vbo = function(scr) {
 		var vertices = [];
 		var indices	 = [];
-		var us       = [];
+		var ls       = [];
 		var points   = [];
 		
 		// Increment l, searching for interval u_{l} to u_{l+1}
 		var l = 0;
-		while (this.knots[l+1] == 0) {
-			l = l + 1;
-		}
 		
 		var a = 0;
 		var dx = 1.0 / this.count;
@@ -66,6 +64,12 @@ function nurbs(knots, cps, degree, color, options) {
 		for (var i = 0; i < this.count; ++i) {
 			vertices.push(a);
 			indices.push(i);
+			while (this.knots[l + 1] < a) {
+				l = l + 1;
+			}
+			
+			ls.push(l);
+			
 			a += dx;
 		}
 
@@ -78,6 +82,10 @@ function nurbs(knots, cps, degree, color, options) {
 		this.vertexVBO = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexVBO);
 		this.gl.bufferData(this.gl.ARRAY_BUFFER, new WebGLFloatArray(vertices), this.gl.STATIC_DRAW);
+		
+		this.lVBO = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.lVBO);
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, new WebGLFloatArray(ls), this.gl.STATIC_DRAW);
 		
 		this.indexVBO = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indexVBO);
@@ -95,9 +103,13 @@ function nurbs(knots, cps, degree, color, options) {
 		
 		// Enable attribute array buffers,
 		this.gl.enableVertexAttribArray(0);
+		this.gl.enableVertexAttribArray(1);
 		
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexVBO);
 		this.gl.vertexAttribPointer(0, 1, this.gl.FLOAT, this.gl.FALSE, 0, 0);
+		
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.lVBO);
+		this.gl.vertexAttribPointer(1, 1, this.gl.FLOAT, this.gl.FALSE, 0, 0);
 		
 		// Then element array buffer
 		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indexVBO);
@@ -111,10 +123,11 @@ function nurbs(knots, cps, degree, color, options) {
 		this.gl.drawElements(this.gl.LINE_STRIP, this.count, this.gl.UNSIGNED_SHORT, 0);
 		
 		this.gl.disableVertexAttribArray(0);
+		this.gl.disableVertexAttribArray(1);
 	}
 	
 	this.gen_program = function() {
-		var vertex_source = this.read("shaders/nurbs.vert").replace("USER_FUNCTION", "4.0 * s");
+		var vertex_source = this.read("shaders/nurbs.vert").replace("USER_FUNCTION", "4.0 * s").replace(/DEGREE/g, this.degree);
 		var frag_source	  = this.read("shaders/nurbs.frag");
 		
 		this.program = this.compile_program(vertex_source, frag_source);		
