@@ -3,6 +3,8 @@ uniform mat4 projectionMatrix;
 
 attribute vec4 position;
 
+varying float sp;
+
 uniform float t;
 
 // USER_PARAMETERS
@@ -13,6 +15,8 @@ vec4 function(float s) {
 
 void main() {
 	vec4 result = function(position.x);
+	
+	sp = position.x;
 	
 	// COORDINATE_TRANSFORMATION
 	

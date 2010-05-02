@@ -75,14 +75,23 @@ function nurbs(knots, cps, degree, color, options) {
 	
 	this.draw = function(scr) {
 		this.setUniforms(scr);
+
+		// Set a few uniforms
+		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "knotsTexture"), 0);
 		
+		// Enable attribute array buffers,
 		this.gl.enableVertexAttribArray(0);
 		
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexVBO);
 		this.gl.vertexAttribPointer(0, 1, this.gl.FLOAT, this.gl.FALSE, 0, 0);
 		
+		// Then element array buffer
 		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indexVBO);
 		
+		// Enable and bind pertinent textures
+		this.gl.enable(this.gl.TEXTURE_2D);
+		this.gl.activeTexture(this.gl.TEXTURE0);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.knotsTexture);
 		this.gl.drawElements(this.gl.LINE_STRIP, this.count, this.gl.UNSIGNED_SHORT, 0);
 		
 		this.gl.disableVertexAttribArray(0);
