@@ -99,7 +99,9 @@ function nurbs(knots, cps, degree, color, options) {
 
 		// Set a few uniforms
 		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "knotsTexture"), 0);
+		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "knotCount"   ), this.knots.length);
 		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "cpsTexture"  ), 1);
+		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "cpCount"     ), this.cps.length);
 		
 		// Enable attribute array buffers,
 		this.gl.enableVertexAttribArray(0);
