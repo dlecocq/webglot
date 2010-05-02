@@ -7,11 +7,13 @@
 	<script src="../emptytexture.js"> </script>
 	<script src="../noisetexture.js"> </script>
 	<script src="../texture.js">      </script>
+	<script src="../ftexture.js">     </script>
 
 	<script src="../grid.js">         </script>
 	<script src="../axes.js">         </script>
 	<script src="../pde.js">          </script>
 	<script src="../flow.js">         </script>
+	<script src="../gradient.js">     </script>
 	<script src="../stopwatch.js">    </script>
 	<script src="../curve.js">        </script>
 	<script src="../p_curve.js">      </script>
@@ -31,9 +33,10 @@
 		
 		//glot.add(new flow("-y * sin(t) * 2.0, 2.0 * x * sin(t * y) - 4.0 * cos(1.5 * t)"));
 		//glot.add(new flow())
-		//glot.add(new flow("-a * y, a * x"));
-		glot.add(new flow("a * sin(t) + x, a * cos(t) + y"));
+		glot.add(new flow("-a * y, a * x"));
+		//glot.add(new flow("a * sin(t) + x, a * cos(t) + y"));
 		//glot.add(new flow("(7.0 / ((x - 3.0 * (mod(t, 7.0) - 3.0)) * (x - 3.0 * (mod(t, 7.0) - 3.0)) + y * y + 1.0)) * -y, (7.0 / ((x - 3.0 * (mod(t, 7.0) - 3.0)) * (x - 3.0 * (mod(t, 7.0) - 3.0)) + y * y + 1.0)) * (x - 3.0 * (mod(t, 7.0) - 3.0))"))
+		//glot.add(new gradient("a * sin(t) + x"));
 		
 		glot.setClickFunction(click);
 		
