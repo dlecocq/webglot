@@ -38,5 +38,5 @@ function noisetexture(context, width, height) {
 	
 	this.initialize();
 	
-	//return this.texture;
+	return this.texture;
 }
