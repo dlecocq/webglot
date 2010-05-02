@@ -63,8 +63,18 @@ function flow(string, options) {
 			//this.ping = new texture(this.gl, "textures/kaust.png").texture;
 			this.pong = new emptytexture(this.gl, scr.width, scr.height);
 			//this.pong = new texture(this.gl, "textures/kaust.png").texture;
-			this.source = new noisetexture(this.gl, scr.width / 2, scr.height / 2);
+			//this.source = new noisetexture(this.gl, scr.width / 2, scr.height / 2);
 			//this.source = new texture(this.gl, "textures/kaust.png").texture;
+			
+			f = function(pixels) {
+				var count = scr.width * scr.height * 4;
+				for (var i = 0; i < count; i += 4) {
+					pixels[i] = Math.random() * 3.0;
+				}
+				return pixels;
+			}
+			
+			this.source = new ftexture(this.gl, scr.width / 2, scr.height / 2, f);
 			
 			this.gl.bindTexture(this.gl.TEXTURE_2D, null);
 		}
@@ -200,7 +210,7 @@ function flow(string, options) {
 		this.gl.activeTexture(this.gl.TEXTURE0);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.pong);
 		this.gl.activeTexture(this.gl.TEXTURE1);
-		this.gl.bindTexture(this.gl.TEXTURE_2D, this.source.texture);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.source);
 		this.checkFramebuffer();
 		
 		// Then drawing the triangle strip using the calc program
