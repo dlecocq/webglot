@@ -3,8 +3,9 @@ function axes(gl, scr) {
 	
 	this.gl = gl;
 	
-	this.vertexVBO	= null;
-	this.indexVBO		= null;
+	this.vertexVBO  = null;
+	this.indexVBO   = null;
+	this.color      = [0, 0, 0, 1];
 
 	this.initialize = function(scr) {
 		this.refresh(scr);

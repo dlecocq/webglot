@@ -3,9 +3,10 @@ function grid(gl, scr) {
 	
 	this.gl = gl;
 	
-	this.vertexVBO	= null;
-	this.indexVBO		= null;
-	this.count			= 0;
+	this.vertexVBO  = null;
+	this.indexVBO   = null;
+	this.count      = 0;
+	this.color      = [0, 0, 0, 0.3];
 
 	this.initialize = function(scr) {
 		this.refresh(scr);
@@ -56,12 +57,6 @@ function grid(gl, scr) {
 		this.indexVBO = gl.createBuffer();
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexVBO);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indices), gl.STATIC_DRAW);
-		
-		/*
-		for (var i = 0; i < this.count; ++i) {
-			console.log("(" + vertices[indices[i] * 3] + ", " + vertices[indices[i] * 3 + 1] + ", " + vertices[indices[i] * 3 + 2] + ")");
-		}
-		//*/
 	}
 	
 	this.draw = function(scr) {
