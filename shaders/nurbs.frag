@@ -33,7 +33,9 @@ vec4 color(float value) {
 
 void main() {
 	//gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-	gl_FragColor = color(u);
+	//gl_FragColor = color(u);
+	
+	gl_FragColor = color;
 	
 	/*
 	// Testing whether or not we have access to knotsTexture

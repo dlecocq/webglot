@@ -19,12 +19,12 @@ function nurbs(knots, cps, degree, color, options) {
 	this.initialize = function(gl, scr, parameters) {
 		this.gl = gl;
 		this.parameters = parameters;
+		this.gen_vbo(scr);
 		this.refresh();
 		this.gen_program();
 	}
 	
 	this.refresh = function(scr) {
-		this.gen_vbo(scr);
 		
 		knots = this.knots;
 		f = function(pixels) {
@@ -40,7 +40,6 @@ function nurbs(knots, cps, degree, color, options) {
 		f = function(pixels) {
 			for (var i = 0; i < cps.length; i += 1) {
 				tmp = cps[i];
-				this.gl.console.log(tmp.length);
 				for (var j = 0; j < tmp.length; j += 1) {
 					pixels[i * 4 + j] = tmp[j];
 				}
@@ -65,7 +64,7 @@ function nurbs(knots, cps, degree, color, options) {
 		for (var i = 0; i < this.count; ++i) {
 			vertices.push(a);
 			indices.push(i);
-			while (this.knots[l + 1] < a) {
+			while (this.knots[l + 1] <= a) {
 				l = l + 1;
 			}
 			

@@ -27,8 +27,8 @@ float us[20];
 // USER_PARAMETERS
 
 vec4 function(float s) {
-	return vec4(USER_FUNCTION, (1.0 - (0.5 * s / 0.5)) * ((1.0 - (0.5 * s / 0.5)) * 1.0 + (0.5 * s / 0.5) * 2.0) + (0.5 * s / 0.5) * ((1.0 - 0.5 * s) * 2.0 + 0.5 * s * 0.0), 0.0, 1.0);
-	//return vec4(0.0, s, 0.0, 1.0);
+	//return vec4(USER_FUNCTION, (1.0 - (0.5 * s / 0.5)) * ((1.0 - (0.5 * s / 0.5)) * 1.0 + (0.5 * s / 0.5) * 2.0) + (0.5 * s / 0.5) * ((1.0 - 0.5 * s) * 2.0 + 0.5 * s * 0.0), 0.0, 1.0);
+	return vec4(0.0, s, 0.0, 1.0);
 }
 
 void main() {
@@ -41,9 +41,11 @@ void main() {
 	//*
 	// Grab all the control points early on
 	for (int i = 0; i <= n; ++i) {
-		ds[i] = texture2D(knotsTexture, vec2(float(li - n + i) / float(cpCount + 1) + cpEps, 0));
+		ds[i] = texture2D(cpsTexture, vec2(float(li - n + i) / float(cpCount + 1) + cpEps, 0));
 	}
 	//*/
+	
+	//result.x = ds[0].xy;
 	
 	//*
 	// Grab all the u's early on
@@ -59,8 +61,8 @@ void main() {
 		// because of data dependencies
 		for (int i = n; i >= k; --i) {
 			// Watch out for divide-by-zeros
-			//as[i-1] = (u - us[i-1]) / (us[i + n - k] - us[i -1]);
-			//*
+			as[i-1] = (u - us[i-1]) / (us[i + n - k] - us[i -1]);
+			/*
 			as[i-1] = us[i + n - k] - us[i-1];
 			if (as[i-1] != 0.0) {
 				as[i-1] = (u - us[i-1]) / as[i-1];
@@ -76,7 +78,7 @@ void main() {
 	//result.xy = cpsValue.xy;
 	//result.x = knotsValue.r;
 	
-	result.x = ds[n].x;
+	result.xy = ds[n].xy;
 	result.xy /= scale;
 	//result.x = l;
 	
