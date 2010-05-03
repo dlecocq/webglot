@@ -141,6 +141,12 @@ function grapher(options) {
 			this.zoom(1.0 / 1.15);
 			//*/
 			this.scr.scale(1.0 / 1.15);
+		} else if (key == 65) {
+			// This is a
+			this.options = this.options ^ AXES_ON;
+		} else if (key == 71) {
+			// This is g
+			this.options = this.options ^ GRID_ON;
 		}
 	}
 	
