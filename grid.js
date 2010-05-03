@@ -22,10 +22,12 @@ function grid(gl, scr) {
 		
 		this.count = 0;
 		
-		for (var i = Math.ceil(scr.minx); i < Math.ceil(scr.maxx); ++i) {
+		for (var i = Math.floor(scr.minx); i < Math.ceil(scr.maxx); ++i) {
 			vertices.push(i);
 			vertices.push(scr.miny);
 			vertices.push(-1);
+			indices.push(this.count);
+			++this.count;
 			vertices.push(i);
 			vertices.push(scr.maxy);
 			vertices.push(-1);
@@ -33,10 +35,12 @@ function grid(gl, scr) {
 			++this.count;
 		}
 		
-		for (var i = Math.ceil(scr.miny); i < Math.ceil(scr.maxy); ++i) {
+		for (var i = Math.floor(scr.miny); i < Math.ceil(scr.maxy); ++i) {
 			vertices.push(scr.minx);
 			vertices.push(i);
 			vertices.push(-1);
+			indices.push(this.count);
+			++this.count;
 			vertices.push(scr.maxx);
 			vertices.push(i);
 			vertices.push(-1);
