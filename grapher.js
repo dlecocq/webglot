@@ -110,6 +110,23 @@ function grapher(options) {
 		}
 	}
 	
+	/* Attempting a scroll handler.
+	 */
+	//*
+	this.scroll = function(event) {
+		if (!event) event = window.event;
+		
+		if (event.wheelDelta) {
+			delta = event.wheelDelta / 60;
+		} else if (event.detail) {
+			delta = -event.detail / 2;
+		}
+		
+		//this.gl.console.log("delta: " + delta);
+		this.scr.scale(1.0 - delta * 0.1);
+	}
+	//*/
+	
 	/* The keyboard handler
 	 */
 	this.keyboard = function(key) {
@@ -190,6 +207,9 @@ function grapher(options) {
 		
 		f = function(event) { this.getElementById("glot").glot.keyboard(Number(event.keyCode)) };
 		document.onkeydown = f;
+		
+		f = function(event) { this.glot.scroll(event) };
+		document.onmousewheel = f;
 
 		if (!this.gl) {
 			alert("Can't find a WebGL context; is it enabled?");
