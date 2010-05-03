@@ -11,7 +11,7 @@ function nurbs(knots, cps, degree, color, options) {
 	this.vertexVBO	= null;
 	this.indexVBO	= null;
 	this.lVBO       = null;
-	this.count	 	= 100;
+	this.count	 	= 1000;
 	this.parameters = null;
 	this.color      = color || [0, 0, 0, 1];
 	this.options    = options || (CARTESIAN | X_LIN | Y_LIN);

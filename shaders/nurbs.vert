@@ -8,6 +8,8 @@ uniform float t;
 uniform int cpCount;
 uniform int knotCount;
 
+uniform float scale;
+
 float cpEps = 0.5 / float(cpCount);
 float knEps = 0.5 / float(knotCount);
 
@@ -25,7 +27,7 @@ float us[20];
 // USER_PARAMETERS
 
 vec4 function(float s) {
-	return vec4(USER_FUNCTION, 0.0, 0.0, 1.0);
+	return vec4(USER_FUNCTION, s, 0.0, 1.0);
 }
 
 void main() {
@@ -55,7 +57,12 @@ void main() {
 		// It's important to begin with i and move left
 		// because of data dependencies
 		for (int i = n; i >= k; --i) {
-			as[i-1] = (u - us[i-1]) / (us[i + n - k] - us[i -1]);
+			// Watch out for divide-by-zeros
+			// as[i-1] = (u - us[i-1]) / (us[i + n - k] - us[i -1]);
+			as[i-1] = us[i + n - k] - us[i-1];
+			if (as[i-1] != 0.0) {
+				as[i-1] = (u - us[i-1]) / as[i-1];
+			}
 			ds[i] = (1.0 - as[i - 1]) * ds[i - 1] + as[i - 1] * ds[i];
 		}
 	}
@@ -64,6 +71,8 @@ void main() {
 	vec4 cpsValue   = texture2D(cpsTexture  , vec2(u, 0.0));
 	
 	result.y = ds[n].x;
+	result.xy /= scale;
+	//result.x = ds[n].y;
 	//result.x = l;
 	
 	// COORDINATE_TRANSFORMATION
