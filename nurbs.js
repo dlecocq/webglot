@@ -129,7 +129,7 @@ function nurbs(knots, cps, degree, color, options) {
 	}
 	
 	this.gen_program = function() {
-		var vertex_source = this.read("shaders/nurbs.vert").replace("USER_FUNCTION", "4.0 * s").replace(/DEGREE/g, this.degree);
+		var vertex_source = this.read("shaders/nurbs.vert").replace("USER_FUNCTION", "s").replace(/DEGREE/g, this.degree);
 		var frag_source	  = this.read("shaders/nurbs.frag");
 		
 		this.program = this.compile_program(vertex_source, frag_source);		
