@@ -10,8 +10,8 @@ uniform int knotCount;
 
 uniform float scale;
 
-float cpEps = 0.5 / float(cpCount + 1);
-float knEps = 0.5 / float(knotCount + 1);
+float cpEps = 1.0 / float(cpCount + 1);
+float knEps = 1.0 / float(knotCount + 1);
 
 attribute vec4 position;
 attribute float l;
@@ -28,6 +28,7 @@ float us[20];
 
 vec4 function(float s) {
 	return vec4(USER_FUNCTION, (1.0 - (0.5 * s / 0.5)) * ((1.0 - (0.5 * s / 0.5)) * 1.0 + (0.5 * s / 0.5) * 2.0) + (0.5 * s / 0.5) * ((1.0 - 0.5 * s) * 2.0 + 0.5 * s * 0.0), 0.0, 1.0);
+	//return vec4(0.0, s, 0.0, 1.0);
 }
 
 void main() {
@@ -72,9 +73,11 @@ void main() {
 	vec4 knotsValue = texture2D(knotsTexture, vec2(u, 0.0));
 	vec4 cpsValue   = texture2D(cpsTexture  , vec2(u, 0.0));
 	
+	//result.xy = cpsValue.xy;
+	//result.x = knotsValue.r;
+	
 	result.x = ds[n].x;
 	result.xy /= scale;
-	//result.x = ds[n].y;
 	//result.x = l;
 	
 	// COORDINATE_TRANSFORMATION

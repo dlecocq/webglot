@@ -40,6 +40,7 @@ function nurbs(knots, cps, degree, color, options) {
 		f = function(pixels) {
 			for (var i = 0; i < cps.length; i += 1) {
 				tmp = cps[i];
+				this.gl.console.log(tmp.length);
 				for (var j = 0; j < tmp.length; j += 1) {
 					pixels[i * 4 + j] = tmp[j];
 				}
