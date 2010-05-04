@@ -54,12 +54,18 @@
 		
 		//glot.add(new p_curve("(1.0 - (t - u2) / (u3 - u2)) * ((1.0 - (t - u1) / (u3 - u1)) * d0x + (t - u1) / (u3 - u1) * d1x) + ((t - u2) / (u3 - u2)) * ((1.0 - (t - u2) / (u4 - u2)) * d1x + (t - u2) * d2x / (u4 - u2)), (1.0 - (t - u2) / (u3 - u2)) * ((1.0 - (t - u1) / (u3 - u1)) * d0y + (t - u1) / (u3 - u1) * d1y) + ((t - u2) / (u3 - u2)) * ((1.0 - (t - u2) / (u4 - u2)) * d1y + (t - u2) * d2y / (u4 - u2))"));
 		
+		/*
+		// This is the example given to me by Nathan Collier
 		glot.add(new nurbs([0, 0, 0, 0.5, 1, 1, 1], [[0.0, 1.0, 0, 1], [3.3, 2.0, 0, 1], [6.7, 0.0, 0, 1], [10, 3, 0, 1]], 2, [0, 0, 1, 1]));
 		glot.add(new p_curve("          (1.0 - s) * 3.3 ,       s + (1.0 - s) * 2.0", [1, 0, 0, 1]));
 		glot.add(new p_curve("s * 3.3 + (1.0 - s) * 6.7 , 2.0 * s                  ", [1, 0, 0, 1]));
 		glot.add(new p_curve("s * 6.7 + (1.0 - s) * 10.0,           (1.0 - s) * 3.0", [1, 0, 0, 1]));
-		
+		// This is the first portion of the nurbs curve, determined analytically.
 		//glot.add(new p_curve("(1.0 - (0.5 * s / 0.5)) * ((1.0 - (0.5 * s / 0.5)) * 0.0 + (0.5 * s / 0.5) * 3.3) + (0.5 * s / 0.5) * ((1.0 - 0.5 * s) * 3.3 + 0.5 * s * 6.7), (1.0 - (0.5 * s / 0.5)) * ((1.0 - (0.5 * s / 0.5)) * 1.0 + (0.5 * s / 0.5) * 2.0) + (0.5 * s / 0.5) * ((1.0 - 0.5 * s) * 2.0 + 0.5 * s * 0.0)"))
+		//*/
+		
+		//glot.add(new nurbs([0, 0, 0, Math.PI / 2, Math.PI / 2, Math.PI, Math.PI, 3 * Math.PI / 2, 3 * Math.PI / 2, 2 * Math.PI, 2 * Math.PI, 2 * Math.PI], [[1, 0, 0, 1], [1, 1, 0, Math.sqrt(2) / 2], [0, 1, 0, 1], [-1, 1, 0, Math.sqrt(2) / 2], [-1, 0, 0, 1], [-1, -1, 0, Math.sqrt(2) / 2], [0, -1, 0, 1], [1, -1, 0, Math.sqrt(2) / 2], [1, 0, 0, 1]], 3, [0, 0, 1, 1]));
+		glot.add(new nurbs([0, 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1, 1, 1], [[1, 0, 0, 1], [1, 1, 0, Math.sqrt(2) / 2], [0, 1, 0, 1], [-1, 1, 0, Math.sqrt(2) / 2], [-1, 0, 0, 1], [-1, -1, 0, Math.sqrt(2) / 2], [0, -1, 0, 1], [1, -1, 0, Math.sqrt(2) / 2], [1, 0, 0, 1]], 2, [0, 0, 1, 1]));
 
 		glot.setClickFunction(click);
 		

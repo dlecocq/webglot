@@ -42,7 +42,7 @@ void main() {
 	// Grab all the control points early on
 	for (int i = 0; i <= n; ++i) {
 		ds[i] = texture2D(cpsTexture, vec2(float(li - n + i) / float(cpCount + 1) + cpEps, 0));
-		ds[i] = ds[i] * ds[i].w;
+		ds[i].xyz *= ds[i].w;
 	}
 	//*/
 	
@@ -79,7 +79,7 @@ void main() {
 	//result.xy = cpsValue.xy;
 	//result.x = knotsValue.r;
 	
-	result.xy = ds[n].xy;
+	result.xy = ds[n].xy / ds[n].w;
 	result.xy /= scale;
 	//result.x = l;
 	
