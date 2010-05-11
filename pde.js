@@ -101,7 +101,7 @@ function pde(string, options) {
 		this.setUniforms(scr, this.calc_program);
 		this.gl.viewport(0, 0, this.ping.width, this.ping.height);
 		
-    this.gl.uniform1i(this.gl.getUniformLocation(this.calc_program, "uSampler"), 0);
+    	this.gl.uniform1i(this.gl.getUniformLocation(this.calc_program, "uSampler"), 0);
 		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "width") , this.pong.width );
 		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "height"), this.pong.height);
 		
@@ -119,9 +119,9 @@ function pde(string, options) {
 		
 		// First, set up Framebuffer we'll render into
 		this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fbo);
-		this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.ping.texture, 0);
+		this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.ping, 0);
 		this.gl.enable(this.gl.TEXTURE_2D);
-		this.gl.bindTexture(this.gl.TEXTURE_2D, this.pong.texture);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.pong);
 		this.checkFramebuffer();
 
 		// Then drawing the triangle strip using the calc program
@@ -167,7 +167,7 @@ function pde(string, options) {
 		
 		// the recently-drawn texture
 		this.gl.enable(this.gl.TEXTURE_2D);
-		this.gl.bindTexture(this.gl.TEXTURE_2D, this.ping.texture);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.ping);
 		this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.index_ct, this.gl.UNSIGNED_SHORT, 0);
 		
 		this.gl.disableVertexAttribArray(0);

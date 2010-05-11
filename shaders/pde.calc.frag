@@ -17,7 +17,7 @@ float dx = 1.0 / (width );
 
 const float alpha = 1.0;
 
-//const float omega = 120.0;
+const float omega = 120.0;
 
 // USER_PARAMETERS
 
@@ -82,7 +82,7 @@ void main () {
 		float dx2 = (dx * dx);
 		float dy2 = (dy * dy);
 		
-		/*
+		//*
 		// Forget this tiny, pathetic kernel.
 		float r = (dy2 * (self.g +  left.g) + dx2 * (self.b +   up.b) - 2.0 * dx2 * dy2 * f(x - 0.5 * dx, y + 0.5 * dy, t)) / (2.0 * (dx2 + dy2));
 		float g = (dy2 * (self.r + right.r) + dx2 * (self.a +   up.a) - 2.0 * dx2 * dy2 * f(x + 0.5 * dx, y + 0.5 * dy, t)) / (2.0 * (dx2 + dy2));
@@ -107,6 +107,7 @@ void main () {
 		
 		//gl_FragColor = vec4(r, g, b, a);
 		
+		/*
 		//vec4 a is left;
 		vec4 a = vec4(left.g , self.r , left.a , self.b );
 		vec4 b = vec4(self.g , right.r, self.a , right.b);
@@ -117,6 +118,6 @@ void main () {
 		//vec4 h is down
 		
 		gl_FragColor = (dy2 * (left - 16.0 * a - 16.0 * b  + right) + dx2 * (up - 16.0 * c   - 16.0 * d + down) + 12.0 * dx2 * dy2 * f(x - 0.5 * dx, y + 0.5 * dy, t)) / (-30.0 * (dx2 + dy2));
-		
+		//*/
 	}
 }
