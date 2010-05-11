@@ -41,9 +41,9 @@
 	}
 	
 	function start() {
-		var glot = new grapher(AXES_ON | GRID_OFF);
-		glot.set("a", 0.5);
-		glot.set("b"  , 1.0);
+		var glot = new grapher(AXES_ON | GRID_ON);
+		glot.set("a", 3.0);
+		glot.set("b", 1.0);
 		
 		//glot.add(new scalar_field("sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5) * (x - 1.5) + (y - 0.75) * (y - 0.75)) - t)"));
 		//glot.add(new flow("-y * sin(t) * 2.0, 2.0 * x * sin(t * y) - 4.0 * cos(1.5 * t)"));
@@ -52,9 +52,11 @@
 		//glot.add(new pde(glot.getContext()));
 		//glot.add(new scalar_field(glot.getContext(), "sin(sqrt(x * x + y * y) + t)"));
 		//glot.add(new p_curve("sin(s * t), cos(1.5 * s * t)"));
+		glot.add(new p_curve("sin(s * 6.32 * a) + 3.0, cos(1.5 * s * 6.32 * b) + 2.5", [1, 0, 0, 1]));
+		glot.add(new p_curve("t * s, s", [1, 0, 0, 1], POLAR | X_LIN | Y_LIN));
 		//glot.add(new curve("b * sin(x - a * t)"));
 		//glot.add(new curve("a * exp(b * x)"));
-		glot.add(new curve("a * cos(b * (x - t))"));
+		//glot.add(new curve("a * cos(b * (x - t))"));
 		
 		/*
 		// This is the example given to me by Nathan Collier
