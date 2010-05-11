@@ -4,14 +4,16 @@ uniform float t;
 uniform float dx;
 uniform float dy;
 
+uniform float scale;
+
 const float PI = 3.14159265;
 
 // USER_PARAMETERS
 
 void main () {
 
-	float x = v_texCoord.x + dx;
-	float y = v_texCoord.y + dy;
+	float x = scale * (v_texCoord.x + dx);
+	float y = scale * (v_texCoord.y + dy);
 	
 	/* POLAR
 	float tmp = x;
