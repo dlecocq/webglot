@@ -17,16 +17,20 @@ uniform float t;
 varying vec2 vTextureCoord;
 
 const float h = 0.001;
+const float dt = 0.00001;
 
-vec2 function(float x, float y) {
-	return vec2(USER_FUNCTION);
+float function(float x, float y) {
+	return USER_FUNCTION;
 }
 
 void main() {
-	float x = position.x + dx;
-	float y = position.y + dy;
+	float x = (position.x + dx) * scale;
+	float y = (position.y + dy) * scale;
 	
-	vec2 d = function(scale * x, scale * y);
+	vec2 hi = vec2(function(x + dt, y), function(x, y + dt));
+	vec2 lo = vec2(function(x - dt, y), function(x, y - dt));
+	
+	vec2 d = (hi - lo) / (2.0 * dt);
 	
 	magnitude = length(d);
 
