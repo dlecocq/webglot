@@ -22,13 +22,28 @@
 	<script src="grapher.js">      </script>
 
 	<script>
-	function click(x, y) {
-		this.set("a", this.parameters["a"] * 2);
+	function keyboard(key) {
+		var a = this.parameters["a"];
+		var b = this.parameters["b"  ];
+		if (key == 83) {
+			//this.gl.console.log("Pressed s");
+			this.set("a", a * 0.9);
+		} else if (key == 70) {
+			//this.gl.console.log("Pressed f");
+			this.set("a", a / 0.9);
+		} else if (key == 80) {
+			//this.gl.console.log("Pressed p");
+			this.set("b", b / 0.9);
+		} else if (key == 77) {
+			//this.gl.console.log("Pressed m");
+			this.set("b", b * 0.9);
+		}
 	}
 	
 	function start() {
-		var glot = new grapher(AXES_OFF | GRID_ON);
+		var glot = new grapher(AXES_ON | GRID_OFF);
 		glot.set("a", 0.5);
+		glot.set("b"  , 1.0);
 		
 		//glot.add(new scalar_field("sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5) * (x - 1.5) + (y - 0.75) * (y - 0.75)) - t)"));
 		//glot.add(new flow("-y * sin(t) * 2.0, 2.0 * x * sin(t * y) - 4.0 * cos(1.5 * t)"));
@@ -37,22 +52,9 @@
 		//glot.add(new pde(glot.getContext()));
 		//glot.add(new scalar_field(glot.getContext(), "sin(sqrt(x * x + y * y) + t)"));
 		//glot.add(new p_curve("sin(s * t), cos(1.5 * s * t)"));
-		glot.add(new curve("sin(a * (x - t))"));
-		glot.set("u1", 0.0);
-		glot.set("u2", 0.0);
-		glot.set("u3", 0.5);
-		glot.set("u4", 1.0);
-		glot.set("u5", 1.0);
-		glot.set("d0x", 0.0);
-		glot.set("d1x", 3.3);
-		glot.set("d2x", 6.7);
-		glot.set("d3x", 10);
-		glot.set("d0y", 1.0);
-		glot.set("d1y", 2.0);
-		glot.set("d2y", 0.0);
-		glot.set("d3y", 3.0);
-		
-		//glot.add(new p_curve("(1.0 - (t - u2) / (u3 - u2)) * ((1.0 - (t - u1) / (u3 - u1)) * d0x + (t - u1) / (u3 - u1) * d1x) + ((t - u2) / (u3 - u2)) * ((1.0 - (t - u2) / (u4 - u2)) * d1x + (t - u2) * d2x / (u4 - u2)), (1.0 - (t - u2) / (u3 - u2)) * ((1.0 - (t - u1) / (u3 - u1)) * d0y + (t - u1) / (u3 - u1) * d1y) + ((t - u2) / (u3 - u2)) * ((1.0 - (t - u2) / (u4 - u2)) * d1y + (t - u2) * d2y / (u4 - u2))"));
+		//glot.add(new curve("b * sin(x - a * t)"));
+		//glot.add(new curve("a * exp(b * x)"));
+		glot.add(new curve("a * cos(b * (x - t))"));
 		
 		/*
 		// This is the example given to me by Nathan Collier
@@ -65,9 +67,9 @@
 		//*/
 		
 		//glot.add(new nurbs([0, 0, 0, Math.PI / 2, Math.PI / 2, Math.PI, Math.PI, 3 * Math.PI / 2, 3 * Math.PI / 2, 2 * Math.PI, 2 * Math.PI, 2 * Math.PI], [[1, 0, 0, 1], [1, 1, 0, Math.sqrt(2) / 2], [0, 1, 0, 1], [-1, 1, 0, Math.sqrt(2) / 2], [-1, 0, 0, 1], [-1, -1, 0, Math.sqrt(2) / 2], [0, -1, 0, 1], [1, -1, 0, Math.sqrt(2) / 2], [1, 0, 0, 1]], 3, [0, 0, 1, 1]));
-		glot.add(new nurbs([0, 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1, 1, 1], [[1, 0, 0, 1], [1, 1, 0, Math.sqrt(2) / 2], [0, 1, 0, 1], [-1, 1, 0, Math.sqrt(2) / 2], [-1, 0, 0, 1], [-1, -1, 0, Math.sqrt(2) / 2], [0, -1, 0, 1], [1, -1, 0, Math.sqrt(2) / 2], [1, 0, 0, 1]], 2, [0, 0, 1, 1]));
-
-		glot.setClickFunction(click);
+		//glot.add(new nurbs([0, 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1, 1, 1], [[1, 0, 0, 1], [1, 1, 0, Math.sqrt(2) / 2], [0, 1, 0, 1], [-1, 1, 0, Math.sqrt(2) / 2], [-1, 0, 0, 1], [-1, -1, 0, Math.sqrt(2) / 2], [0, -1, 0, 1], [1, -1, 0, Math.sqrt(2) / 2], [1, 0, 0, 1]], 2, [0, 0, 1, 1]));
+		
+		glot.setKeyboardFunction(keyboard);
 		
 		glot.run();
 	}
