@@ -147,6 +147,14 @@ function grapher(options) {
 		} else if (key == 71) {
 			// This is g
 			this.options = this.options ^ GRID_ON;
+		} else {
+			if (this.userKeyboardFunction) {
+				try {
+					this.userKeyboardFunction(key);
+				} catch(e) {
+					console.log("User keyboard function failed.")
+				}
+			}
 		}
 	}
 	
@@ -179,6 +187,10 @@ function grapher(options) {
 	
 	this.setClickFunction = function(myfunction) {
 		this.userClickFunction = myfunction;
+	}
+	
+	this.setKeyboardFunction = function(myfunction) {
+		this.userKeyboardFunction = myfunction;
 	}
 
 	this.initialize = function() {
