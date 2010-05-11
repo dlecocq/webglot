@@ -1,12 +1,19 @@
 varying vec2 v_texCoord;
 uniform float t;
 
+uniform float dx;
+uniform float dy;
+
+uniform float scale;
+
 const float PI = 3.14159265;
+
+// USER_PARAMETERS
 
 void main () {
 
-	float x = v_texCoord.x;
-	float y = v_texCoord.y;
+	float x = scale * (v_texCoord.x + dx);
+	float y = scale * (v_texCoord.y + dy);
 	
 	/* POLAR
 	float tmp = x;
@@ -22,7 +29,6 @@ void main () {
 	}
 	//*/
 	
-	//sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5) * (x - 1.5) + (y - 0.75) * (y - 0.75)) - t)
 	float value = USER_FUNCTION;
 	value = (value + 1.0) / 2.0;
 

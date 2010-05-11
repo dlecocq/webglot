@@ -1,14 +1,20 @@
 // This class encapsulates curves
-function curve(context, string) {
+function curve(string, color, options) {
 	
-	this.gl = context;
+	this.gl = null;
 	this.f  = string;
 	
 	this.vertexVBO	= null;
 	this.indexVBO		= null;
 	this.count			= 1000;
+	this.parameters = null;
+	this.options    = options || (CARTESIAN | X_LIN | Y_LIN);
+	
+	this.color = color || [0, 0, 0, 1];
 
-	this.initialize = function(scr) {
+	this.initialize = function(gl, scr, parameters) {
+		this.gl = gl;
+		this.parameters = parameters;
 		this.refresh(scr);
 		this.gen_program();
 	}
@@ -30,10 +36,13 @@ function curve(context, string) {
 			a += dx;
 		}
 
-		/* Add this soon */
+		/* Delete vertex buffers if they exist already */
 		if (this.vertexVBO) {
-			//this.gl.console.log("deleting");
-			//this.gl.deleteBuffer(this.vertexVBO);
+			this.gl.deleteBuffer(this.vertexVBO);
+		}
+		
+		if (this.indexVBO) {
+			this.gl.deleteBuffer(this.indexVBO);
 		}
 		
 		this.vertexVBO = this.gl.createBuffer();
@@ -42,12 +51,12 @@ function curve(context, string) {
 		
 		this.indexVBO = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indexVBO);
-		
-		// I think this ought to be changed to STATIC_DRAW
 		this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indices), this.gl.STATIC_DRAW);
 	}
 	
-	this.draw = function() {
+	this.draw = function(scr) {
+		this.setUniforms(scr);
+		
 		this.gl.enableVertexAttribArray(0);
 		
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexVBO);
@@ -64,7 +73,7 @@ function curve(context, string) {
 		var vertex_source = this.read("shaders/curve.vert").replace("USER_FUNCTION", this.f);
 		var frag_source		= this.read("shaders/curve.frag");
 		
-		this.compile_program(vertex_source, frag_source);		
+		this.program = this.compile_program(vertex_source, frag_source, this.parameters);
 	}
 }
 

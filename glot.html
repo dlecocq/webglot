@@ -2,35 +2,81 @@
 <html>
 <head>
 	<title>WebGLot Alpha</title>
-	<script src="primitive.js"> </script>
+	<script src="primitive.js">    </script>
+	<script src="axes.js">         </script>
+	<script src="grid.js">         </script>
+
+	<script src="emptytexture.js"> </script>
+	<script src="texture.js">      </script>
+	<script src="ftexture.js">     </script>
+	<script src="nurbs.js">        </script>
 	
-	<script src="stopwatch.js"> </script>
-	<script src="curve.js"> </script>
-	<script src="p_curve.js"> </script>
+	<script src="pde.js">          </script>
+	<script src="flow.js">         </script>
+	<script src="stopwatch.js">    </script>
+	<script src="curve.js">        </script>
+	<script src="p_curve.js">      </script>
 	<script src="scalar_field.js"> </script>
 	<script src="CanvasMatrix.js"> </script>
-	<script src="screen.js"> </script>
-	<script src="grapher.js"> </script>
+	<script src="screen.js">       </script>
+	<script src="grapher.js">      </script>
 
 	<script>
-		function start() {
-		var glot = new grapher();
-		glot.initialize();
+	function keyboard(key) {
+		var a = this.parameters["a"];
+		var b = this.parameters["b"  ];
+		if (key == 83) {
+			//this.gl.console.log("Pressed s");
+			this.set("a", a * 0.9);
+		} else if (key == 70) {
+			//this.gl.console.log("Pressed f");
+			this.set("a", a / 0.9);
+		} else if (key == 80) {
+			//this.gl.console.log("Pressed p");
+			this.set("b", b / 0.9);
+		} else if (key == 77) {
+			//this.gl.console.log("Pressed m");
+			this.set("b", b * 0.9);
+		}
+	}
+	
+	function start() {
+		var glot = new grapher(AXES_ON | GRID_OFF);
+		//glot.set("omega", 150);
+		glot.set("b", 1.0);
 		
-		glot.add(new scalar_field(glot.getContext(), "sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5) * (x - 1.5) + (y - 0.75) * (y - 0.75)) - t)"));
+		//glot.add(new scalar_field("sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5) * (x - 1.5) + (y - 0.75) * (y - 0.75)) - t)"));
+		//glot.add(new flow("-y * sin(t) * 2.0, 2.0 * x * sin(t * y) - 4.0 * cos(1.5 * t)"));
+		//glot.add(new flow("sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5) * (x - 1.5) + (y - 0.75) * (y - 0.75)) - t)"));
+		//glot.add(new flow("5.0 * sin(t) + x, 5.0 * cos(t) + y"));
+		glot.add(new pde(glot.getContext()));
 		//glot.add(new scalar_field(glot.getContext(), "sin(sqrt(x * x + y * y) + t)"));
-		//glot.add(new p_curve(glot.getContext(), "sin(s * t), cos(1.5 * s * t)"));
-		//glot.add(new curve(glot.getContext(), "sin(x)"));
-		var f = function() { glot.reshape(); glot.display() };
-		setInterval(f, 10);
+		//glot.add(new p_curve("sin(s * t), cos(1.5 * s * t)"));
+		
+		/*
+		// This is the example given to me by Nathan Collier
+		glot.add(new nurbs([0, 0, 0, 0.5, 1, 1, 1], [[0.0, 1.0, 0, 1], [3.3, 2.0, 0, 1], [6.7, 0.0, 0, 1], [10, 3, 0, 1]], 2, [0, 0, 1, 1]));
+		glot.add(new p_curve("          (1.0 - s) * 3.3 ,       s + (1.0 - s) * 2.0", [1, 0, 0, 1]));
+		glot.add(new p_curve("s * 3.3 + (1.0 - s) * 6.7 , 2.0 * s                  ", [1, 0, 0, 1]));
+		glot.add(new p_curve("s * 6.7 + (1.0 - s) * 10.0,           (1.0 - s) * 3.0", [1, 0, 0, 1]));
+		// This is the first portion of the nurbs curve, determined analytically.
+		//glot.add(new p_curve("(1.0 - (0.5 * s / 0.5)) * ((1.0 - (0.5 * s / 0.5)) * 0.0 + (0.5 * s / 0.5) * 3.3) + (0.5 * s / 0.5) * ((1.0 - 0.5 * s) * 3.3 + 0.5 * s * 6.7), (1.0 - (0.5 * s / 0.5)) * ((1.0 - (0.5 * s / 0.5)) * 1.0 + (0.5 * s / 0.5) * 2.0) + (0.5 * s / 0.5) * ((1.0 - 0.5 * s) * 2.0 + 0.5 * s * 0.0)"))
+		//*/
+		
+		//glot.add(new nurbs([0, 0, 0, Math.PI / 2, Math.PI / 2, Math.PI, Math.PI, 3 * Math.PI / 2, 3 * Math.PI / 2, 2 * Math.PI, 2 * Math.PI, 2 * Math.PI], [[1, 0, 0, 1], [1, 1, 0, Math.sqrt(2) / 2], [0, 1, 0, 1], [-1, 1, 0, Math.sqrt(2) / 2], [-1, 0, 0, 1], [-1, -1, 0, Math.sqrt(2) / 2], [0, -1, 0, 1], [1, -1, 0, Math.sqrt(2) / 2], [1, 0, 0, 1]], 3, [0, 0, 1, 1]));
+		//glot.add(new nurbs([0, 0, 0, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75, 1, 1, 1], [[1, 0, 0, 1], [1, 1, 0, Math.sqrt(2) / 2], [0, 1, 0, 1], [-1, 1, 0, Math.sqrt(2) / 2], [-1, 0, 0, 1], [-1, -1, 0, Math.sqrt(2) / 2], [0, -1, 0, 1], [1, -1, 0, Math.sqrt(2) / 2], [1, 0, 0, 1]], 2, [0, 0, 1, 1]));
+		
+		glot.setKeyboardFunction(keyboard);
+		
+		glot.run();
 	}
 	</script>
 	
 	<style type="text/css">
 	canvas {
 		border: 1px solid black;
-		width:100%;
-		height:400px;
+		width : 100%;
+		height: 95%;
 	}
 	</style>
 </head>

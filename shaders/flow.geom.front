@@ -1,7 +1,0 @@
-#version 120
-#extension GL_EXT_geometry_shader4 : enable
-
-uniform float t;
-
-vec2 function(float x, float y) {
-	return vec2(

@@ -1,15 +1,18 @@
 // This class will encapsulate scalar fields
-function scalar_field(context, string, options) {
+function scalar_field(string, options) {
 	
-	this.gl   = context;
+	this.gl   = null;
 	this.f    = string;
 	this.opts = options || [];
+	this.parameters = null;
 	
 	this.vertexVBO	= null;
 	this.textureVBO = null;
 	this.indexVBO		= null;
 
-	this.initialize = function(scr) {
+	this.initialize = function(gl, scr, parameters) {
+		this.parameters = parameters;
+		this.gl = gl;
 		this.refresh(scr);
 		this.gen_program();
 	}
@@ -64,7 +67,9 @@ function scalar_field(context, string, options) {
 		this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indices), this.gl.STATIC_DRAW);
 	}
 	
-	this.draw = function() {
+	this.draw = function(scr) {
+		this.setUniforms(scr);
+		
 		this.gl.enableVertexAttribArray(0);
 		this.gl.enableVertexAttribArray(1);
 		
@@ -85,12 +90,23 @@ function scalar_field(context, string, options) {
 	this.gen_program = function() {
 		var vertex_source = this.read("shaders/scalar.vert");
 		var frag_source		= this.read("shaders/scalar.frag").replace("USER_FUNCTION", this.f);
+
+		/*
+		// Add user parameters
+		if (this.parameters) {
+			var params = "// User parameters\n";
+			for (i in this.parameters) {
+				params += "uniform float " + i + ";\n";
+			}
+			frag_source = frag_source.replace("// USER_PARAMETERS", params);
+		}
+		*/
 		
 		if (this.opts.indexOf("POLAR")) {
 			frag_course = frag_source.replace("/* POLAR", "//");
 		}
 		
-		this.compile_program(vertex_source, frag_source);		
+		this.program = this.compile_program(vertex_source, frag_source);		
 	}
 }
 

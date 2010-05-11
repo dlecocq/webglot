@@ -1,11 +1,17 @@
+AXES_OFF = 0;
+GRID_OFF = 0;
+AXES_ON  = 1;
+GRID_ON  = 2;
+
 // This class will encapsulate the grapher
-function grapher() {
+function grapher(options) {
 
 	this.scr = new screen();
-	this.axes_dl = null;
-	this.grid_dl = null;
+	this.axes    = null;
+	this.grid    = null;
 	this.gl			 = null;
 	this.wall		 = null;
+	this.options = (options == null) ? AXES_ON | GRID_ON : options;
 	
 	this.start   = null;
 	this.moving  = false;
@@ -13,16 +19,16 @@ function grapher() {
 	// A framerate timer
 	this.framerate	= null;
 	this.framecount = 0;
+	this.frametotal = 0;
+	
+	this.userClickFunction    = null;
+	this.userKeyboardFunction = null;
 	
 	this.primitives = new Array();
+	this.parameters = new Array();
 
 	this.getContext = function() {
-		// It would seem that all this context stuff is handled in this,
-		// so no need to fuss with things like getting glutContext, etc.
-		// At least, that's my understanding at this point.
 		var canvas = document.getElementById("glot");
-	
-		var gl = null;
 	
 		/* It seems there's not a lot of uniformly-accepted strings for
 		 * fetching the context, and so we will try severl likely ones,
@@ -32,70 +38,123 @@ function grapher() {
 		
 		for (var i = 0; i < strings.length; ++i) {
 			try {
-				if (!gl) {
-					gl = canvas.getContext(strings[i]);
+				if (!this.gl) {
+					this.gl = canvas.getContext(strings[i]);
 				} else {
 					break;
 				}
 			} catch (e) { }
 		}
 	
-		return gl;
+		return this.gl;
 	}
 	
-	/* sx and sy are the screen x and y coordinates.
+	/* Where sx and sy are the screen x and y coordinates, this returns
+	 * a point corresponding to world space at those screen coordinates.
 	 */
 	this.coordinates = function(sx, sy) {
 		var point = new Array();
 		point["x"] = this.scr.minx + (this.scr.maxx - this.scr.minx) * (sx / this.scr.width);
-		point["y"] = this.scr.maxy + (this.scr.maxy - this.scr.miny) * (sy / this.scr.height);
+		point["y"] = this.scr.maxy + (this.scr.miny - this.scr.maxy) * (sy / this.scr.height);
 		return point;
 	}
 	
+	/* The mouse-click handler
+	 */
 	this.mousedown = function(x, y) {
 		this.start = this.coordinates(x, y);
 		this.moving = true;
 	}
 	
+	/* And the mouse-up handler
+	 */
 	this.mouseup = function(x, y) {
-		try {
-			var end = this.coordinates(x, y);
-		
-			var dx = this.start["x"] - end["x"];
-			var dy = this.start["y"] - end["y"];
-		
-			if (dx != 0 || dy != 0) {
-				this.scr.minx -= dx;
-				this.scr.maxx -= dx;
-				this.scr.miny -= dy;
-				this.scr.maxy -= dy;
-				this.refresh_dls();
+		var end = this.coordinates(x, y);
+	
+		var dx = this.start["x"] - end["x"];
+		var dy = this.start["y"] - end["y"];
+	
+		if (dx != 0 || dy != 0) {
+			this.scr.minx += dx;
+			this.scr.maxx += dx;
+			this.scr.miny += dy;
+			this.scr.maxy += dy;
+			this.refresh_dls();
+		} else {
+			if (this.userClickFunction) {
+				try {
+					this.userClickFunction(end.x, end.y);
+				} catch(e) {
+					console.log("User click function failed.")
+				}
 			}
-			this.moving = false;
-		} catch (e) {}
+		}
+		
+		this.moving = false;
+		
+		this.scr.translate(0, 0);
 	}
 	
+	/* The mouse-movement handler
+	 */
 	this.mousemove = function(x, y) {
 		if (this.moving) {
 			var end = this.coordinates(x, y);
 		
 			var dx = this.start["x"] - end["x"];
 			var dy = this.start["y"] - end["y"];
-		
+			
 			if (dx != 0 || dy != 0) {
-				var avgx = (this.scr.minx + this.scr.maxx);
-				var avgy = (this.scr.miny + this.scr.maxy);
-				this.gl.projectionMatrix = new CanvasMatrix4();
-				this.gl.projectionMatrix.ortho(this.scr.minx - avgx + dx, this.scr.maxx - avgx + dx, this.scr.miny - avgy + dy, this.scr.maxy - avgy + dy, -10, 0);
+				this.scr.translate(dx, dy);
 			}
 		}
 	}
 	
+	/* Attempting a scroll handler.
+	 */
+	//*
+	this.scroll = function(event) {
+		if (!event) event = window.event;
+		
+		if (event.wheelDelta) {
+			delta = event.wheelDelta / 60;
+		} else if (event.detail) {
+			delta = -event.detail / 2;
+		}
+		
+		//this.gl.console.log("delta: " + delta);
+		this.scr.scale(1.0 - delta * 0.1);
+	}
+	//*/
+	
+	/* The keyboard handler
+	 */
 	this.keyboard = function(key) {
+		this.gl.console.log("Key (" + key + ") pressed.");
 		if (key == 189) {
+			/*
 			this.zoom(1.15);
+			*/
+			this.scr.scale(1.15);
 		} else if (key == 187) {
+			/*
 			this.zoom(1.0 / 1.15);
+			//*/
+			this.scr.scale(1.0 / 1.15);
+		} else if (key == 65) {
+			// This is a
+			this.options = this.options ^ AXES_ON;
+		} else if (key == 71) {
+			// This is g
+			this.options = this.options ^ GRID_ON;
+		} else {
+			if (this.userKeyboardFunction) {
+				try {
+					this.userKeyboardFunction(key);
+				} catch(e) {
+					console.log("User keyboard function failed.")
+				}
+			}
 		}
 	}
 	
@@ -114,31 +173,47 @@ function grapher() {
 		midx *= 2;
 		midy *= 2;
 		
+		/*
 		this.gl.projectionMatrix = new CanvasMatrix4();
 		this.gl.projectionMatrix.ortho(this.scr.minx - midx, this.scr.maxx - midx, this.scr.miny - midy, this.scr.maxy - midy, -10, 0);
+		*/
+		
+		this.scr.recalc();
 		
 		if (scale > 1) {
 			this.refresh_dls();
 		}
 	}
+	
+	this.setClickFunction = function(myfunction) {
+		this.userClickFunction = myfunction;
+	}
+	
+	this.setKeyboardFunction = function(myfunction) {
+		this.userKeyboardFunction = myfunction;
+	}
 
 	this.initialize = function() {
-	
-		/* This is some initialization that the OpenGL / GLUT version of
-		 * openGLot did programatically after creating the context. But,
-		 * in WebGL, they are passed in as parameters into the initial-
-		 * ization phase, but I'm not yet sure as to the syntax.	Add this
-		 * in for later versions.	 Provisionally disabled.
-		 */
-		/*
-		// Set the color mode (double with alpha)
-		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-		*/
+		// First things first, get the WebGL rendering context.
+		this.gl = this.getContext();
 		
 		var canvas = document.getElementById("glot");
+		
+		/* Initialize the screen's stored width and height */
+		this.scr.width  = canvas.clientWidth;
+		this.scr.height = canvas.clientHeight;
+		this.scr.normalize();
+		
+		// This was included in the webkit examples, but my JavaScript
+		// is weak, and I'm not quite sure what exactly this means.
+		// Add a console
+		this.gl.console = ("console" in window) ? window.console : { log: function() { } };
+		
+		// This is for easier callback handling
 		canvas.glot = this;
 		document.glot = this;
 		
+		/* Register various callback handlers */
 		var f = function(event) { this.glot.mousedown(event.clientX, event.clientY) };
 		canvas.onmousedown = f;
 		
@@ -150,11 +225,11 @@ function grapher() {
 		
 		f = function(event) { this.getElementById("glot").glot.keyboard(Number(event.keyCode)) };
 		document.onkeydown = f;
-	
-		var gl = this.getContext();
-		this.gl = gl;
+		
+		f = function(event) { this.glot.scroll(event) };
+		document.onmousewheel = f;
 
-		if (!gl) {
+		if (!this.gl) {
 			alert("Can't find a WebGL context; is it enabled?");
 			return null;
 		}
@@ -164,18 +239,18 @@ function grapher() {
 		 * character of the function call, and "gl." referes to the context
 		 * provided by getContext()
 		 */
-		gl.enable(gl.LINE_SMOOTH);
-		gl.enable(gl.POINT_SMOOTH);
-		gl.enable(gl.BLEND);
-		gl.enable(gl.VERTEX_ARRAY);
-		gl.enable(gl.DEPTH_TEST);
+		this.gl.enable(this.gl.LINE_SMOOTH);
+		this.gl.enable(this.gl.POINT_SMOOTH);
+		this.gl.enable(this.gl.BLEND);
+		this.gl.enable(this.gl.VERTEX_ARRAY);
+		this.gl.enable(this.gl.DEPTH_TEST);
 	
 		// Other smoothness and blending options
-		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		gl.hint(gl.LINE_SMOOTH_HINT, gl.DONT_CARE);
+		this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+		this.gl.hint(this.gl.LINE_SMOOTH_HINT, this.gl.DONT_CARE);
 	
 		// Set the line width and point size
-		gl.lineWidth(1.5);
+		this.gl.lineWidth(1.5);
 		
 		/* WebGL doesn't support this, it seems.  OpenGL ES 2.0 elliminated
 		 * it to obviate the need for dedicated hardware for this task,
@@ -183,198 +258,76 @@ function grapher() {
 		 *
 		 * gl.pointSize(7);
 		 */
+		this.reshape();
 	
 		// Default color is white
-		gl.clearColor(1.0, 1.0, 1.0, 1.0);
-
-		// This was included in the webkit examples, but my JavaScript
-		// is weak, and I'm not quite sure what exactly this means.
-		// Add a console
-		var canvas = document.getElementById("glot");
-		gl.console = ("console" in window) ? window.console : { log: function() { } };
-	
-		/* The Provisional WebGL spec has something to say on maniuplating
-		 * the view size programatically.	 It's tied to the canvas element
-		 * size, and certain conditions and post-conditions must be satis-
-		 * fied, so proceed with caution.
-		 *
-		 * WARNING! Some primitives depend on screen having the properly-
-		 * filled values in screen for determination of vertex positions.
-		 * Thus, it is CRITICAL that this be dynamically queried at run-
-		 * time so that this data can be accurate.
-		 */
-		this.scr.width = this.scr.height = 500;
-
-		/* Again, it would seem that all the initialization heavy lifting
-		 * is handled by the WebGL canvas initialization, so I don't think
-		 * this line is required.
-		 */
-		// Initialize OpenGL
-		// init_open_gl();
-	
-		/* The callback registration for WebGL is either not intuitive,
-		 * undocumented, or unavailable to me.	As such, this is provision-
-		 * ally removed from the WebGL implementation.
-		 */
-		// Register callback functions with GLUT
-		/*
-		glutDisplayFunc(display);
-		*/
+		this.gl.clearColor(1.0, 1.0, 1.0, 1.0);
 
 		this.framerate = new stopwatch();
 		this.framerate.start();
+		this.framecount = 0;
 
 		this.wall = new stopwatch();
 		this.wall.start();
 
 		// Determine the axes and grid
-		//this.axes_dl = this.axes_dl_gen();
-		//this.grid_dl = this.grid_dl_gen();
-	
-		this.framecount = 0;
-	
-		// Consult JavaScript timing documentation
-		//wall.start();
-	
-		this.context = gl;
+		this.axes = new axes(this.gl, this.scr);
+		this.grid = new grid(this.gl, this.scr);
 	
 		// In the future, this ought to return some encoded value of success or failure.
 		return 0;
 	}
 
-	this.axes_dl_gen = function() {
-		if (this.axes_dl != null) {
-			delete this.axes_dl;
-		}
-		var gl = this.getContext();
-	
-		var geometryData = [ ];
-		var textureData = [ ];
-		var indexData = [ ];
-
-		geometryData.push(this.scr.minx);
-		geometryData.push(this.scr.miny);
-		textureData.push(this.scr.minx);
-		textureData.push(this.scr.miny);
-
-		geometryData.push(this.scr.minx);
-		geometryData.push(this.scr.maxy);
-		textureData.push(this.scr.minx);
-		textureData.push(this.scr.maxy);
-
-		geometryData.push(this.scr.maxx);
-		geometryData.push(this.scr.maxy);
-		textureData.push(this.scr.maxx);
-		textureData.push(this.scr.maxy);
-
-		geometryData.push(this.scr.maxx);
-		geometryData.push(this.scr.miny);
-		textureData.push(this.scr.maxx);
-		textureData.push(this.scr.miny);
-
-		indexData.push(0);
-		indexData.push(1);
-		indexData.push(2);
-		indexData.push(3);
-				
-		var retval = { };
-
-		retval.vertexObject = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, retval.vertexObject);
-		gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(geometryData), gl.DYNAMIC_DRAW);
-
-		retval.textureObject = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, retval.textureObject);
-		gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(textureData), gl.DYNAMIC_DRAW);
-		
-		retval.numIndices = indexData.length;
-		retval.indexObject = gl.createBuffer();
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, retval.indexObject);
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indexData), gl.STREAM_DRAW);
-		
-		return retval;
-	}
-
-	this.grid_dl_gen = function() {
-		var gl = this.getContext();
-		var dl = gl.genLists(1);
-	
-		glNewList(dl, GL_COMPILE);
-	
-			glColor4d(0.0, 0.0, 0.0, 0.14);
-	
-			glBegin(GL_LINES);
-		
-				// How does typecasting work in JavaScript?
-				for( var i = this.scr.miny; i <= this.scr.maxy; ++i) {
-					glVertex3d(this.scr.minx, i, 1);
-					glVertex3d(this.scr.maxx, i, 1);
-				}
-	
-				for( var i = this.scr.minx; i <= this.scr.maxx; ++i) {
-					glVertex3d(i, this.scr.miny, 1);
-					glVertex3d(i, this.scr.maxy, 1);
-				}
-		
-			glEnd();
-		
-		glEndList();
-	
-		return dl;
-	}
-
 	this.display = function() {
-		var gl = this.getContext();
 		
-		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		this.reshape();
+		this.scr.recalc();
+		
+		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 		
 		var program				 = null;
 		var mvMat_location = null;
 		var prMat_location = null;
 		var time_location	 = null;
+		var param_loc      = null;
+		
+		this.scr.time = this.wall.time();
 
 		for (var i in this.primitives) {
-			program = this.primitives[i].program;
-			
-			gl.useProgram(program);
-			
-			mvMat_location = gl.getUniformLocation(program, "u_modelViewMatrix");
-			prMat_location = gl.getUniformLocation(program, "u_projectionMatrix");
-			time_location	 = gl.getUniformLocation(program, "t");
-		
-			gl.uniformMatrix4fv(mvMat_location, false, gl.modelviewMatrix.getAsWebGLFloatArray());
-			gl.uniformMatrix4fv(prMat_location, false, gl.projectionMatrix.getAsWebGLFloatArray());
-			gl.uniform1f(time_location, this.wall.time());
-			
-			this.primitives[i].draw();
+			this.primitives[i].draw(this.scr);
 		}
 		
-		gl.flush();
+		// Draw axes and grid
+		if (this.options & AXES_ON) {
+			this.axes.draw(this.scr);
+		}
+		
+		if (this.options & GRID_ON) {
+			this.grid.draw(this.scr);
+		}
+		
+		this.gl.flush();
 		
 		this.framecount = this.framecount + 1;
+		this.frametotal = this.frametotal + 1;
+		//document.getElementById("frametotal").innerHTML = "Frames: " + this.frametotal;
 		if (this.framecount == 150) {
-			document.getElementById("framerate").innerHTML = "Framerate: " + 150 / this.framerate.time();
+			var rate = 150 / this.framerate.time();
+			document.getElementById("framerate").innerHTML = "Framerate: " + Math.round(rate * 1e4) * 1e-4 + " (" + Math.floor(this.scr.width * 2 * this.scr.height * 2 * 4 * 138 * rate / 1e6) * 1e-3 + " Gflops)";
 			this.framecount = 0;
 			this.framerate = new stopwatch();
 			this.framerate.start();
 		}
 		
-		gl.finish();
+		this.gl.finish();
 	}
 
 	this.refresh_dls = function() {
 		for (var i = 0; i < this.primitives.length; ++i) {
 			this.primitives[i].refresh(this.scr);
 		}
-		//this.axes_dl = this.axes_dl_gen();
-		//this.grid_dl = grid_dl_gen(); 
-	}
-
-	this.run = function() {
-		//var f = function() { this.reshape(); this.display() };
-		setInterval(this.display(), 10);
-		/* How does MainLoop work in WebGL? */
-		return 0;
+		this.axes.refresh(this.scr);
+		this.grid.refresh(this.scr);
 	}
 
 	this.reshape = function() {
@@ -390,9 +343,6 @@ function grapher() {
 		if (w == this.scr.width && h == this.scr.height) {
 			return;
 		}
-
-		context.projectionMatrix = new CanvasMatrix4();
-		context.modelviewMatrix = new CanvasMatrix4();
 	
 		context.viewport(0, 0, w, h);
 
@@ -405,19 +355,8 @@ function grapher() {
 		
 		var xw = this.scr.maxx - this.scr.minx;
 		var yh = this.scr.maxy - this.scr.miny;
-		/*
-		context.modelviewMatrix.translate(-this.scr.minx, -this.scr.miny, 0);
-		context.modelviewMatrix.scale(1 / xw, 1 / yh, 1);
-		//*/
 
-		//*
-		var avgx = (this.scr.minx + this.scr.maxx);
-		var avgy = (this.scr.miny + this.scr.maxy);
-		//*/
-
-		// Set the projection
-		context.projectionMatrix.ortho(this.scr.minx - avgx, this.scr.maxx - avgx, this.scr.miny - avgy, this.scr.maxy - avgy, -10, 0);
-		//context.projectionMatrix.ortho(0, 1, 0, 1, -10, 0);
+		this.scr.recalc();
 
 		// Re-calculate the draw lists if we've expanded the view
 		if (w > this.scr.width || h > this.scr.height) {
@@ -432,6 +371,21 @@ function grapher() {
 	
 	this.add = function(primitive) {
 		this.primitives.push(primitive);
-		primitive.initialize(this.scr);
+		primitive.initialize(this.gl, this.scr, this.parameters);
 	}
+	
+	this.set = function(parameter, value) {
+		this.parameters[parameter] = value;
+	}
+	
+	this.get = function(parameter) {
+		return this.parameters[parameter];
+	}
+	
+	this.run = function() {
+		window.glot = this;
+		window.setInterval(function() { this.glot.display(); }, 10);
+	}
+	
+	this.initialize();
 }
