@@ -15,9 +15,9 @@ vec4 function(float s) {
 void main() {
 	vec4 result = function(position.x);
 	
-	result.xy /= scale;
-	
 	// COORDINATE_TRANSFORMATION
+	
+	result.xy /= scale;
 	
 	gl_Position = projectionMatrix * modelviewMatrix * result;
 }
