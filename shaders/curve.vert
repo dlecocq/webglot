@@ -4,6 +4,8 @@ uniform mat4 projectionMatrix;
 uniform float dx;
 uniform float dy;
 
+uniform float scale;
+
 attribute vec4 position;
 
 uniform float t;
@@ -16,7 +18,8 @@ float function(float x) {
 
 void main() {
 	
-	vec4 result = vec4(position.x + dx, function(position.x + dx), 0.0, 1.0);
+	vec4 result = vec4(position.x + dx, function(scale * (position.x + dx)), 0.0, 1.0);
+	result.y = result.y / scale;
 
 	// COORDINATE_TRANSFORMATION
 	
