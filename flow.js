@@ -13,13 +13,13 @@ function flow(string, options) {
 	 */
 	this.vertexVBO	= null;
 	this.textureVBO = null;
-	this.indexVBO		= null;
+	this.indexVBO	= null;
 	
 	/* A more apt name might be "resolution," as count is the number
 	 * of samples along each axis (x and y) samples are taken. Being
 	 * set to 100 means that it will produce 2 * 100 * 100 triangles.
 	 */
-	this.count			= 50;
+	this.count		= 250;
 	this.index_ct   = 0;
 	
 	this.source = null;
@@ -74,7 +74,7 @@ function flow(string, options) {
 				return pixels;
 			}
 			
-			this.source = new ftexture(this.gl, scr.width / 2, scr.height / 2, f);
+			this.source = new ftexture(this.gl, scr.width / 2, scr.height / 2, f, this.gl.RGBA);
 			
 			this.gl.bindTexture(this.gl.TEXTURE_2D, null);
 		}
