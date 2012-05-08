@@ -6,7 +6,8 @@ attending SIGGRAPH Asia 2009, and learning about WebGL. At the time
 I was very interested in visualization, and mathematical rendering
 in particular. My vision was that `webglot` could be a library for
 performing some normally computationally-intensive visualization in
-the browser.
+the browser. I wrote this while a student at 
+[King Abdullah Univeristy of Science and Technology](http://www.kaust.edu.sa/)
 
 __NOTE__: I have not run much of this since it was under active development.
 It has not necessarily aged well, in the sense that I've not been able
