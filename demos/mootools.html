@@ -2,6 +2,8 @@
 <html>
 <head>
 	<title>WebGLot Alpha</title>
+	<script src="../../javascript/mootools.js"> </script>
+	
 	<script src="../primitive.js">    </script>
 
 	<script src="../emptytexture.js"> </script>
@@ -26,10 +28,10 @@
 	}
 	
 	function start() {
-		var glot = new grapher(AXES_ON | GRID_OFF);
-		glot.set("a", 0.5);
+		var glot = new grapher(AXES_ON | GRID_ON);
+		//glot.set("omega", 0.5);
 		
-		glot.add(new scalar_field("sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5 + 0.8 * t) * (x - 1.5 + 0.8 * t) + (y - 0.75) * (y - 0.75)) - t)"));
+		glot.add(new scalar_field("sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5) * (x - 1.5) + (y - 0.75) * (y - 0.75)) - t)"));
 		
 		glot.setClickFunction(click);
 		
@@ -41,8 +43,32 @@
 	canvas {
 		border: 1px solid black;
 		width:  100%;
-		height: 94%;
+		height: 75%;
 	}
+	
+	slider {
+		width:256px;
+		margin:10px 0;
+		background-color:#ccc;
+		height:10px;
+		position: relative;
+	}
+	
+	div.slider div.handle {
+		width:10px;
+		height:15px;
+		background-color:#f00;
+		cursor:move;
+		position: absolute;
+	}
+	
+	div#zoom_element {
+		width:50px;
+		height:50px;
+		background:#2d86bd;
+		position:relative;
+	}
+
 	</style>
 </head>
 <body onload="start()">
@@ -50,5 +76,21 @@
 		There is supposed to be an example drawing here, but it's not important.
 	</canvas>
 	<div id="framerate">15</div>
+	
+	<div class="demo">
+	  <p>Use the slider to resize the box</p>
+	  <div id="zoom_slider" class="slider">
+	    <div class="handle"></div>
+	  </div>
+
+	  <p>And this to change its color</p>
+	  <div id="rgb_slider" class="slider">
+	    <div class="handle" style="background-color: #f00;"></div>
+	    <div class="handle" style="background-color: #0f0;"></div>
+	    <div class="handle" style="background-color: #00f;"></div>
+	  </div>
+
+	  <div id="zoom_element"></div>
+	</div>
 </body>
 </html>

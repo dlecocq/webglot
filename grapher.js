@@ -313,7 +313,7 @@ function grapher(options) {
 		//document.getElementById("frametotal").innerHTML = "Frames: " + this.frametotal;
 		if (this.framecount == 150) {
 			var rate = 150 / this.framerate.time();
-			document.getElementById("framerate").innerHTML = "Framerate: " + Math.round(rate * 1e4) * 1e-4 + " (" + Math.floor(this.scr.width * 2 * this.scr.height * 2 * 4 * 138 * rate / 1e6) * 1e-3 + " Gflops)";
+			document.getElementById("framerate").innerHTML = "Framerate: " + Math.round(rate * 1e4) * 1e-4;
 			this.framecount = 0;
 			this.framerate = new stopwatch();
 			this.framerate.start();
@@ -340,9 +340,11 @@ function grapher(options) {
 		/* If the width and height of the resized canvas are already
 		 * the stored sizes, return and do nothing.
 		 */
+		/*
 		if (w == this.scr.width && h == this.scr.height) {
 			return;
 		}
+		*/
 	
 		context.viewport(0, 0, w, h);
 
@@ -356,15 +358,17 @@ function grapher(options) {
 		var xw = this.scr.maxx - this.scr.minx;
 		var yh = this.scr.maxy - this.scr.miny;
 
+		canvas.width = w;
+		canvas.height = h;
+		this.scr.width = w;
+		this.scr.height = h;
+
 		this.scr.recalc();
 
 		// Re-calculate the draw lists if we've expanded the view
 		if (w > this.scr.width || h > this.scr.height) {
 			this.refresh_dls();
 		}
-	
-		this.scr.width = w;
-		this.scr.height = h;
 
 		//glutPostRedisplay();
 	}
