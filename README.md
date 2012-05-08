@@ -47,8 +47,11 @@ to use at this point.
 Primitives
 ----------
 
-# Contour
+# PDEs
+Included is a basic stencil-based solver for the poisson equation.
+Someone who knows more about PDEs than I do should have a look.
 
+# Contour
 Contours, or iso-curves can be represented with the contour class.
 It accepts a function in x, y and t (see section 4) and renders
 the iso-curve for that function at z = 0.  Future versions will
