@@ -141,7 +141,6 @@ function pde(string, options) {
 		// First, set up Framebuffer we'll render into
 		this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fbo);
 		this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.ping, 0);
-		this.gl.enable(this.gl.TEXTURE_2D);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.pong);
 		this.checkFramebuffer();
 
@@ -187,7 +186,6 @@ function pde(string, options) {
 		this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
 		
 		// the recently-drawn texture
-		this.gl.enable(this.gl.TEXTURE_2D);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.ping);
 		this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.index_ct, this.gl.UNSIGNED_SHORT, 0);
 		
@@ -207,7 +205,7 @@ function pde(string, options) {
 		var frag_source   = this.read("shaders/pde.calc.frag");//.replace("USER_FUNCTION", this.f);
 		//*/
 		
-		this.calc_program = this.compile_program(vertex_source, frag_source);
+		this.calc_program = this.compile_program(vertex_source, frag_source, { "position": 0, "aTextureCoord": 1 });
 		
 		var frag_source	= this.read("shaders/pde.frag");
 		
