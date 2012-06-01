@@ -49,6 +49,9 @@ function grapher(options) {
 	this.parameters = new Array();
 
 	this.getContext = function() {
+                if (this.gl)
+                        return this.gl;
+
 		var canvas = document.getElementById("glot");
 	
 		/* It seems there's not a lot of uniformly-accepted strings for
@@ -67,6 +70,26 @@ function grapher(options) {
 			} catch (e) { }
 		}
 	
+                // The vast majority of this library uses floating-point textures, so
+                // require the availability of the OES_texture_float extension here.
+                if (!this.gl.getExtension("OES_texture_float")) {
+                        this.gl = null;
+                        throw "Requires the OES_texture_float extension";
+                }
+
+                /*
+                // Uncomment, and include webgl-debug.js in .html file (must copy from Khronos repository),
+                // to debug WebGL errors.
+                function throwOnGLError(err, funcName, args) {
+                        var errorString = WebGLDebugUtils.glEnumToString(err) +
+                                " was caused by call to " + funcName;
+                        throw errorString;
+                };
+
+                if (this.gl)
+                        this.gl = WebGLDebugUtils.makeDebugContext(this.gl, throwOnGLError);
+                */
+
 		return this.gl;
 	}
 	
@@ -260,19 +283,17 @@ function grapher(options) {
 		 * character of the function call, and "gl." referes to the context
 		 * provided by getContext()
 		 */
-		this.gl.enable(this.gl.LINE_SMOOTH);
-		this.gl.enable(this.gl.POINT_SMOOTH);
 		this.gl.enable(this.gl.BLEND);
-		this.gl.enable(this.gl.VERTEX_ARRAY);
 		this.gl.enable(this.gl.DEPTH_TEST);
 	
 		// Other smoothness and blending options
 		this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-		this.gl.hint(this.gl.LINE_SMOOTH_HINT, this.gl.DONT_CARE);
 	
 		// Set the line width and point size
 		this.gl.lineWidth(1.5);
 		
+                // FIXME: must set the point size using gl_PointSize in the vertex shader.
+
 		/* WebGL doesn't support this, it seems.  OpenGL ES 2.0 elliminated
 		 * it to obviate the need for dedicated hardware for this task,
 		 * which is a luxury in some sense.

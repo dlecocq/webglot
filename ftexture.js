@@ -25,7 +25,7 @@ function ftexture(context, width, height, f, type) {
 	this.texture = null;
 	this.image	 = null;
 	
-	this.type    = type || 0x8814;
+	this.type       = type || context.RGBA;
 	
 	this.gl			 = context;
 	
@@ -36,21 +36,19 @@ function ftexture(context, width, height, f, type) {
 		this.texture = this.gl.createTexture();
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
 
-		var pixels = new WebGLFloatArray(this.width * this.height * 4);
+		var pixels = new Float32Array(this.width * this.height * 4);
 		// Pass pixels into the user-provided function
 		pixels = f(pixels);
 		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.type, this.width, this.height, 0, this.gl.RGBA, this.gl.FLOAT, pixels);
 		
-		this.gl.enable(this.gl.TEXTURE_2D);
 		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
 		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
-		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_S_WRAP, this.gl.CLAMP);
-		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_T_WRAP, this.gl.CLAMP);
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, null);
 	}
 	
 	this.bind = function() {
-		this.gl.enable(this.gl.TEXTURE_2D);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
 	}
 	

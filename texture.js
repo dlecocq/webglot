@@ -33,7 +33,6 @@ function texture(context, src) {
 
 	this.handler = function() {
 		this.gl.console.log("Loaded " + this.src);
-		this.gl.enable(this.gl.TEXTURE_2D);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
 		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.image);
 		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
@@ -56,7 +55,6 @@ function texture(context, src) {
 	}
 	
 	this.bind = function() {
-		this.gl.enable(this.gl.TEXTURE_2D);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
 	}
 	

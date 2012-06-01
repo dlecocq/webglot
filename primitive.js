@@ -42,7 +42,7 @@ function primitive(context) {
 		return request.responseText;
 	}
 	
-	this.compile_program = function(vertex_source, frag_source) {
+        this.compile_program = function(vertex_source, frag_source, bound_attribs) {
 		// Add user parameters
 		if (this.parameters) {
 			console.log("Adding parameters to shader source");
@@ -104,6 +104,13 @@ function primitive(context) {
 		// Attach our two shaders to the program
 		this.gl.attachShader(program, vertex_shader);
 		this.gl.attachShader(program, frag_shader);
+
+		// Bind any vertex attribute locations
+		if (bound_attribs) {
+			for (var name in bound_attribs) {
+				this.gl.bindAttribLocation(program, bound_attribs[name], name);
+			}
+		}
 
 		// Link the program
 		this.gl.linkProgram(program);
@@ -169,8 +176,8 @@ function primitive(context) {
 			scale_location      = this.gl.getUniformLocation(program, "scale");
 			color_location      = this.gl.getUniformLocation(program, "color");
 
-			this.gl.uniformMatrix4fv(modelview_location , false, scr.modelviewMatrix.getAsWebGLFloatArray());
-			this.gl.uniformMatrix4fv(projection_location, false, scr.projectionMatrix.getAsWebGLFloatArray());
+			this.gl.uniformMatrix4fv(modelview_location , false, scr.modelviewMatrix.getAsFloat32Array());
+			this.gl.uniformMatrix4fv(projection_location, false, scr.projectionMatrix.getAsFloat32Array());
 
 			if (this.color) {
 				this.gl.uniform4f(color_location, this.color[0], this.color[1], this.color[2], this.color[3]);

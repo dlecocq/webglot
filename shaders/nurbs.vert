@@ -39,8 +39,6 @@ attribute float l;
 
 varying float u;
 
-int n = DEGREE;
-
 vec4  ds[20];
 float as[20];
 float us[20];
@@ -57,11 +55,13 @@ void main() {
 	
 	u = position.x;
 	
+	int n = DEGREE;
+
 	int li = int(l);
 	
 	//*
 	// Grab all the control points early on
-	for (int i = 0; i <= n; ++i) {
+	for (int i = 0; i <= DEGREE; ++i) {
 		ds[i] = texture2D(cpsTexture, vec2(float(li - n + i) / float(cpCount + 1) + cpEps, 0));
 		ds[i].xyz *= ds[i].w;
 	}
@@ -71,19 +71,21 @@ void main() {
 	
 	//*
 	// Grab all the u's early on
-	for (int i = 0; i < 2 * n; ++i) {
+	for (int i = 0; i < 2 * DEGREE; ++i) {
 		us[i] = texture2D(knotsTexture, vec2(float(li - n + 1 + i) / float(knotCount + 1) + knEps, 0)).r;
 	}
 	//*/
 	
 	// For all degrees, starting with the lowest...
-	for (int k = 1; k <= n; ++k) {
+	for (int k = 1; k <= DEGREE; ++k) {
 		// For all knots necessary
 		// It's important to begin with i and move left
 		// because of data dependencies
-		for (int i = n; i >= k; --i) {
+		for (int i = DEGREE; i >= 0; --i) {
+			if (i < k)
+				continue;
 			// Watch out for divide-by-zeros
-			as[i-1] = (u - us[i-1]) / (us[i + n - k] - us[i -1]);
+			as[i-1] = (u - us[i-1]) / (us[i + DEGREE - k] - us[i -1]);
 			/*
 			as[i-1] = us[i + n - k] - us[i-1];
 			if (as[i-1] != 0.0) {
@@ -100,7 +102,7 @@ void main() {
 	//result.xy = cpsValue.xy;
 	//result.x = knotsValue.r;
 	
-	result.xy = ds[n].xy / ds[n].w;
+	result.xy = ds[DEGREE].xy / ds[DEGREE].w;
 	result.xy /= scale;
 	//result.x = l;
 	

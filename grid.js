@@ -72,12 +72,12 @@ function grid(gl, scr) {
 
 		this.vertexVBO = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexVBO);
-		gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(vertices), gl.STATIC_DRAW);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 		
 		this.count = indices.length;
 		this.indexVBO = gl.createBuffer();
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexVBO);
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indices), gl.STATIC_DRAW);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
 	}
 	
 	this.draw = function(scr) {
@@ -99,7 +99,7 @@ function grid(gl, scr) {
 		var vertex_source = this.read("shaders/passthru.vert");
 		var frag_source		= this.read("shaders/passthru.frag");
 		
-		this.program = this.compile_program(vertex_source, frag_source);		
+                this.program = this.compile_program(vertex_source, frag_source, { "position": 0 });
 	}
 	
 	this.initialize(scr);

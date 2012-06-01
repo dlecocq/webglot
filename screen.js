@@ -62,8 +62,8 @@ function screen() {
 		dy_location    = gl.getUniformLocation(program, "dy");
 		scale_location = gl.getUniformLocation(program, "scale");
 
-		gl.uniformMatrix4fv(mvMat_location, false, this.modelviewMatrix.getAsWebGLFloatArray());
-		gl.uniformMatrix4fv(prMat_location, false, this.projectionMatrix.getAsWebGLFloatArray());
+		gl.uniformMatrix4fv(mvMat_location, false, this.modelviewMatrix.getAsFloat32Array());
+		gl.uniformMatrix4fv(prMat_location, false, this.projectionMatrix.getAsFloat32Array());
 		gl.uniform1f(time_location , this.time);
 		gl.uniform1f(dx_location   , this.dx);
 		gl.uniform1f(dy_location   , this.dy);

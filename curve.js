@@ -68,11 +68,11 @@ function curve(string, color, options) {
 		
 		this.vertexVBO = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexVBO);
-		this.gl.bufferData(this.gl.ARRAY_BUFFER, new WebGLFloatArray(vertices), this.gl.STATIC_DRAW);
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.STATIC_DRAW);
 		
 		this.indexVBO = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indexVBO);
-		this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indices), this.gl.STATIC_DRAW);
+		this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), this.gl.STATIC_DRAW);
 	}
 	
 	this.draw = function(scr) {
@@ -94,7 +94,7 @@ function curve(string, color, options) {
 		var vertex_source = this.read("shaders/curve.vert").replace("USER_FUNCTION", this.f);
 		var frag_source		= this.read("shaders/curve.frag");
 		
-		this.program = this.compile_program(vertex_source, frag_source, this.parameters);
+		this.program = this.compile_program(vertex_source, frag_source, this.parameters, { "position": 0 });
 	}
 }
 

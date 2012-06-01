@@ -4,6 +4,8 @@
 	<title>WebGLot Alpha</title>
 	<script src="primitive.js"> </script>
 	
+	<script src="grid.js"> </script>
+	<script src="axes.js"> </script>
 	<script src="stopwatch.js"> </script>
 	<script src="curve.js"> </script>
 	<script src="p_curve.js"> </script>
@@ -17,8 +19,8 @@
 		var glot = new grapher();
 		glot.initialize();
 		
-		glot.add(new p_curve(glot.getContext(), "sin(s * t), cos(1.5 * s * t)"));
-		glot.add(new p_curve(glot.getContext(), "sin(s * 6.3 + sin(s * 6.3)) + 4.0, cos(s * 6.3 + cos(s * 6.3)) + 2.0"))
+		glot.add(new p_curve("sin(s * t), cos(1.5 * s * t)"));
+		glot.add(new p_curve("sin(s * 6.3 + sin(s * 6.3)) + 4.0, cos(s * 6.3 + cos(s * 6.3)) + 2.0"));
 		var f = function() { glot.reshape(); glot.display() };
 		setInterval(f, 10);
 	}

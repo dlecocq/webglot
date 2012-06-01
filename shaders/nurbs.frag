@@ -19,6 +19,8 @@
  * SOFTWARE.
  */
 
+precision mediump float;
+
 uniform vec4 color;
 
 uniform sampler2D knotsTexture;
