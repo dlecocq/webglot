@@ -19,19 +19,19 @@
  * SOFTWARE.
  */
 
+/* 'Nuff said */
 uniform mat4 modelviewMatrix;
 uniform mat4 projectionMatrix;
 
+/* Position and the corresponding texture coordinate. The texture coordinate is 
+ * meant to be the range of /actual/ x,y values for fragments */
 attribute vec4 position;
 attribute vec2 aTextureCoord;
 
-uniform float t;
-
+/* This is what we'll be passing on to the fragment shader */
 varying vec2 vTextureCoord;
 
 void main() {
-	
-	gl_Position = projectionMatrix * position;
-	
+	gl_Position   = projectionMatrix * position;
 	vTextureCoord = aTextureCoord;
 }

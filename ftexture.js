@@ -21,7 +21,7 @@
 
 /* Reference: http://learningwebgl.com/blog/?p=507 */
 function ftexture(context, width, height, f, type) {
-	
+	console.log('ftexture');
 	this.texture = null;
 	this.image	 = null;
 	
@@ -33,6 +33,7 @@ function ftexture(context, width, height, f, type) {
 	this.height  = height;
 
 	this.initialize = function(f) {
+    	console.log('initialize');
 		this.texture = this.gl.createTexture();
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
 

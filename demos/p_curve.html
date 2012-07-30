@@ -29,9 +29,8 @@
 		var glot = new grapher(AXES_ON | GRID_OFF);
 		glot.set("a", 0.5);
 		
-		glot.add(new p_curve("sin(s * 6.3 * a), cos(1.5 * s * 6.3 * 2.0)", [1, 0, 0, 1]));
+		glot.add(new p_curve("3.0 * sin(s * 6.3 * 4.0 * sin(t / 4.0)), 3.0 * cos(1.5 * s * 12.6)", [1, 0, 0, 1]));
 		glot.add(new p_curve("t * s, s", [1, 0, 0, 1], POLAR | X_LIN | Y_LIN));
-		
 		glot.setClickFunction(click);
 		
 		glot.run();

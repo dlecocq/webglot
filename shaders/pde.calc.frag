@@ -7,8 +7,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  * 
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in 
+ * all copies or substantial portions of the Software.
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -30,8 +30,6 @@ uniform float t;
 uniform float width;
 uniform float height;
 
-//uniform float factor;
-
 float texdy = 1.0 / (height);
 float texdx = 1.0 / (width );
 
@@ -45,6 +43,7 @@ const float alpha = 1.0;
 
 // USER_PARAMETERS
 
+/* User-provided second derivative with respect to x */
 float uxx(float x, float y, float t) {
 	//return -2.0 * (1.0 + y) * (1.0 - y);
 	//return -omega * omega * sin(omega * (abs(x + y * y * y) * sin(x)));
@@ -53,6 +52,7 @@ float uxx(float x, float y, float t) {
 	//return 1.0 + y + 2.0 * x * y + y * y + 7.0 * x;
 }
 
+/* User-provided second derivative with respect to y */
 float uyy(float x, float y, float t) {
 	//return -2.0 * (1.0 + x) * (1.0 - x);
 	//return -omega * omega * cos(omega * (abs(y + x * x * x) * cos(x)));
@@ -60,35 +60,36 @@ float uyy(float x, float y, float t) {
 	//return x + x * x + x * 2.0 * y + 1.0 + 7.0 * y;
 }
 
+/* Boundary condition */
+float u_f(float x, float y, float t) {
+    //return sin(omega * x) + cos(omega * y);
+    //return 0.5 * (sin(x * 100.0) + sin(y * 100.0));
+    return 0.0;
+}
+
+/* Poisson */
 float f(float x, float y, float t) {
 	return uxx(x, y, t) + uyy(x, y, t);
 }
 
-float u_f(float x, float y, float t) {
-	//return sin(omega * x) + cos(omega * y);
-	return 0.0;
-}
-
 void main () {
-	vec2 coord = vTextureCoord.xy;
+	float texx = vTextureCoord.x;
+	float texy = vTextureCoord.y;
 	
-	float texx = coord.x;
-	float texy = coord.y;
+	float x = vTextureCoord.x;// * 2.0 - 1.0;
+	float y = vTextureCoord.y;// * 2.0 - 1.0;
 	
-	float x = coord.x * 2.0 - 1.0;
-	float y = coord.y * 2.0 - 1.0;
-	
-	if (texx <= texdx) {
+	if (texx <= 1.0 * texdx) {
 		x = u_f(x, y, t);
 		gl_FragColor = vec4(x, x, x, x);	
-	} else if (texx >= (1.0 - texdx)) {
+	} else if (texx >= (1.0 - 1.0 * texdx)) {
 		// If a pixel is on the x boundary
 		x = u_f(x, y, t);
 		gl_FragColor = vec4(x, x, x, x);
-	} else if (texy <= texdy) {
+	} else if (texy <= 1.0 * texdy) {
 		x = u_f(x, y, t);
 		gl_FragColor = vec4(x, x, x, x);
-	} else if (texy >= (1.0 - texdy)) {
+	} else if (texy >= (1.0 - 1.0 * texdy)) {
 		// If a pixel is on the y boundary
 		x = u_f(x, y, t);
 		gl_FragColor = vec4(x, x, x, x);
@@ -128,8 +129,21 @@ void main () {
 		float b = (dy2 * (left.b - 16.0 * left.a - 16.0 * self.a  + right.b) + dx2 * (up.b - 16.0 * self.r - 16.0 * down.r + down.b) + 12.0 * dx2 * dy2 * f(x - 0.5 * dx, y - 0.5 * dy, t)) / (-30.0 * (dx2 + dy2));
 		float a = (dy2 * (left.a - 16.0 * self.b - 16.0 * right.b + right.a) + dx2 * (up.a - 16.0 * self.g - 16.0 * down.g + down.a) + 12.0 * dx2 * dy2 * f(x + 0.5 * dx, y - 0.5 * dy, t)) / (-30.0 * (dx2 + dy2));
 		//*/
-		
-		//gl_FragColor = vec4(r, g, b, a);
+	   	
+	   	
+	   	// if (floor(texx * width / texdx) == 2.0) {
+	   	//    	gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+	   	// } else {
+	   	//    	gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+	   	// }
+	   	//gl_FragColor = vec4(texx, 0.0, 0.0, 1.0);
+	   	//gl_FragColor = left;
+		gl_FragColor = vec4(r, g, b, a);
+		//gl_FragColor = vec4((left.r + self.r) / 2.0, 0.0, 0.0, 1.0);
+		//gl_FragColor = vec4(right.r, right.g, right.b, 1.0);
+		//gl_FragColor = vec4(left.r, left.g, left.b, 1.0);
+		//gl_FragColor = vec4(self.r, self.g, self.b, 1.0);
+		//gl_FragColor = vec4((self.r + up.r + down.r + left.r + right.r) / 5.0, 0.0, 0.0, 1.0);
 		
 		/*
 		//vec4 a is left;
@@ -140,6 +154,7 @@ void main () {
 		vec4 c = vec4(up.b, up.a, self.r, self.g);
 		vec4 d = vec4(self.b, self.a, down.r, down.g);
 		//vec4 h is down
+		
 		
 		gl_FragColor = (dy2 * (left - 16.0 * a - 16.0 * b  + right) + dx2 * (up - 16.0 * c   - 16.0 * d + down) + 12.0 * dx2 * dy2 * f(x - 0.5 * dx, y + 0.5 * dy, t)) / (-30.0 * (dx2 + dy2));
 		//*/

@@ -29,7 +29,23 @@
 		var glot = new grapher(AXES_ON | GRID_OFF);
 		glot.set("a", 0.5);
 		
-		glot.add(new scalar_field("sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5 + 0.8 * t) * (x - 1.5 + 0.8 * t) + (y - 0.75) * (y - 0.75)) - t)"));
+		/*
+		sin(3.0 * sqrt(x * x + y * y) - 2.0 * t) * cos(5.0 * sqrt((x - 1.5 + 0.8 * t) * (x - 1.5 + 0.8 * t) + (y - 0.75) * (y - 0.75)) - t)
+		*/
+		
+		glot.set('sf', 3.0);
+		glot.set('mf', 45.0);
+		glot.set('sc', 0.2);
+		glot.set('ec', 1.07);
+		glot.set('speed', 0.4);
+		
+		var f = '(1.0 - sc) * sin(sf * sqrt(pow(x, 2.0) + pow(y, 2.0)))';
+		var g = 'sc * sin(mf * sqrt(pow(x - 3.0 * sin(ec * speed * t), 2.0) + pow(y - 5.0 * cos(ec * speed * t), 2.0)))';
+		var h = 'sc * sin(mf * sqrt(pow(x - 5.0 * sin(speed * t), 2.0) + pow(y - 3.0 * cos(speed * t), 2.0)))';
+		// var g = '0.1 * sin(mf * sqrt(pow(x - 5.0 * sin(6.3 * t), 2.0) + pow(y - 3.0 * cos(6.3 * t), 2.0)))';
+		glot.add(new scalar_field(f + ' + ' + g + ' + ' + h));
+		
+		// glot.add(new p_curve("3.0 * sin(6.3 * s), 5.0 * cos(6.3 * s)", [1, 0, 0, 1]));
 		
 		glot.setClickFunction(click);
 		

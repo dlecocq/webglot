@@ -29,7 +29,8 @@
 		var glot = new grapher(AXES_ON | GRID_OFF);
 		glot.set("a", 1.0);
 		
-		glot.add(new curve("sin(x)", [1, 0, 0, 1], CARTESIAN | X_LIN | Y_LIN));
+		glot.add(new curve("sin(x) * sqrt(x) * cos(t)", [1, 0, 0, 1], CARTESIAN | X_LIN | Y_LIN));
+		glot.add(new curve("exp(sin(3.0 * x * cos(t * 2.0)))", [1, 0, 0, 1], CARTESIAN | X_LIN | Y_LIN));
 		
 		glot.setClickFunction(click);
 		

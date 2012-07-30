@@ -49,9 +49,9 @@ function noisetexture(context, width, height) {
 		var count = this.width * this.height * 4;
 		//*
 		for (var i = 0; i < count; i += 1) {
-			pixels[i] = Math.random() * 3.0;
+			//pixels[i] = Math.random() * 3.0;
 			//pixels[i] = 4.0 * i / count;
-			//pixels[i] = 0.0;
+			pixels[i] = 0.0;
 		}
 		//*/
 		

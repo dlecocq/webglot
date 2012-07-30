@@ -7,6 +7,7 @@
 	<script src="../emptytexture.js"> </script>
 	<script src="../noisetexture.js"> </script>
 	<script src="../texture.js">      </script>
+	<script src="../ftexture.js">     </script>
 
 	<script src="../grid.js">         </script>
 	<script src="../axes.js">         </script>
@@ -21,7 +22,8 @@
 	<script src="../grapher.js">      </script>
 
 	<script>
-	var p = new pde();
+	//var p = new pde('-x - y * y / t');
+	var p = new pde('sin(x * omega)');
 	
 	function start() {
 		var glot = new grapher(AXES_ON | GRID_OFF);

@@ -32,15 +32,15 @@ function pde(string, options) {
 	 * the implementation to use vertex-buffer objects.  These are
 	 * those.
 	 */
-	this.vertexVBO	= null;
+	this.vertexVBO  = null;
 	this.textureVBO = null;
-	this.indexVBO		= null;
+	this.indexVBO   = null;
 	
 	/* A more apt name might be "resolution," as count is the number
 	 * of samples along each axis (x and y) samples are taken. Being
 	 * set to 100 means that it will produce 2 * 100 * 100 triangles.
 	 */
-	this.count			= 15;
+	this.count      = 15;
 	this.index_ct   = 0;
 	
 	this.tmp    = null;
@@ -88,9 +88,23 @@ function pde(string, options) {
 			// Delete texture
 		}
 
-		this.ping = new emptytexture(this.gl, this.width, this.height);
-		this.pong = new emptytexture(this.gl, this.width, this.height);
+        f = function(pixels) {
+            var count = scr.width * scr.height * 4;
+            for (var i = 0; i < count; i += 4) {
+                pixels[i] = ((i + Math.floor(i / 50)) % 256) / 256.0;
+                
+                //pixels[i] = 1.0;
+            }
+            return pixels;
+        }
+        
+		this.ping = new emptytexture(this.gl, scr.width, scr.height);
+		this.pong = new emptytexture(this.gl, scr.width, scr.height);
 		
+		// this.ping = new ftexture(this.gl, this.width, this.height, f, this.gl.RGBA);
+		// this.pong = new ftexture(this.gl, this.width, this.height, f, this.gl.RGBA);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+				
 		this.fbo = this.gl.createFramebuffer();
 	}
 
@@ -99,9 +113,14 @@ function pde(string, options) {
 	 * the objects.
 	 */
 	this.gen_vbo = function(scr) {
-		var vertices = [scr.minx, scr.miny, scr.minx, scr.maxy, scr.maxx, scr.miny, scr.maxx, scr.maxy];
-		var texture = [0, 0, 0, 1, 1, 0, 1, 1];
-		var indices  = [0, 1, 2, 3];
+    	/* A   C
+    	 * |  /|
+    	 * | / |
+    	 * |/  |
+    	 * B   D */
+        var vertices = [scr.minx, scr.miny, scr.minx, scr.maxy, scr.maxx, scr.miny, scr.maxx, scr.maxy];
+    	var texture = [0, 0, 0, 1, 1, 0, 1, 1];
+   		var indices  = [0, 1, 2, 3];
 		
 		this.vertexVBO = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexVBO);
@@ -120,11 +139,10 @@ function pde(string, options) {
 	
 	this.calculate = function(scr) {
 		this.setUniforms(scr, this.calc_program);
-		this.gl.viewport(0, 0, this.ping.width, this.ping.height);
 		
-    	this.gl.uniform1i(this.gl.getUniformLocation(this.calc_program, "uSampler"), 0);
-		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "width") , this.pong.width );
-		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "height"), this.pong.height);
+        this.gl.uniform1i(this.gl.getUniformLocation(this.calc_program, "uSampler"), 0);
+		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "width") , scr.width);
+		this.gl.uniform1f(this.gl.getUniformLocation(this.calc_program, "height"), scr.height);
 		
 		this.gl.enableVertexAttribArray(0);
 		this.gl.enableVertexAttribArray(1);
@@ -138,21 +156,24 @@ function pde(string, options) {
 		
 		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indexVBO);
 		
+		this.gl.viewport(0, 0, scr.width, scr.height);
 		// First, set up Framebuffer we'll render into
 		this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fbo);
 		this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.ping, 0);
+		//this.gl.enable(this.gl.TEXTURE_2D);
+		this.gl.activeTexture(this.gl.TEXTURE0);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.pong);
 		this.checkFramebuffer();
-
+        
 		// Then drawing the triangle strip using the calc program
 		this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.index_ct, this.gl.UNSIGNED_SHORT, 0);
-				
+		
 		this.gl.disableVertexAttribArray(0);
 		this.gl.disableVertexAttribArray(1);
 		
-		this.tmp = this.ping;
+		var tmp  = this.ping;
 		this.ping = this.pong;
-		this.pong = this.tmp;
+		this.pong = tmp;
 	}
 	
 	/* Every primitive is also responsible for knowing how to draw itself,
@@ -161,12 +182,12 @@ function pde(string, options) {
 	 * was before it's called.
 	 */
 	this.draw = function(scr) {
-		this.calculate(scr);
-		this.calculate(scr);
-		this.calculate(scr);
+    	this.calculate(scr);
+    	this.calculate(scr);
+    	this.calculate(scr);
 		this.calculate(scr);
 		
-		this.setUniforms(scr);
+		this.setUniforms(scr, this.program);
 		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "uSampler"), 0);
 		this.gl.viewport(0, 0, scr.width, scr.height);
 		
@@ -186,6 +207,7 @@ function pde(string, options) {
 		this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
 		
 		// the recently-drawn texture
+		this.gl.activeTexture(this.gl.TEXTURE0);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.ping);
 		this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.index_ct, this.gl.UNSIGNED_SHORT, 0);
 		
@@ -207,7 +229,7 @@ function pde(string, options) {
 		
 		this.calc_program = this.compile_program(vertex_source, frag_source, { "position": 0, "aTextureCoord": 1 });
 		
-		var frag_source	= this.read("shaders/pde.frag");
+		frag_source	= this.read("shaders/pde.frag");
 		
 		this.program = this.compile_program(vertex_source, frag_source, { "position": 0, "aTextureCoord": 1 });
 	}

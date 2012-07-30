@@ -90,7 +90,7 @@ function flow(string, options) {
 			f = function(pixels) {
 				var count = scr.width * scr.height * 4;
 				for (var i = 0; i < count; i += 4) {
-					pixels[i] = Math.random() * 3.0;
+					pixels[i] = Math.random() * 1.5;
 				}
 				return pixels;
 			}
@@ -204,7 +204,9 @@ function flow(string, options) {
 	}
 	
 	this.calculate = function(scr) {
-    this.gl.uniform1i(this.gl.getUniformLocation(this.program, "accumulation"), 0);
+    	this.setUniforms(scr, this.program);
+    	
+        this.gl.uniform1i(this.gl.getUniformLocation(this.program, "accumulation"), 0);
 		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "source"), 1);
 		
 		this.gl.enableVertexAttribArray(0);
@@ -253,10 +255,10 @@ function flow(string, options) {
 	 * was before it's called.
 	 */
 	this.draw = function(scr) {
-		this.setUniforms(scr);
-		
 		this.calculate(scr);
-		this.calculate(scr);		
+		this.calculate(scr);
+		
+		this.setUniforms(scr);	
 
 		this.gl.uniform1i(this.gl.getUniformLocation(this.program, "accumulation"), 0);
 		

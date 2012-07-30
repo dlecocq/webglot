@@ -29,8 +29,7 @@ void main() {
 	//float value = texture2D(uSampler, vTextureCoord.st).r / 20.0 + 0.5;
 	vec4 tex = texture2D(uSampler, vTextureCoord.st);
 	
-	float value = (0.25 * (tex.r + tex.g + tex.b + tex.a)) / 2.0 + 0.25;
-	//float value = tex.r / 2.0 + 0.25;
+	float value = (0.25 * (tex.r + tex.g + tex.b + tex.a));
 	
 	float red = 1.0;
 	float green = 1.0;
@@ -57,6 +56,7 @@ void main() {
 	}
 	
 	gl_FragColor = vec4(red, green, blue, 1.0);
+	//gl_FragColor = tex;
 	//gl_FragColor = tex * 2.0;
 	//gl_FragColor = vec4(value, value, value, 1.0);
 	//gl_FragColor = texture2D(uSampler, vTextureCoord.st);

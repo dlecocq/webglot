@@ -164,7 +164,7 @@ function primitive(context) {
 	
 	this.setUniforms = function(scr, program) {
 		try {
-			program = program || this.program;
+			var program = program || this.program;
 		
 			this.gl.useProgram(program);
 		
